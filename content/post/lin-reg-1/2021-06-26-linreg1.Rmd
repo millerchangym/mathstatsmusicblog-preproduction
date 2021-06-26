@@ -16,8 +16,6 @@ The aim of this post is to give a (mostly) complete exposition of simple linear 
 
 We show that the justification for fitting a line of best fit through two-dimensional points only requires the assumption that error terms, given a fixed $x$-value, have a mean of $0$, with no other assumptions required. Similarly, this assumption (with no other assumptions added) allows us to demonstrate that the least-squares estimates of the slope and intercept are unbiased. Lastly, we demonstrate that it is only once we begin discussing variances and hypothesis tests with the least-squares estimates of the slope and intercept that we need heteroskedasticity (constant variance of the error terms) and normality of the error terms.
 
-The aim of this post is to give a complete exposition of simple linear regression, carefully only making assumptions where necessary, and providing a summary at the end. I find that textbooks on their own rarely state explicitly all of the assumptions behind linear regression until you hit the master's-level courses. 
-
 ## The Underlying Model
 
 Suppose we have $n$ two-dimensional random variables $(X_1, Y_1), \dots, (X_n, Y_n)$. The assumption underlying linear regression is that the true process, 
