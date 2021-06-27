@@ -10,11 +10,11 @@ tags:
 - linear-algebra
 ---
 
-Users of linear regression often assume when performing linear regression, error terms have to be normally distributed and have constant variance for each fixed $x$-value. While this is true to some extent, not every aspect of linear regression relies on these two assumptions. 
+Users of linear regression often assume when performing linear regression, error terms have to be normally distributed and have constant variance for each fixed $x$-value. While these assumptions are true to some extent, not every aspect of linear regression relies on these two assumptions. 
 
 The aim of this post is to give a (mostly) complete exposition of simple linear regression, carefully only making assumptions where necessary, and providing a summary at the end.  
 
-We show that the justification for fitting a line of best fit through two-dimensional points only requires the assumption that error terms, given a fixed $x$-value, have a mean of $0$, with no other assumptions required. Similarly, this assumption (with no other assumptions added) allows us to demonstrate that the least-squares estimates of the slope and intercept are unbiased. Lastly, we demonstrate that it is only once we begin discussing variances and hypothesis tests with the least-squares estimates of the slope and intercept that we need heteroskedasticity (constant variance of the error terms) and normality of the error terms.
+We show that the justification for fitting a line of best fit through two-dimensional points only requires the assumption that error terms, given a fixed $x$-value, have a mean of $0$, with no other assumptions required. With no additional assumptions, we demonstrate that the least-squares estimates of the slope and intercept are unbiased for the corresponding linear model parameters. Lastly, we demonstrate that it is only once we begin discussing variances and hypothesis tests with the least-squares estimates of the slope and intercept that we need heteroskedasticity (constant variance of the error terms) and normality of the error terms.
 
 ## The Underlying Model
 
