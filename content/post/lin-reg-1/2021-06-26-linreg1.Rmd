@@ -1,7 +1,7 @@
 ---
 title: Everything You Cared to Know about Simple Linear Regression
 author: "Yeng Miller-Chang"
-date: '2021-06-26'
+date: '2021-06-27'
 slug: everything-simple-lin-reg
 categories: []
 tags:
@@ -224,7 +224,7 @@ $$\begin{align}
 which is another linear combination of $\epsilon_i$ plus a constant, hence
 $$\widehat{\beta}_1 \mid \mathbf{X} \sim \mathcal{N}\left(\beta_1, \dfrac{\text{Var}\left[\widehat\beta_0 \mid \mathbf{X} \right] - \sigma^2/n}{\overline{X}_n^2}\right)\text{.}$$
 
-With these results in hand, we may construct confidence intervals and perform hypothesis tests on $\hat\beta_0 \mid \mathbf{X}$ and $\hat\beta_1 \mid \mathbf{X}$.
+With these results in hand, we may construct confidence intervals and perform hypothesis tests for $\beta_0 \mid \mathbf{X}$ and $\beta_1 \mid \mathbf{X}$.
 
 ## Theoretical Conclusions
 
