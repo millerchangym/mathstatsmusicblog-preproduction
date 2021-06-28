@@ -4,7 +4,7 @@ theme: "starter-hugo-academic"
 # Hugo Documentation: https://gohugo.io/getting-started/configuration/#all-configuration-settings
 # This file is formatted using YAML syntax - learn more at https://learnxinyminutes.com/docs/yaml/
 
-title: Math, Stats, and Occasionally Music # Website name
+title: Math, Music Occasionally, and Stats # Website name
 baseurl: '/' # Website URL
 copyright: '&copy; {year} Yeng Miller-Chang' # Footer text, e.g. '© {year} Me'
 
