@@ -37,7 +37,7 @@ user_groups:
 
 *Views and opinions expressed are solely my own.*
 
-I am a Data Analyst with the [University of Minnesota - Twin Cities Health Sciences Technology Data and Analytics Team](https://it.umn.edu/experts-communities/health-sciences-technology-data-analytics) and the [Medical Education Outcomes Center (MEOC)](https://outcomes.umn.edu/). 
+I am a Data Analyst with the [University of Minnesota - Twin Cities](https://twin-cities.umn.edu/) [Health Sciences Technology Data and Analytics Team](https://it.umn.edu/experts-communities/health-sciences-technology-data-analytics) and the [Medical Education Outcomes Center (MEOC)](https://outcomes.umn.edu/). 
 
 From Fall 2019 through Spring 2021, I was an adjunct instructor at [Normandale Community College](https://www.normandale.edu/), teaching DSCI 2000 (Foundations of Data Science). My first- and second-semester data-science students competed and placed in contests against four-year universities ([Fall 2019](https://www.normandale.edu/minnemudac), [Spring 2020](https://www.normandale.edu/dataderby), [Spring 2021](https://www.normandale.edu/community/newsroom/news-articles/normandale-students-finished-second-in-advanced-division-at-annual-mn-state-it-coe-data-derby)).
 
