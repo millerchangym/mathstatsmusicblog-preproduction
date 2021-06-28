@@ -2,22 +2,6 @@
 authors:
 - admin
 bio: I am a Data Analyst with the University of Minnesota - Twin Cities. Views and opinions expressed are my own.
-education:
-  courses:
-  - course: M.S. Statistics
-    institution: Iowa State University
-    year: 2020
-  - course: B.S. Mathematics (Statistics emphasis)
-    institution: University of Wisconsin -- Eau Claire
-    year: 2014
-interests:
-- Mathematics, Statistics, and Data Science Education
-- Music Education (Theory, Piano, Composition)
-- Nonparametric Statistics
-- Probability
-- Music Transcription
-- Late 19th Century Musical Harmony
-- Mathematics and Music
 title: Yeng Miller-Chang
 social:
 - icon: linkedin
@@ -43,4 +27,4 @@ From Fall 2019 through Spring 2021, I was an adjunct instructor at [Normandale C
 
 I hold a M.S. Statistics from [Iowa State University](https://www.iastate.edu/) and a B.S. Mathematics (Statistics emphasis) from the [University of Wisconsin -- Eau Claire](https://www.uwec.edu/). I have worked in life insurance, electronic health records, and marketing, with the bulk of my professional experience in education (actuarial, K-12, and higher education). My [masters creative component](https://lib.dr.iastate.edu/creativecomponents/534/) was on optimal block sizes for block bootstrapping of long-memory time series. I have also taken PhD-level coursework in [measure-theoretic probability](https://en.wikipedia.org/wiki/Probability_theory#Measure-theoretic_probability_theory).
 
-My degree at the University of Wisconsin -- Eau Claire also included a music minor. My primary interests in music are transcription, analysis of post-tonal music of the late 19th century (e.g., Ravel, Prokofiev, Stravinsky), and the intersection of mathematics and music. I am also a hobby piano player: I own a Kawai CA67. 
+In music, my primary interests are transcription, analysis of post-tonal music of the late 19th century (e.g., Ravel, Prokofiev, Stravinsky), and the intersection of mathematics and music.
