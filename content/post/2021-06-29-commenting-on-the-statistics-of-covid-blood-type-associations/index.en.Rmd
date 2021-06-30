@@ -13,7 +13,7 @@ tags:
 
 ## Introduction
 
-In the early days of the COVID-19 pandemic in the U.S., news around an [article in medRxiv](https://www.medrxiv.org/content/10.1101/2020.03.11.20031096v2) caught the attention of many of my peers in my internal circle, generating headlines such as:
+In the early days of the COVID-19 pandemic in the U.S., news around an [article in medRxiv](https://www.medrxiv.org/content/10.1101/2020.03.11.20031096v2) caught the attention of many of my peers, generating headlines such as:
 
 > [*People with blood type A might be more susceptible to coronavirus, study finds*](https://www.foxnews.com/health/people-blood-type-a-might-susceptible-coronavirus-study-finds) 
 > 
