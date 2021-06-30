@@ -1,0 +1,90 @@
+---
+title: 'Commenting on the Statistics of COVID Blood-Type Associations'
+author: Yeng Miller-Chang
+date: '2021-06-29'
+slug: commenting-on-covid-blood-type-associations
+tags:
+  - statistics
+  - p-value
+  - covid-19
+---
+
+*Views and opinions expressed are solely my own.*
+
+## Introduction
+
+In the early days of the COVID-19 pandemic in the U.S., news around an [article in medRxiv](https://www.medrxiv.org/content/10.1101/2020.03.11.20031096v2) caught the attention of many of my peers in my internal circle, generating headlines such as:
+
+> [*People with blood type A might be more susceptible to coronavirus, study finds*](https://www.foxnews.com/health/people-blood-type-a-might-susceptible-coronavirus-study-finds) 
+> 
+> [*Does blood type matter when it comes to coronavirus? A Chinese study says yes*](https://medicalxpress.com/news/2020-03-blood-coronavirus-chinese.html)
+
+Let's examine the results section of the [original article](https://www.medrxiv.org/content/10.1101/2020.03.11.20031096v2). One excerpt worth noting:
+
+> The proportion of blood group A in patients with COVID-19 was significantly higher than that in normal people, being 37.75% in the former vs 32.16% in the later ($P < 0.001$). The proportion of blood group O in patients with COVID-19 was significantly lower than that in normal people, being 25.80% in the former vs 33.84% in the later ($P < 0.001$, Table 1). These results corresponded to a significantly increased risk of blood group A for COVID-19... and decreased risk of blood group O for COVID-19... in comparison with non-A groups and non-O groups, respectively. 
+
+From the above, the claim that people with type-A blood may be more susceptible to COVID-19 is due to calculations yielding small $p$-values. **One must look at claims solely based on $p$-values with extreme skepticism.** **$p$-values are not infallible:** just because a small $p$-value indicates that people with type-A blood have an increased risk of COVID-19 compared to their counterparts does **not** mean that an increased risk *actually* exists. 
+
+In fact, the authors of this paper go on to give a possible explanation to this phenomena to which they state:
+
+> This speculation will need direct studies to prove. There may also be other
+mechanisms underlying the ABO blood group-differentiated susceptibility for
+COVID-19 that require further studies to elucidate.
+
+and then, in the conclusions section, state:
+
+> It should be emphasized, however, that given the above limitations, it would be
+premature to use this study to guide clinical practice at this time. 
+
+All of this information, unfortunately, is lost in the headlines. Furthermore, in my opinion, it is unreasonable to expect a member of the general public to pick up all of these nuances.
+
+### What do these $p$-values actually tell us?
+
+Let's assess both of these claims on their own.
+
+> The proportion of blood group A in patients with COVID-19 was significantly higher than that in normal people, being 37.75% in the former vs 32.16% in the later ($P < 0.001$).
+
+In Table 1 of the [original article](https://www.medrxiv.org/content/10.1101/2020.03.11.20031096v2), we can see that the $p$-value obtained above is a result of a $\chi^2$ (chi-squared) test. The $\chi^2$ test, in this case, is a test for independence between the "blood-type A" status and the "normal/COVID" status. Independence of these statuses means each of the following four statements must be true:
+
+* The probability of a person having type-A blood remains unchanged from the probability of this occurring in the overall group if you know that the person is "Normal." 
+* The probability of a person having type-A blood remains unchanged from the probability of this occurring in the overall group if you know that the person is a COVID-19 patient.
+* The probability of a person being a COVID-19 patient remains unchanged from the probability of this occurring in the overall group if you know that the person has type-A blood.
+* The probability of a person being a COVID-19 patient remains unchanged from the probability of this occurring in the overall group if you know that the person does not have type-A blood.
+
+For example, to illustrate this in the context in the second bullet above, suppose we know that 35% of people in general have type-A blood (a statistic I've made up). Consider a single person who is a COVID-19 patient. Then the probability that this person has type-A blood is also 35%, by the independence assumption we have made. 
+
+**By providing a small $p$-value for a $\chi^2$ test for independence, the $\chi^2$ tests that there is evidence that these two statuses are not independent.** That means, therefore, that there is *evidence* (note: it is **not** certainty) that these two statuses are dependent. In the context of our example, if someone is a COVID patient, dependence means that the probability that this person has type-A blood would change from the overall type-A blood probability. While the $\chi^2$ test *provides evidence* of dependence, it does **not**:
+
+* mean there is an **actual** dependence between these two statuses, and
+* tell us the **direction** of said dependence. For example, if someone is a COVID patient, while there is evidence the probability that they have type-A blood is different from the overall percentage due to dependence, the $\chi^2$ does **not** tell us whether the type-A probability for this COVID patient is greater than the type-A probability for the overall population.
+
+**Thus, the explanation associated with this $p$-value is incorrect.** It should really say something like:
+
+> There is evidence of a dependence between COVID-19 status and whether a person has type-A blood ($P < 0.001$).
+
+Similar principles apply to the other statement given in the original quoted text:
+
+> The proportion of blood group O in patients with COVID-19 was significantly lower than that in normal people, being 25.80% in the former vs 33.84% in the later ($P < 0.001$, Table 1).
+
+which should be reworded as:
+
+> There is evidence of a dependence between COVID-19 status and whether a person has type-O blood ($P < 0.001$).
+
+One can quite easily observe how the original statements are not as definitive as they may seem to be with appropriate rewording.^[Granted, the authors of the original article also calculated odds ratios in attempting to give an idea of the direction, but they should have provided $p$-values with these. Even if they used a more appropriate test with $p$-values to give an idea of the direction, it is not appropriate to use "significantly higher" or "significantly lower" to describe such conclusions; they should be reworded to "higher" or "lower." Such tests give an idea of the *direction* of such differences, but not necessarily the magnitude of such differences.]
+
+### What does one do with regard to COVID-19 guidance?
+
+In the prior section, I explained what the $\chi^2$-test $p$-values actually suggest. However, it's unreasonable for the general public to be able to take apart the statistical techniques like I've done here.
+
+Here is how I handle hearing about new COVID-19-related guidance in the news:
+
+1. Find the original source of research. As much as I can, I ignore all news media and social media commenting on said research.
+2. Find the results and discussion sections of said research article.
+3. If the only rationale for the final conclusion is a $p$-value calculation and/or confidence interval calculation, keep in mind the association(s) found, but don't trust the conclusions for definite advice.
+4. If $p$-values and confidence intervals are supplemented with an explanation of the scientific mechanism supporting why said associations would occur, assign the article higher credibility. If the scientific mechanism isn't available, a randomized control trial (RCT) would be ideal; however, seek other studies with RCTs to see if similar results have been replicated. 
+
+The point in 4 is to emphasize that one of the most important aspects of how to live with COVID-19 in our society is that it is essentially a problem of **causality**. Many statistical aspects of issues end with $p$-values.^[Not that I agree this should be the case.] Causality requires a step *beyond* the statistics, options including a number of RCTs which support similar results, or an explanation of the scientific mechanism behind a particular phenomena.^[Or, if you're feeling especially ambitious, see [*Causality* by Judea Pearl](https://www.amazon.com/Causality-Reasoning-Inference-Judea-Pearl/dp/052189560X) for a framework. I haven't had a chance to dig into this book in depth yet.]
+
+## Conclusion
+
+Do not rely on $p$-values as the ultimate source of truth, especially during a pandemic. In future posts, I will explain the details behind the calculation of $p$-values.

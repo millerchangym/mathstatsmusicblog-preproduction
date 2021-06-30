@@ -1,0 +1,97 @@
+---
+title: 'Commenting on the Statistics of COVID Blood-Type Associations'
+author: Yeng Miller-Chang
+date: '2021-06-29'
+slug: commenting-on-covid-blood-type-associations
+tags:
+  - statistics
+  - p-value
+  - covid-19
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In the early days of the COVID-19 pandemic in the U.S., news around an <a href="https://www.medrxiv.org/content/10.1101/2020.03.11.20031096v2">article in medRxiv</a> caught the attention of many of my peers in my internal circle, generating headlines such as:</p>
+<blockquote>
+<p><a href="https://www.foxnews.com/health/people-blood-type-a-might-susceptible-coronavirus-study-finds"><em>People with blood type A might be more susceptible to coronavirus, study finds</em></a></p>
+<p><a href="https://medicalxpress.com/news/2020-03-blood-coronavirus-chinese.html"><em>Does blood type matter when it comes to coronavirus? A Chinese study says yes</em></a></p>
+</blockquote>
+<p>Let’s examine the results section of the <a href="https://www.medrxiv.org/content/10.1101/2020.03.11.20031096v2">original article</a>. One excerpt worth noting:</p>
+<blockquote>
+<p>The proportion of blood group A in patients with COVID-19 was significantly higher than that in normal people, being 37.75% in the former vs 32.16% in the later (<span class="math inline">\(P &lt; 0.001\)</span>). The proportion of blood group O in patients with COVID-19 was significantly lower than that in normal people, being 25.80% in the former vs 33.84% in the later (<span class="math inline">\(P &lt; 0.001\)</span>, Table 1). These results corresponded to a significantly increased risk of blood group A for COVID-19… and decreased risk of blood group O for COVID-19… in comparison with non-A groups and non-O groups, respectively.</p>
+</blockquote>
+<p>From the above, the claim that people with type-A blood may be more susceptible to COVID-19 is due to calculations yielding small <span class="math inline">\(p\)</span>-values. <strong>One must look at claims solely based on <span class="math inline">\(p\)</span>-values with extreme skepticism.</strong> <strong><span class="math inline">\(p\)</span>-values are not infallible:</strong> just because a small <span class="math inline">\(p\)</span>-value indicates that people with type-A blood have an increased risk of COVID-19 compared to their counterparts does <strong>not</strong> mean that an increased risk <em>actually</em> exists.</p>
+<p>In fact, the authors of this paper go on to give a possible explanation to this phenomena to which they state:</p>
+<blockquote>
+<p>This speculation will need direct studies to prove. There may also be other
+mechanisms underlying the ABO blood group-differentiated susceptibility for
+COVID-19 that require further studies to elucidate.</p>
+</blockquote>
+<p>and then, in the conclusions section, state:</p>
+<blockquote>
+<p>It should be emphasized, however, that given the above limitations, it would be
+premature to use this study to guide clinical practice at this time.</p>
+</blockquote>
+<p>All of this information, unfortunately, is lost in the headlines. Furthermore, in my opinion, it is unreasonable to expect a member of the general public to pick up all of these nuances.</p>
+<div id="what-do-these-p-values-actually-tell-us" class="section level3">
+<h3>What do these <span class="math inline">\(p\)</span>-values actually tell us?</h3>
+<p>Let’s assess both of these claims on their own.</p>
+<blockquote>
+<p>The proportion of blood group A in patients with COVID-19 was significantly higher than that in normal people, being 37.75% in the former vs 32.16% in the later (<span class="math inline">\(P &lt; 0.001\)</span>).</p>
+</blockquote>
+<p>In Table 1 of the <a href="https://www.medrxiv.org/content/10.1101/2020.03.11.20031096v2">original article</a>, we can see that the <span class="math inline">\(p\)</span>-value obtained above is a result of a <span class="math inline">\(\chi^2\)</span> (chi-squared) test. The <span class="math inline">\(\chi^2\)</span> test, in this case, is a test for independence between the “blood-type A” status and the “normal/COVID” status. Independence of these statuses means each of the following four statements must be true:</p>
+<ul>
+<li>The probability of a person having type-A blood remains unchanged from the probability of this occurring in the overall group if you know that the person is “Normal.”</li>
+<li>The probability of a person having type-A blood remains unchanged from the probability of this occurring in the overall group if you know that the person is a COVID-19 patient.</li>
+<li>The probability of a person being a COVID-19 patient remains unchanged from the probability of this occurring in the overall group if you know that the person has type-A blood.</li>
+<li>The probability of a person being a COVID-19 patient remains unchanged from the probability of this occurring in the overall group if you know that the person does not have type-A blood.</li>
+</ul>
+<p>For example, to illustrate this in the context in the second bullet above, suppose we know that 35% of people in general have type-A blood (a statistic I’ve made up). Consider a single person who is a COVID-19 patient. Then the probability that this person has type-A blood is also 35%, by the independence assumption we have made.</p>
+<p><strong>By providing a small <span class="math inline">\(p\)</span>-value for a <span class="math inline">\(\chi^2\)</span> test for independence, the <span class="math inline">\(\chi^2\)</span> tests that there is evidence that these two statuses are not independent.</strong> That means, therefore, that there is <em>evidence</em> (note: it is <strong>not</strong> certainty) that these two statuses are dependent. In the context of our example, if someone is a COVID patient, dependence means that the probability that this person has type-A blood would change from the overall type-A blood probability. While the <span class="math inline">\(\chi^2\)</span> test <em>provides evidence</em> of dependence, it does <strong>not</strong>:</p>
+<ul>
+<li>mean there is an <strong>actual</strong> dependence between these two statuses, and</li>
+<li>tell us the <strong>direction</strong> of said dependence. For example, if someone is a COVID patient, while there is evidence the probability that they have type-A blood is different from the overall percentage due to dependence, the <span class="math inline">\(\chi^2\)</span> does <strong>not</strong> tell us whether the type-A probability for this COVID patient is greater than the type-A probability for the overall population.</li>
+</ul>
+<p><strong>Thus, the explanation associated with this <span class="math inline">\(p\)</span>-value is incorrect.</strong> It should really say something like:</p>
+<blockquote>
+<p>There is evidence of a dependence between COVID-19 status and whether a person has type-A blood (<span class="math inline">\(P &lt; 0.001\)</span>).</p>
+</blockquote>
+<p>Similar principles apply to the other statement given in the original quoted text:</p>
+<blockquote>
+<p>The proportion of blood group O in patients with COVID-19 was significantly lower than that in normal people, being 25.80% in the former vs 33.84% in the later (<span class="math inline">\(P &lt; 0.001\)</span>, Table 1).</p>
+</blockquote>
+<p>which should be reworded as:</p>
+<blockquote>
+<p>There is evidence of a dependence between COVID-19 status and whether a person has type-O blood (<span class="math inline">\(P &lt; 0.001\)</span>).</p>
+</blockquote>
+<p>One can quite easily observe how the original statements are not as definitive as they may seem to be with appropriate rewording.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+</div>
+<div id="what-does-one-do-with-regard-to-covid-19-guidance" class="section level3">
+<h3>What does one do with regard to COVID-19 guidance?</h3>
+<p>In the prior section, I explained what the <span class="math inline">\(\chi^2\)</span>-test <span class="math inline">\(p\)</span>-values actually suggest. However, it’s unreasonable for the general public to be able to take apart the statistical techniques like I’ve done here.</p>
+<p>Here is how I handle hearing about new COVID-19-related guidance in the news:</p>
+<ol style="list-style-type: decimal">
+<li>Find the original source of research. As much as I can, I ignore all news media and social media commenting on said research.</li>
+<li>Find the results and discussion sections of said research article.</li>
+<li>If the only rationale for the final conclusion is a <span class="math inline">\(p\)</span>-value calculation and/or confidence interval calculation, keep in mind the association(s) found, but don’t trust the conclusions for definite advice.</li>
+<li>If <span class="math inline">\(p\)</span>-values and confidence intervals are supplemented with an explanation of the scientific mechanism supporting why said associations would occur, assign the article higher credibility. If the scientific mechanism isn’t available, a randomized control trial (RCT) would be ideal; however, seek other studies with RCTs to see if similar results have been replicated.</li>
+</ol>
+<p>The point in 4 is to emphasize that one of the most important aspects of how to live with COVID-19 in our society is that it is essentially a problem of <strong>causality</strong>. Many statistical aspects of issues end with <span class="math inline">\(p\)</span>-values.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> Causality requires a step <em>beyond</em> the statistics, options including a number of RCTs which support similar results, or an explanation of the scientific mechanism behind a particular phenomena.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>Do not rely on <span class="math inline">\(p\)</span>-values as the ultimate source of truth, especially during a pandemic. In future posts, I will explain the details behind the calculation of <span class="math inline">\(p\)</span>-values.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Granted, the authors of the original article also calculated odds ratios in attempting to give an idea of the direction, but they should have provided <span class="math inline">\(p\)</span>-values with these. Even if they used a more appropriate test with <span class="math inline">\(p\)</span>-values to give an idea of the direction, it is not appropriate to use “significantly higher” or “significantly lower” to describe such conclusions; they should be reworded to “higher” or “lower.” Such tests give an idea of the <em>direction</em> of such differences, but not necessarily the magnitude of such differences.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Not that I agree this should be the case.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Or, if you’re feeling especially ambitious, see <a href="https://www.amazon.com/Causality-Reasoning-Inference-Judea-Pearl/dp/052189560X"><em>Causality</em> by Judea Pearl</a> for a framework. I haven’t had a chance to dig into this book in depth yet.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
