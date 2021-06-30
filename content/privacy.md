@@ -20,7 +20,7 @@ I do not collect this information and have no access to it other than as aggrega
 
 This information is collected via cookies. Most web browsers allow you to control handling of cookies. To the best of my knowledge, you can disable all cookies for this website without in any way reducing the functionality for you.
 
-I have set the [Hugo configuration options](https://gohugo.io/about/hugo-and-gdpr/#disable-all-services) to "Disable All Services.""
+I have set the [Hugo configuration options](https://gohugo.io/about/hugo-and-gdpr/#disable-all-services) to "Disable All Services" so that your IP address is anonymised within Google Analytics and the "Do Not Track" request is respected.
 
 ## Sharing of your personal information
 

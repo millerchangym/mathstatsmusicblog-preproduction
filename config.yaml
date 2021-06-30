@@ -65,6 +65,7 @@ privacy:
   disqus:
     disable: true
   googleAnalytics:
+    anonymizeIP: true
     disable: true
   instagram:
     disable: true
