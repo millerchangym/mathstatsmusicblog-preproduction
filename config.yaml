@@ -66,7 +66,9 @@ privacy:
     disable: true
   googleAnalytics:
     anonymizeIP: true
-    disable: true
+    disable: false
+    respectDoNotTrack: true
+    useSessionStorage: false
   instagram:
     disable: true
   twitter:
