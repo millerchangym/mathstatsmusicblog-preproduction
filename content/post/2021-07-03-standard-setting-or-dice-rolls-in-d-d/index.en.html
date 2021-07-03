@@ -1,0 +1,196 @@
+---
+title: 'Dungeons & Dragons, and Monte Carlo Simulation: Standard Setting or Dice Rolls?'
+author: Yeng Miller-Chang
+date: '2021-07-03'
+slug: standard-setting-or-dice-rolls-in-d-d
+tags:
+  - dnd
+  - probability
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>Last week, I joined a <a href="https://dnd.wizards.com/">Dungeons &amp; Dragons</a> (D&amp;D) campaign. For those of you who are not familiar with D&amp;D, part of the process is that each player will create their own character who will have abilities and <a href="https://roll20.net/compendium/dnd5e/Ability%20Scores#content">ability scores</a> attributed to each ability. As quoted from the link:</p>
+<blockquote>
+<p>Strength, measuring physical power</p>
+<p>Dexterity, measuring agility</p>
+<p>Constitution, measuring endurance</p>
+<p>Intelligence, measuring reasoning and memory</p>
+<p>Wisdom, measuring Perception and Insight</p>
+<p>Charisma, measuring force of Personality</p>
+</blockquote>
+<p>In the D&amp;D campaign I am in, one can choose from two ways to allocate ability scores to a character:</p>
+<ul>
+<li>The <strong>standard set</strong>, which allows one to choose from the numbers 15, 14, 13, 12, 11, and 10 and assign each of them them to an ability above. Because I would like this to be applicable to a wider audience, I will call the sum of these values <span class="math inline">\(s\)</span>. (In this particular example, <span class="math inline">\(s = 75\)</span>, but <span class="math inline">\(s\)</span> can be whatever your sum results from your campaign’s standard set.)</li>
+<li>What I will call the <strong>rolling mechanism</strong>: one rolls four six-sided (once for each ability score) dice, re-rolling all dice which result in a one until they are no longer ones, and then takes the highest three dice values. Repeat this process six times to generate six ability scores, and then assign each of them to an ability above.</li>
+</ul>
+<p>A friend brought to mind the following problem: is it optimal to choose the standard set or rolling mechanism? First, we have to consider what “optimal” means in this situation: I will define it as generating six values <span class="math inline">\(Y_1, \dots, Y_6\)</span> from the rolling mechanism so that their sum exceeds <span class="math inline">\(s\)</span>, i.e.,
+<span class="math display">\[\sum_{i=1}^{6}Y_i &gt; s\text{.}\]</span>
+What I am particularly interested in is finding the probability that this would occur.</p>
+</div>
+<div id="monte-carlo-simulation" class="section level2">
+<h2>Monte Carlo Simulation</h2>
+<p>Rather than diving right into the math, it is informative to get some idea of an approximate solution with a Monte Carlo Simulation. In R 4.0.3, I simulated <span class="math inline">\(N\)</span> sets (<span class="math inline">\(N\)</span> large) of six such values 30 times using the code below, and calculated the proportion of them that exceeded <span class="math inline">\(s\)</span>.</p>
+<p>Warning: if you try to run this code yourself, expect it to take about a half hour. I saved the output as an RDS file so that I would not have to run it again.</p>
+<pre class="r"><code># assign a seed
+set.seed(45)
+
+# generate a 10 x k matrix to hold the percentages
+# each row index * 10000 = number of simulations
+# each number of simulations will have k proportions
+
+k &lt;- 30 # number of proportions
+begin_sim &lt;- 10000
+end_sim &lt;- 30000
+spacing &lt;- 10000
+n_rows &lt;- (end_sim - begin_sim)/spacing + 1
+
+props &lt;- matrix(rep(seq(begin_sim, end_sim, spacing), each = k), 
+                nrow = n_rows, ncol = k,
+                byrow = TRUE)
+rm(begin_sim, end_sim, spacing, n_rows, k)
+
+dd_sim &lt;- function(n_sim, s) {
+  
+  total &lt;- numeric(length = n_sim)
+  
+  # for each simulation
+  for (i in 1:n_sim) {
+    
+    # gather ability scores
+    ability_scores &lt;- numeric(length = 6)
+    
+    # for each of the six values
+    for (j in 1:6) {
+      # roll four dice (uniform assumption over 6 values)
+      x &lt;- sample.int(n = 6, size = 4, prob = rep(1/6, 6))
+      
+      # while any of the dice are 1
+      while (any(x == 1)) {
+        # gather the dice that are equal to 1, and re-roll
+        x[x == 1] &lt;- sample.int(n = 6, size = length(x[x == 1]), 
+                                prob = rep(1/6, 6)) 
+      }
+      
+      # take the maximum three values (drop the smallest value)
+      y &lt;- sort(x)[-1]
+      
+      # and then sum them
+      ability_scores[j] &lt;- sum(y)
+      rm(y)
+    }
+    rm(j)
+    
+    # sum ability scores for the total
+    total[i] &lt;- sum(ability_scores)
+    rm(ability_scores)
+    
+  }
+  
+  # percentage of those exceeding s
+  mean(total &gt; s)
+}
+
+out &lt;- apply(props, MARGIN = c(1, 2), FUN = dd_sim, s = 75)
+saveRDS(out, file = &quot;proportions.rds&quot;, compress = FALSE)
+rm(out, props, dd_sim)</code></pre>
+<p>Let’s see what the simulation suggests. We ran the simulation for 10000, 20000, and 30000 trials.</p>
+<pre class="r"><code>out &lt;- readRDS(&quot;proportions.rds&quot;)
+rowMeans(out)</code></pre>
+<pre><code>## [1] 0.9405567 0.9401767 0.9402878</code></pre>
+<p>So on average, dice rolls are optimal about 94% of the time when we have a large number of simulations. How stable are the estimates?</p>
+<pre class="r"><code>apply(X = out, MARGIN = 1, FUN = sd)</code></pre>
+<pre><code>## [1] 0.002194772 0.001507781 0.001288811</code></pre>
+<p>Neither of these standard deviations are particularly huge, so we have reason to believe that the estimates are relatively stable.</p>
+<p>Thus, <strong>we conclude that rolling dice are optimal under the sum definition, occurring about 94% of the time.</strong></p>
+</div>
+<div id="monte-carlo-simulation-a-slight-modification" class="section level2">
+<h2>Monte Carlo Simulation: A Slight Modification</h2>
+<p>After the initial simulation was proposed, my friend also suggested changing the optimum criteria to include having at least two of the <span class="math inline">\(Y_1, \dots, Y_5\)</span> being greater than or equal to <span class="math inline">\(15\)</span>. We execute this simulation below:</p>
+<pre class="r"><code># assign a seed
+set.seed(45)
+
+# generate a 10 x k matrix to hold the percentages
+# each row index * 10000 = number of simulations
+# each number of simulations will have k proportions
+
+k &lt;- 30 # number of proportions
+begin_sim &lt;- 10000
+end_sim &lt;- 30000
+spacing &lt;- 10000
+n_rows &lt;- (end_sim - begin_sim)/spacing + 1
+
+props &lt;- matrix(rep(seq(begin_sim, end_sim, spacing), each = k), 
+                nrow = n_rows, ncol = k,
+                byrow = TRUE)
+rm(begin_sim, end_sim, spacing, n_rows, k)
+
+dd_sim_v2 &lt;- function(n_sim, s) {
+  
+  total &lt;- numeric(length = n_sim)
+  geq_15 &lt;- numeric(length = n_sim)
+  
+  # for each simulation
+  for (i in 1:n_sim) {
+    
+    # gather ability scores
+    ability_scores &lt;- numeric(length = 6)
+    
+    # for each of the six values
+    for (j in 1:6) {
+      # roll four dice (uniform assumption over 6 values)
+      x &lt;- sample.int(n = 6, size = 4, prob = rep(1/6, 6))
+      
+      # while any of the dice are 1
+      while (any(x == 1)) {
+        # gather the dice that are equal to 1, and re-roll
+        x[x == 1] &lt;- sample.int(n = 6, size = length(x[x == 1]), 
+                                prob = rep(1/6, 6)) 
+      }
+      
+      # take the maximum three values (drop the smallest value)
+      y &lt;- sort(x)[-1]
+      
+      # and then sum them
+      ability_scores[j] &lt;- sum(y)
+      rm(y)
+    }
+    rm(j)
+    
+    # add indicator for having at least two scores
+    # greater than or equal to 15
+    geq_15[i] &lt;- ifelse(length(ability_scores[ability_scores &gt;= 15]) &gt;= 2,
+                        TRUE,
+                        FALSE)
+    
+    # sum ability scores for the total
+    total[i] &lt;- sum(ability_scores)
+    rm(ability_scores)
+    
+  }
+  
+  # percentage of those exceeding s and satisfying the score condition
+  mean(total &gt; s &amp; geq_15)
+}
+
+out &lt;- apply(props, MARGIN = c(1, 2), FUN = dd_sim_v2, s = 75)
+saveRDS(out, file = &quot;proportions_v2.rds&quot;, compress = FALSE)
+rm(out, props, dd_sim_v2)</code></pre>
+<p>As in the prior simulation, we ran this simulation for 10000, 20000, and 30000 trials.</p>
+<pre class="r"><code>out &lt;- readRDS(&quot;proportions_v2.rds&quot;)
+rowMeans(out)</code></pre>
+<pre><code>## [1] 0.7160600 0.7167967 0.7174000</code></pre>
+<p>So on average, dice rolls are optimal about 71.6% of the time when we have a large number of simulations. How stable are the estimates?</p>
+<pre class="r"><code>apply(X = out, MARGIN = 1, FUN = sd)</code></pre>
+<pre><code>## [1] 0.004761237 0.003106859 0.001886634</code></pre>
+<p>Neither of these standard deviations are particularly huge, so we have reason to believe that the estimates are relatively stable.</p>
+<p>Thus, <strong>we conclude that rolling dice are optimal under the sum and having at least two of the <span class="math inline">\(Y_i\)</span> being <span class="math inline">\(\geq\)</span> 15 definition, occurring about 71.6% of the time.</strong></p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>I consider myself risk-averse and I chose the standard set instead of rolling. I probably should have rolled; oh well.</p>
+<p>This problem is an excellent application of Monte Carlo methods, due to the nature of the rolling mechanism. I don’t have the theoretical background to try to tackle this all using probability, though I suspect that a strong background in probability and combinatorics could probably lead to exact solutions for both of these situations.</p>
+</div>

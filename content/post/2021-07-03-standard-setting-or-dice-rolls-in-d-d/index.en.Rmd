@@ -1,0 +1,217 @@
+---
+title: 'Dungeons & Dragons, and Monte Carlo Simulation: Standard Setting or Dice Rolls?'
+author: Yeng Miller-Chang
+date: '2021-07-03'
+slug: standard-setting-or-dice-rolls-in-d-d
+tags:
+  - dnd
+  - probability
+---
+
+## Background
+
+Last week, I joined a [Dungeons & Dragons](https://dnd.wizards.com/) (D&D) campaign. For those of you who are not familiar with D&D, part of the process is that each player will create their own character who will have abilities and [ability scores](https://roll20.net/compendium/dnd5e/Ability%20Scores#content) attributed to each ability. As quoted from the link:
+
+> Strength, measuring physical power
+> 
+> Dexterity, measuring agility
+> 
+> Constitution, measuring endurance
+> 
+> Intelligence, measuring reasoning and memory
+> 
+> Wisdom, measuring Perception and Insight
+> 
+> Charisma, measuring force of Personality
+
+In the D&D campaign I am in, one can choose from two ways to allocate ability scores to a character:
+
+* The **standard set**, which allows one to choose from the numbers 15, 14, 13, 12, 11, and 10 and assign each of them them to an ability above. Because I would like this to be applicable to a wider audience, I will call the sum of these values $s$. (In this particular example, $s = 75$, but $s$ can be whatever your sum results from your campaign's standard set.)
+* What I will call the **rolling mechanism**: one rolls four six-sided (once for each ability score) dice, re-rolling all dice which result in a one until they are no longer ones, and then takes the highest three dice values. Repeat this process six times to generate six ability scores, and then assign each of them to an ability above.
+
+A friend brought to mind the following problem: is it optimal to choose the standard set or rolling mechanism? First, we have to consider what "optimal" means in this situation: I will define it as generating six values $Y_1, \dots, Y_6$ from the rolling mechanism so that their sum exceeds $s$, i.e.,
+$$\sum_{i=1}^{6}Y_i > s\text{.}$$
+What I am particularly interested in is finding the probability that this would occur.
+
+## Monte Carlo Simulation
+
+Rather than diving right into the math, it is informative to get some idea of an approximate solution with a Monte Carlo Simulation. In R 4.0.3, I simulated $N$ sets ($N$ large) of six such values 30 times using the code below, and calculated the proportion of them that exceeded $s$. 
+
+Warning: if you try to run this code yourself, expect it to take about a half hour. I saved the output as an RDS file so that I would not have to run it again.
+
+```{r eval=FALSE}
+# assign a seed
+set.seed(45)
+
+# generate a 10 x k matrix to hold the percentages
+# each row index * 10000 = number of simulations
+# each number of simulations will have k proportions
+
+k <- 30 # number of proportions
+begin_sim <- 10000
+end_sim <- 30000
+spacing <- 10000
+n_rows <- (end_sim - begin_sim)/spacing + 1
+
+props <- matrix(rep(seq(begin_sim, end_sim, spacing), each = k), 
+                nrow = n_rows, ncol = k,
+                byrow = TRUE)
+rm(begin_sim, end_sim, spacing, n_rows, k)
+
+dd_sim <- function(n_sim, s) {
+  
+  total <- numeric(length = n_sim)
+  
+  # for each simulation
+  for (i in 1:n_sim) {
+    
+    # gather ability scores
+    ability_scores <- numeric(length = 6)
+    
+    # for each of the six values
+    for (j in 1:6) {
+      # roll four dice (uniform assumption over 6 values)
+      x <- sample.int(n = 6, size = 4, prob = rep(1/6, 6))
+      
+      # while any of the dice are 1
+      while (any(x == 1)) {
+        # gather the dice that are equal to 1, and re-roll
+        x[x == 1] <- sample.int(n = 6, size = length(x[x == 1]), 
+                                prob = rep(1/6, 6)) 
+      }
+      
+      # take the maximum three values (drop the smallest value)
+      y <- sort(x)[-1]
+      
+      # and then sum them
+      ability_scores[j] <- sum(y)
+      rm(y)
+    }
+    rm(j)
+    
+    # sum ability scores for the total
+    total[i] <- sum(ability_scores)
+    rm(ability_scores)
+    
+  }
+  
+  # percentage of those exceeding s
+  mean(total > s)
+}
+
+out <- apply(props, MARGIN = c(1, 2), FUN = dd_sim, s = 75)
+saveRDS(out, file = "proportions.rds", compress = FALSE)
+rm(out, props, dd_sim)
+```
+
+Let's see what the simulation suggests. We ran the simulation for 10000, 20000, and 30000 trials. 
+
+```{r}
+out <- readRDS("proportions.rds")
+rowMeans(out)
+```
+So on average, dice rolls are optimal about 94% of the time when we have a large number of simulations. How stable are the estimates?
+
+```{r}
+apply(X = out, MARGIN = 1, FUN = sd)
+```
+Neither of these standard deviations are particularly huge, so we have reason to believe that the estimates are relatively stable.
+
+Thus, **we conclude that rolling dice are optimal under the sum definition, occurring about 94% of the time.**
+
+## Monte Carlo Simulation: A Slight Modification
+
+After the initial simulation was proposed, my friend also suggested changing the optimum criteria to include having at least two of the $Y_1, \dots, Y_5$ being greater than or equal to $15$. We execute this simulation below:
+
+```{r eval=FALSE}
+# assign a seed
+set.seed(45)
+
+# generate a 10 x k matrix to hold the percentages
+# each row index * 10000 = number of simulations
+# each number of simulations will have k proportions
+
+k <- 30 # number of proportions
+begin_sim <- 10000
+end_sim <- 30000
+spacing <- 10000
+n_rows <- (end_sim - begin_sim)/spacing + 1
+
+props <- matrix(rep(seq(begin_sim, end_sim, spacing), each = k), 
+                nrow = n_rows, ncol = k,
+                byrow = TRUE)
+rm(begin_sim, end_sim, spacing, n_rows, k)
+
+dd_sim_v2 <- function(n_sim, s) {
+  
+  total <- numeric(length = n_sim)
+  geq_15 <- numeric(length = n_sim)
+  
+  # for each simulation
+  for (i in 1:n_sim) {
+    
+    # gather ability scores
+    ability_scores <- numeric(length = 6)
+    
+    # for each of the six values
+    for (j in 1:6) {
+      # roll four dice (uniform assumption over 6 values)
+      x <- sample.int(n = 6, size = 4, prob = rep(1/6, 6))
+      
+      # while any of the dice are 1
+      while (any(x == 1)) {
+        # gather the dice that are equal to 1, and re-roll
+        x[x == 1] <- sample.int(n = 6, size = length(x[x == 1]), 
+                                prob = rep(1/6, 6)) 
+      }
+      
+      # take the maximum three values (drop the smallest value)
+      y <- sort(x)[-1]
+      
+      # and then sum them
+      ability_scores[j] <- sum(y)
+      rm(y)
+    }
+    rm(j)
+    
+    # add indicator for having at least two scores
+    # greater than or equal to 15
+    geq_15[i] <- ifelse(length(ability_scores[ability_scores >= 15]) >= 2,
+                        TRUE,
+                        FALSE)
+    
+    # sum ability scores for the total
+    total[i] <- sum(ability_scores)
+    rm(ability_scores)
+    
+  }
+  
+  # percentage of those exceeding s and satisfying the score condition
+  mean(total > s & geq_15)
+}
+
+out <- apply(props, MARGIN = c(1, 2), FUN = dd_sim_v2, s = 75)
+saveRDS(out, file = "proportions_v2.rds", compress = FALSE)
+rm(out, props, dd_sim_v2)
+```
+
+As in the prior simulation, we ran this simulation for 10000, 20000, and 30000 trials. 
+
+```{r}
+out <- readRDS("proportions_v2.rds")
+rowMeans(out)
+```
+So on average, dice rolls are optimal about 71.6% of the time when we have a large number of simulations. How stable are the estimates?
+
+```{r}
+apply(X = out, MARGIN = 1, FUN = sd)
+```
+Neither of these standard deviations are particularly huge, so we have reason to believe that the estimates are relatively stable.
+
+Thus, **we conclude that rolling dice are optimal under the sum and having at least two of the $Y_i$ being $\geq$ 15 definition, occurring about 71.6% of the time.**
+
+## Conclusion
+
+I consider myself risk-averse and I chose the standard set instead of rolling. I probably should have rolled; oh well.
+
+This problem is an excellent application of Monte Carlo methods, due to the nature of the rolling mechanism. I don't have the theoretical background to try to tackle this all using probability, though I suspect that a strong background in probability and combinatorics could probably lead to exact solutions for both of these situations.
