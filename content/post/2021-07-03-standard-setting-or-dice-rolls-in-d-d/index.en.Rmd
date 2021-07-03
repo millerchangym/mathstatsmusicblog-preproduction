@@ -28,7 +28,7 @@ Last week, I joined a [Dungeons & Dragons](https://dnd.wizards.com/) (D&D) campa
 
 In the D&D campaign I am in, one can choose from two ways to allocate ability scores to a character:
 
-* The **standard set**, which allows one to choose from the numbers 15, 14, 13, 12, 11, and 10 and assign each of them them to an ability above. Because I would like this to be applicable to a wider audience, I will call the sum of these values $s$. (In this particular example, $s = 75$, but $s$ can be whatever your sum results from your campaign's standard set.)
+* The **standard set**, which allows one to choose from the numbers 15, 14, 13, 12, 11, and 10 and assign each of them to an ability above. Because I would like this to be applicable to a wider audience, I will call the sum of these values $s$. (In this particular example, $s = 75$, but $s$ can be whatever your sum results from your campaign's standard set.)
 * What I will call the **rolling mechanism**: one rolls four six-sided (once for each ability score) dice, re-rolling all dice which result in a one until they are no longer ones, and then takes the highest three dice values. Repeat this process six times to generate six ability scores, and then assign each of them to an ability above.
 
 A friend brought to mind the following problem: is it optimal to choose the standard set or rolling mechanism? First, we have to consider what "optimal" means in this situation: I will define it as generating six values $Y_1, \dots, Y_6$ from the rolling mechanism so that their sum exceeds $s$, i.e.,
