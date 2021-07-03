@@ -214,4 +214,4 @@ Thus, **we conclude that rolling dice are optimal under the sum and having at le
 
 I consider myself risk-averse and I chose the standard set instead of rolling. I probably should have rolled; oh well.
 
-This problem is an excellent application of Monte Carlo methods, due to the nature of the rolling mechanism. I don't have the theoretical background to try to tackle this all using probability, though I suspect that a strong background in probability and combinatorics could probably lead to exact solutions for both of these situations.
+This problem is an excellent application of Monte Carlo methods, due to the nature of the rolling mechanism. I don't have the theoretical background to try to tackle this all using probability (nor am I sure if this is even possible), though I suspect that a strong background in both probability and combinatorics could probably lead to exact solutions for both of these simulations.
