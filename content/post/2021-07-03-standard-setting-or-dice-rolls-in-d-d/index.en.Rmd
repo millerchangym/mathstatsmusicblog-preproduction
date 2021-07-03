@@ -1,5 +1,5 @@
 ---
-title: 'Dungeons & Dragons, and Monte Carlo Simulation: Standard Setting or Dice Rolls?'
+title: 'Dungeons & Dragons, and Monte Carlo Simulation: Standard Set or Dice Rolls?'
 author: Yeng Miller-Chang
 date: '2021-07-03'
 slug: standard-setting-or-dice-rolls-in-d-d
