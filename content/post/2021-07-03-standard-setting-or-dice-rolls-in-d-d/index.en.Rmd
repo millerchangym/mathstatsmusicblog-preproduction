@@ -8,6 +8,8 @@ tags:
   - probability
 ---
 
+*Views and opinions expressed are solely my own.*
+
 ## Background
 
 Last week, I joined a [Dungeons & Dragons](https://dnd.wizards.com/) (D&D) campaign. For those of you who are not familiar with D&D, part of the process is that each player will create their own character who will have abilities and [ability scores](https://roll20.net/compendium/dnd5e/Ability%20Scores#content) attributed to each ability. As quoted from the link:
