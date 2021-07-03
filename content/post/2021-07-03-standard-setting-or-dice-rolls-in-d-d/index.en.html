@@ -29,7 +29,7 @@ tags:
 </ul>
 <p>A friend brought to mind the following problem: is it optimal to choose the standard set or rolling mechanism? First, we have to consider what “optimal” means in this situation: I will define it as generating six values <span class="math inline">\(Y_1, \dots, Y_6\)</span> from the rolling mechanism so that their sum exceeds <span class="math inline">\(s\)</span>, i.e.,
 <span class="math display">\[\sum_{i=1}^{6}Y_i &gt; s\text{.}\]</span>
-What I am particularly interested in is finding the probability that this would occur.</p>
+What I am particularly interested in is finding the probability that this would occur. Ideally, it should be larger than 50%.</p>
 </div>
 <div id="monte-carlo-simulation" class="section level2">
 <h2>Monte Carlo Simulation</h2>
@@ -109,7 +109,7 @@ rowMeans(out)</code></pre>
 </div>
 <div id="monte-carlo-simulation-a-slight-modification" class="section level2">
 <h2>Monte Carlo Simulation: A Slight Modification</h2>
-<p>After the initial simulation was proposed, my friend also suggested changing the optimum criteria to include having at least two of the <span class="math inline">\(Y_1, \dots, Y_5\)</span> being greater than or equal to <span class="math inline">\(15\)</span>. We execute this simulation below:</p>
+<p>After the initial simulation was proposed, my friend also suggested changing the optimal criteria to include having at least two of the <span class="math inline">\(Y_1, \dots, Y_5\)</span> being greater than or equal to <span class="math inline">\(15\)</span>. We execute this simulation below:</p>
 <pre class="r"><code># assign a seed
 set.seed(45)
 

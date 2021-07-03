@@ -31,7 +31,7 @@ In the D&D campaign I am in, one can choose from two ways to allocate ability sc
 
 A friend brought to mind the following problem: is it optimal to choose the standard set or rolling mechanism? First, we have to consider what "optimal" means in this situation: I will define it as generating six values $Y_1, \dots, Y_6$ from the rolling mechanism so that their sum exceeds $s$, i.e.,
 $$\sum_{i=1}^{6}Y_i > s\text{.}$$
-What I am particularly interested in is finding the probability that this would occur.
+What I am particularly interested in is finding the probability that this would occur. Ideally, it should be larger than 50%.
 
 ## Monte Carlo Simulation
 
@@ -121,7 +121,7 @@ Thus, **we conclude that rolling dice are optimal under the sum definition, occu
 
 ## Monte Carlo Simulation: A Slight Modification
 
-After the initial simulation was proposed, my friend also suggested changing the optimum criteria to include having at least two of the $Y_1, \dots, Y_5$ being greater than or equal to $15$. We execute this simulation below:
+After the initial simulation was proposed, my friend also suggested changing the optimal criteria to include having at least two of the $Y_1, \dots, Y_5$ being greater than or equal to $15$. We execute this simulation below:
 
 ```{r eval=FALSE}
 # assign a seed
