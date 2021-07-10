@@ -1,0 +1,60 @@
+---
+title: 'Some Proposals for Statistical Education'
+author: Yeng Miller-Chang
+date: '2021-07-09'
+slug: some-proposals-for-statistical-education
+categories: []
+tags:
+  - statistics
+  - education
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>I hold a bachelor’s degree in mathematics (with a statistics emphasis) and a master’s degree in statistics. Statistical education, on its own, is insufficient to address modern data needs. The American Statistical Association recognized a <a href="https://www.amstat.org/ASA/News/Statistics-at-a-Crossroads-Recommendations-Are-Released.aspx">similar sentiment in 2019</a> in their executive summary of the report <em>Statistics at a Crossroads: Who Is for the Challenge?</em>:</p>
+<blockquote>
+<p>The field of Statistics is at a crossroads: we either flourish by embracing and leading Data Science or we decline and become irrelevant. In the long run, to thrive, we must redefine, broaden, and transform the field of Statistics. We must evolve and grow to be the transdisciplinary science that collects and extracts useful information from data. With the fast establishment of various Data Science entities across campuses, industry, and government, there is a limited time window of opportunity for a successful transformation that we must not miss. We must effect this change now by reimagining our educational programs, rethinking faculty hiring and promotion, and accelerating the cultural change that is required.</p>
+</blockquote>
+<p>The intent of this post is to propose solutions to some of these issues.</p>
+</div>
+<div id="proposal-1-stop-emphasizing-the-normal-distribution." class="section level2">
+<h2>Proposal 1: Stop emphasizing the normal distribution.</h2>
+<p>Every introductory statistics course and mathematical statistics course (requiring calculus) I have seen at the undergraduate level spends an inordinate amount of time on the normal distribution and its properties. Having served as a teaching assistant and tutor for such classes in the past, students are often left with the impression that normal distributions are realistic models for most real-world data. This is an obvious falsehood.</p>
+<p>What is not pointed out in statistics courses is that normal distributions are a <strong>construct of mathematical convenience</strong> not rooted in reality. For example:</p>
+<ul>
+<li>Normal distributions have an equal mean, median, and mode. Real-world populations of data should not be expected to behave this way, and reasonably do not.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
+<li>Independent normal distributions follow nice <a href="https://www.statlect.com/probability-distributions/normal-distribution-linear-combinations">linearity properties</a>. One should not expect the same for real-world data.</li>
+<li>Normal distributions arise as a consequence of the Central Limit Theorem. I will expand on this idea later in this post.</li>
+</ul>
+<p>Statistics courses should emphasize exploratory data analysis techniques and visualizations of data, moreso than properties of the normal distribution.</p>
+</div>
+<div id="proposal-2-stop-emphasizing-the-central-limit-theorem." class="section level2">
+<h2>Proposal 2: Stop emphasizing the Central Limit Theorem.</h2>
+<p>The Central Limit Theorem (CLT) is a beautiful result in probability that makes very little sense to apply in practice, but is taught and applied <em>ad nauseam</em> both inside and the classroom, whether indirectly or directly. In attempting to minimize the technical jargon, to summarize the CLT:</p>
+<blockquote>
+<p>Suppose we have a random sample <span class="math inline">\(X_1, \dots, X_n\)</span> taken from a population with a finite mean <span class="math inline">\(\mu\)</span> and finite standard deviation <span class="math inline">\(\sigma\)</span>. Then, as the sample size <span class="math inline">\(n\)</span> approaches infinity, if <span class="math inline">\(\overline{X}_n = \dfrac{1}{n}\sum_{i=1}^{n}X_i\)</span> is the sample average, the quantity
+<span class="math display">\[\dfrac{\overline{X}_n - \mu}{\sigma/\sqrt{n}}\]</span>
+approximates a normal distribution with mean <span class="math inline">\(0\)</span> and standard deviation <span class="math inline">\(1\)</span>.</p>
+</blockquote>
+<p>What is important to note about the above statement of the CLT is what it <em>doesn’t</em> tell us, more specifically that the CLT only applies as the sample size approaches infinity. Of course, it is unrealistic to expect that one can obtain an infinite sample size. In most undergraduate-level statistics classes, rules of thumb such as “<span class="math inline">\(n \geq 30\)</span>” or “<span class="math inline">\(np \geq 5\)</span> and <span class="math inline">\(n(1-p) \geq 5\)</span>” are approximations to infinity. But there is no justification that these rules of thumb are actually sufficient estimates for infinity.</p>
+<p>Statistics courses generally could use more coverage in permutation testing, Monte Carlo simulation, and nonparametric alternatives such as bootstrapping.</p>
+</div>
+<div id="proposal-3-teach-statistics-with-a-programming-language." class="section level2">
+<h2>Proposal 3: Teach statistics with a programming language.</h2>
+<p>Statistics cannot be done at a reasonable scale in practice with a handheld calculator. Over the course of my statistical education, basic tools that I use on a daily basis – such as dialects of SQL – were never even <em>mentioned</em> in the classroom. I am of the opinion that sometime in the future, statistics courses at the undergraduate level will either (1) require a computer-science prerequisite or (2) teach basic computer science alongside the statistics. University of California, Berkeley has already figured out the second scenario with their <a href="https://data.berkeley.edu/education/courses/data-8">Data 8</a> course, a data course in Python requiring no prerequisites.</p>
+<p>With the way many degree programs are currently structured, statistics at the undergraduate level is the math requirement for graduation, and computer science is often not included in general education requirements, often only being required for STEM degrees. Whether a student is in a STEM field or not – especially in marketing or in the social sciences – some computer science (usually about a semester) is necessary to get them to use data tools for tasks such as day-to-day reporting at scale, or research.</p>
+</div>
+<div id="conclusions" class="section level2">
+<h2>Conclusions</h2>
+<p>Statistics will “decline and become irrelevant” if the education doesn’t resemble what is done in practice. Mathematically-convenient structures, such as the normal distribution and the Central Limit Theorem, should not be given the prominence they are given in statistical education. Whether a student is studying STEM or not, statistics in practice requires fundamental computer science skills.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>I once had someone ask me why the mean of a data set isn’t equal to the median of that same data set.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
