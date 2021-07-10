@@ -29,7 +29,7 @@ What is not pointed out in statistics courses is that normal distributions are a
 * Independent normal distributions follow nice [linearity properties](https://www.statlect.com/probability-distributions/normal-distribution-linear-combinations). One should not expect the same for real-world data.
 * Normal distributions arise as a consequence of the Central Limit Theorem. I will expand on this idea later in this post.
 
-Statistics courses should emphasize exploratory data analysis techniques and visualizations of data, moreso than properties of the normal distribution.
+Statistics courses should emphasize exploratory data analysis techniques and visualizations of data more often than properties of the normal distribution.
 
 ## Proposal 2: Stop emphasizing the Central Limit Theorem.
 
