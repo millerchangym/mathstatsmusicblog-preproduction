@@ -37,7 +37,7 @@ The Central Limit Theorem (CLT) is a beautiful result in probability that makes 
 
 > Suppose we have a random sample $X_1, \dots, X_n$ taken from a population with a finite mean $\mu$ and finite standard deviation $\sigma$. Then, as the sample size $n$ approaches infinity, if $\overline{X}_n = \dfrac{1}{n}\sum_{i=1}^{n}X_i$ is the sample average, the quantity
 $$\dfrac{\overline{X}_n - \mu}{\sigma/\sqrt{n}}$$
-approximates a normal distribution with mean $0$ and standard deviation $1$.
+is normally distributed with mean $0$ and standard deviation $1$.
 
 What is important to note about the above statement of the CLT is what it *doesn't* tell us, more specifically that the CLT only applies as the sample size approaches infinity. Of course, it is unrealistic to expect that one can obtain an infinite sample size. In most undergraduate-level statistics classes, rules of thumb such as "$n \geq 30$" or "$np \geq 5$ and $n(1-p) \geq 5$" are approximations to infinity. But there is no justification that these rules of thumb are actually sufficient estimates for infinity. 
 
