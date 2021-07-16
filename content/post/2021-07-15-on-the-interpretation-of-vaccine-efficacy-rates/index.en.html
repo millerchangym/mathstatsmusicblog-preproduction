@@ -1,0 +1,78 @@
+---
+title: On the Interpretation of Vaccine Efficacy Rates
+author: Yeng Miller-Chang
+date: '2021-07-15'
+slug: on-the-interpretation-of-vaccine-efficacy-rates
+tags:
+  - statistics
+  - covid-19
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>With COVID-19 vaccines now being widely available in the U.S., I’ve seen various interpretations of vaccine efficacy rates. As one example, <a href="https://www.nejm.org/doi/full/10.1056/nejmoa2034577">the paper</a> disseminating the study on the efficacy of BioNTech and Pfizer’s vaccine BNT162b2 states in its results section:</p>
+<blockquote>
+<p>BNT162b2 was 95% effective in preventing Covid-19</p>
+</blockquote>
+<p>The intent of this post is to clarify the interpretations of such numbers.</p>
+</div>
+<div id="calculation-of-the-point-estimate" class="section level2">
+<h2>Calculation of the Point Estimate</h2>
+<p>The 95% figure is explained in the following sentence in the linked study:</p>
+<blockquote>
+<p>Vaccine efficacy was estimated by 100×(1−IRR), where IRR is the calculated ratio of confirmed cases of Covid-19 illness per 1000 person-years of follow-up in the active vaccine group to the corresponding illness rate in the placebo group.</p>
+</blockquote>
+<p>These data can be found in Table S4 in the <a href="https://www.nejm.org/doi/suppl/10.1056/NEJMoa2034577/suppl_file/nejmoa2034577_appendix.pdf">Supplementary Appendix</a> of the study. We refer to the top row of this table for this 95% figure:</p>
+<p><img src="images/table_s4_row1.PNG" /></p>
+<p>From the <a href="https://www.cdc.gov/csels/dsepd/ss1978/lesson3/section6.html">CDC’s website</a>,<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> VE, or vaccine efficacy, may be calculated by the formula</p>
+<p><span class="math display">\[\begin{align*}
+\text{VE} &amp;= 1 - \text{Risk Ratio} \\
+&amp;= 1 - \dfrac{\text{% who have a confirmed case of COVID-19, of the vaccinated group}}{\text{% who have a confirmed case of COVID-19, of the placebo group}}\text{.}
+\end{align*}\]</span>
+These percentages may be calculated using the n1 and the n2 numbers. Thus,
+<span class="math display">\[\begin{align*}
+\text{VE} = 1 - \dfrac{8/17411}{162/17511}
+\end{align*}\]</span>
+which in R, calculates to</p>
+<pre class="r"><code>1-(8/17411)/(162/17511)</code></pre>
+<pre><code>## [1] 0.9503337</code></pre>
+<p>matching the 95% vaccine efficacy rate.</p>
+</div>
+<div id="interpretation-of-the-efficacy-rate" class="section level2">
+<h2>Interpretation of the Efficacy Rate</h2>
+<p>One can see from the above that what 95% efficacy refers to is <strong>not</strong> that 5% of people in the study who obtain the BioNTech/Pfizer vaccine were infected with COVID-19, a common misinterpretation I’ve observed.</p>
+<p>To correct this interpretation, we first convert the vaccine efficacy to the corresponding risk ratio</p>
+<pre class="r"><code>(8/17411)/(162/17511)</code></pre>
+<pre><code>## [1] 0.04966635</code></pre>
+<p>which is approximately 5%. The risk ratio is a ratio of proportions, with the units being in terms of the proportion of placebo-group participants who are infected with COVID, because this percentage is in the denominator. Thus, a 95% vaccine efficacy rate may be interpreted as follows:</p>
+<blockquote>
+<p>For every 1% of subjects who were infected with COVID-19 in the placebo group, 0.05% of subjects were infected with COVID-19 in the vaccinated group.</p>
+</blockquote>
+<p>We obtained the 0.05% by virtue of the fact that 0.05 is 5% of 1.</p>
+<p>This result may be explained more generally as follows: suppose the vaccine efficacy is given by <span class="math inline">\(V\)</span> as a decimal number (i.e., the percentage divided by 100). Then the vaccine efficacy may be interpreted as follows:</p>
+<blockquote>
+<p>For every 1% of subjects who were infected with COVID-19 in the placebo group, <span class="math inline">\((1-V)\)</span>% of subjects were infected with COVID-19 in the vaccinated group.</p>
+</blockquote>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>In the case of BioNTech and Pfizer’s vaccine, 95% efficacy means that</p>
+<blockquote>
+<p>For every 1% of subjects who were infected with COVID-19 in the placebo group, 0.05% of subjects were infected with COVID-19 in the vaccinated group.</p>
+</blockquote>
+<p>where 0.05 was obtained from that <span class="math inline">\(1 - 0.95 = 0.05\)</span>. This procedure can be easily extended to other vaccine efficacy rates.</p>
+</div>
+<div id="a-quick-note-negative-vaccine-efficacy" class="section level2">
+<h2>A Quick Note: Negative Vaccine Efficacy</h2>
+<p>Vaccine efficacy is bounded above by 1, but it is possible for vaccine efficacy to be negative. In this case, negative vaccine efficacy would occur when the proportion who have a confirmed case of COVID-19 of the vaccinated group exceeds that of the placebo group. The interpretation given above of the efficacy rate would still apply. However, since <span class="math inline">\(V\)</span> is negative, <span class="math inline">\(1-V\)</span> would exceed <span class="math inline">\(1\)</span>.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>In case this link dies, it is Lesson 3 of <em>Principles of Epidemiology in Public Health Practice</em>, Third Edition (2011 edition).<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
