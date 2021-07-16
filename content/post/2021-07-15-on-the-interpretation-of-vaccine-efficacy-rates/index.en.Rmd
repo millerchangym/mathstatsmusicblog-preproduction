@@ -60,9 +60,9 @@ which is approximately 5%. The risk ratio is a ratio of proportions, with the un
 
 > For every 1% of subjects who were infected with COVID-19 in the placebo group, 0.05% of subjects were infected with COVID-19 in the vaccinated group.
 
-We obtained the 0.05% by virtue of the fact that 0.05 is 5% of 1. 
+We obtained the 0.05% by virtue of the fact that 0.05 is 5% of $1$. 
 
-This result may be explained more generally as follows: suppose the vaccine efficacy is given by $V$ as a decimal number (i.e., the percentage divided by 100). Then the vaccine efficacy may be interpreted as follows:
+This result may be explained more generally as follows: suppose the vaccine efficacy is given by $V$ as a decimal number (i.e., the percentage divided by $100$). Then the vaccine efficacy may be interpreted as follows:
 
 > For every 1% of subjects who were infected with COVID-19 in the placebo group, $(1-V)$% of subjects were infected with COVID-19 in the vaccinated group.
 
@@ -72,8 +72,8 @@ In the case of BioNTech and Pfizer's vaccine, 95% efficacy means that
 
 > For every 1% of subjects who were infected with COVID-19 in the placebo group, 0.05% of subjects were infected with COVID-19 in the vaccinated group.
 
-where 0.05 was obtained from that $1 - 0.95 = 0.05$. This procedure can be easily extended to other vaccine efficacy rates.
+where $0.05$ was obtained from that $1 - 0.95 = 0.05$. This procedure can be easily extended to other vaccine efficacy rates.
 
 ## A Quick Note: Negative Vaccine Efficacy
 
-Vaccine efficacy is bounded above by 1, but it is possible for vaccine efficacy to be negative. In this case, negative vaccine efficacy would occur when the proportion who have a confirmed case of COVID-19 of the vaccinated group exceeds that of the placebo group. The interpretation given above of the efficacy rate would still apply. However, since $V$ is negative, $1-V$ would exceed $1$.
+Vaccine efficacy is bounded above by $1$, but it is possible for vaccine efficacy to be negative. In this case, negative vaccine efficacy would occur when the proportion who have a confirmed case of COVID-19 of the vaccinated group exceeds that of the placebo group. The interpretation given above of the efficacy rate would still apply. However, since $V$ is negative, $1-V$ would exceed $1$.
