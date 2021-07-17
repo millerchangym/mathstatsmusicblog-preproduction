@@ -1,0 +1,229 @@
+---
+title: Everything You Cared to Know about Simple Linear Regression
+author: "Yeng Miller-Chang"
+date: '2021-07-17'
+slug: everything-simple-lin-reg
+categories: []
+tags:
+- statistics
+- linear-regression
+- linear-algebra
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Users of linear regression often assume when performing linear regression, error terms have to be normally distributed and have constant variance for each fixed <span class="math inline">\(x\)</span>-value. While these assumptions are true to some extent, not every aspect of linear regression relies on these two assumptions.</p>
+<p>The aim of this post is to give a (mostly) complete exposition of simple linear regression, carefully only making assumptions where necessary, and providing a summary at the end.</p>
+<p>We show that the justification for fitting a line of best fit through two-dimensional points only requires the assumption that error terms, given a fixed <span class="math inline">\(x\)</span>-value, have a mean of <span class="math inline">\(0\)</span>, with no other assumptions required. With no additional assumptions, we demonstrate that the least-squares estimates of the slope and intercept are unbiased for the corresponding linear model parameters. Lastly, we demonstrate that it is only once we begin discussing variances and hypothesis tests with the least-squares estimates of the slope and intercept that we need heteroskedasticity (constant variance of the error terms) and normality of the error terms.</p>
+<div id="the-underlying-model" class="section level2">
+<h2>The Underlying Model</h2>
+<p>Suppose we have <span class="math inline">\(n\)</span> two-dimensional random variables <span class="math inline">\((X_1, Y_1), \dots, (X_n, Y_n)\)</span>. The assumption underlying linear regression is that the true process,</p>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1X_i + \epsilon_i\]</span></p>
+<p>for <span class="math inline">\(i = 1, \dots, n\)</span>. In other words, we are saying that</p>
+<p><span class="math display">\[\begin{align}
+Y_i &amp;= \beta_0 + \beta_1 X_i + \epsilon_i = \text{intercept } + \text{slope }\cdot X_i + \unicode{x201C}\text{noise/error}\unicode{x201D}\text{.}\tag{1}
+\end{align}\]</span></p>
+<p>Notice that <strong>no assumption of normality of residuals is necessary</strong> at this point.</p>
+<p>It is also worth noting that we are also assuming that <span class="math inline">\(Y_i\)</span> is a linear equation with respect to <span class="math inline">\(X_i\)</span> for each data point, with deviations from the linear equation explainable by “noise.” We also assume that for any particular value of <span class="math inline">\(X_i\)</span>, <span class="math inline">\(\epsilon_i\)</span> (our noise/error) has a mean of <span class="math inline">\(0\)</span> (that is, <span class="math inline">\(\mathbb{E}[\epsilon_i \mid X_i] = 0\)</span>).</p>
+<p>Note also that <strong>most of the time in reality, it is impossible to know if the mechanism described by <span class="math inline">\((1)\)</span> is true</strong> for the mechanism which describes how <span class="math inline">\(Y_i\)</span> corresponds with <span class="math inline">\(X_i\)</span>.</p>
+</div>
+<div id="estimation" class="section level2">
+<h2>Estimation</h2>
+<p>The response variable <span class="math inline">\(Y_i\)</span>, is equal to the equation
+<span class="math display">\[Y_i = \beta_0 + \beta_1X_i + \epsilon_i = f(X_i)\]</span>
+which the notation <span class="math inline">\(f(X_i)\)</span> indicating that <span class="math inline">\(Y_i\)</span> is a function of <span class="math inline">\(X_i\)</span>. We wish to estimate <span class="math inline">\(f(X_i) = \beta_0 + \beta_1X_i + \epsilon_i\)</span>. How do we do it?</p>
+<div id="finding-an-optimal-estimator" class="section level3">
+<h3>Finding an Optimal Estimator</h3>
+<p>Let <span class="math inline">\(\widehat{f}(X_i)\)</span> be our estimate of <span class="math inline">\(f(X_i)\)</span>. One way to estimate <span class="math inline">\(\widehat{f}(X_i)\)</span> would be to find the equation for <span class="math inline">\(\widehat{f}(X_i)\)</span> that would minimize the average squared difference between <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(\widehat{f}(X_i)\)</span>.</p>
+<p>That is, we wish to minimize
+<span class="math display">\[\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2\right\}\text{.}\]</span>
+Observe that this quantity is really difficult to work with: we have a function of two random variables here that we need to find the expectation of. Ideally, instead of working with a two-dimensional distribution, we should try to simplify the above quantity by fixing one of the random variables. Indeed, this is possible through double expectation:
+<span class="math display">\[\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2\right\} = \mathbb{E}\left\{\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\} \right\}\text{.}\]</span>
+Let’s deal with the inner quantity <span class="math inline">\(\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\}\)</span> for now.</p>
+<div id="motivating-a-solution" class="section level4">
+<h4>Motivating a Solution</h4>
+<p>To motivate how to deal with this, assuming <span class="math inline">\(Y_i \mid X_i\)</span> is a continuous random variable with density <span class="math inline">\(f_{Y_i \mid X_i}\)</span>, we have
+<span class="math display">\[\begin{align}
+\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\} = \int_{-\infty}^{\infty}[y_i - \widehat{f}(X_i)]^2f_{Y_i \mid X_i}(y_i \mid X_i)\text{ d}y_i
+\end{align}\]</span>
+Assuming we can interchange the order of differentiation and integration, we can obtain that
+<span class="math display">\[\begin{align}
+\dfrac{\partial}{\partial \widehat f(X_i)}\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\} &amp;=  \int_{-\infty}^{\infty}\dfrac{\partial}{\partial \widehat f(X_i)}[y_i - \widehat{f}(X_i)]^2f_{Y_i \mid X_i}(y_i \mid X_i)\text{ d}y_i \\
+&amp;= \int_{-\infty}^{\infty}-2[y_i - \widehat{f}(X_i)]f_{Y_i \mid X_i}(y_i \mid X_i)\text{ d}y_i
+\end{align}\]</span>
+which is equal to <span class="math inline">\(0\)</span> if (factoring out the <span class="math inline">\(-2\)</span>)
+<span class="math display">\[\int_{-\infty}^{\infty}y_if_{Y_i \mid X_i}(y_i \mid X_i)\text{ d}y_i -\widehat{f}(X_i)\int_{-\infty}^{\infty}f_{Y_i \mid X_i}(y_i \mid X_i)\text{ d}y_i = 0 \]</span>
+or
+<span class="math display">\[\widehat{f}(X_i) = \mathbb{E}[Y_i \mid X_i]\]</span>
+using the fact that <span class="math inline">\(\int_{-\infty}^{\infty}f_{Y_i \mid X_i}(y_i \mid X_i)\text{ d}y_i = 1\)</span>. We have
+<span class="math display">\[\begin{align}
+\dfrac{\partial^2}{\partial [\widehat f(X_i)]^2}\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\} 
+&amp;= \int_{-\infty}^{\infty}2f_{Y_i \mid X_i}(y_i \mid X_i)\text{ d}y_i = 2 &gt; 0
+\end{align}\]</span>
+regardless of what <span class="math inline">\(\widehat f(X_i)\)</span> is, hence <span class="math inline">\(\widehat f(X_i) = \mathbb{E}[Y_i \mid X_i]\)</span> minimizes <span class="math inline">\(\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\}\)</span>.</p>
+</div>
+<div id="a-solution-with-less-restrictive-conditions" class="section level4">
+<h4>A Solution with Less Restrictive Conditions</h4>
+<p>While the solution above motivates the solution well, it is restrictive in that it requires a continuous random variable with density, and allowing the interchange of integration and differentiation. To avoid this problem, let’s start off with the quantity <span class="math inline">\(\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\}\)</span> again. Subtract and add <span class="math inline">\(\mathbb{E}[Y_i \mid X_i]\)</span>:
+<span class="math display">\[\begin{align}
+\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\} &amp;= \mathbb{E}\left\{\left[Y_i - \mathbb{E}[Y_i \mid X_i] + \mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right]^2 \mid X_i\right\}\text{.}
+\end{align}\]</span>
+Let us focus on the part that is squared and expand it:
+<span class="math display">\[\begin{align}
+\left[Y_i - \mathbb{E}[Y_i \mid X_i] + \mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right]^2 = &amp;\left\{Y_i - \mathbb{E}[Y_i \mid X_i]\right\}^2 + \left\{\mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right\}^2 \\
+&amp;+ 2\left\{Y_i - \mathbb{E}[Y_i \mid X_i]\right\}\left\{\mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right\}\text{.}
+\end{align}\]</span></p>
+<p>Now, focusing on the third term on the right, observe <span class="math inline">\(2\left\{\mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right\}\)</span> depends on <span class="math inline">\(X_i\)</span> (and thus would be pulled out of the inner expectation), so we focus on</p>
+<p><span class="math display">\[\mathbb{E}\left\{Y_i - \mathbb{E}[Y_i \mid X_i] \mid X_i\right\} = \mathbb{E}[Y_i \mid X_i] - \mathbb{E}[Y_i \mid X_i] = 0\]</span>
+thus the third term on the right is <span class="math inline">\(0\)</span> when we take its expectation. Thus
+<span class="math display">\[\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\} = \mathbb{E}\left[\left\{Y_i - \mathbb{E}[Y_i \mid X_i]\right\}^2\mid X_i\right] + \mathbb{E}\left[\left\{\mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right\}^2\mid X_i\right] \]</span></p>
+<p>and now, taking the expectation with respect to <span class="math inline">\(X_i\)</span>, by double expectation, we obtain</p>
+<p><span class="math display">\[\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2\right\} = \mathbb{E}\left[\left\{Y_i - \mathbb{E}[Y_i \mid X_i]\right\}^2\right] + \mathbb{E}\left[\left\{\mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right\}^2\right] \]</span></p>
+<p>Observe in the above that in the right-hand side, the only term that depends on <span class="math inline">\(\widehat{f}(X_i)\)</span> is
+<span class="math display">\[\mathbb{E}\left[\left\{\mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right\}^2\right]\text{.}\]</span>
+What we have here is the expectation of a squared quantity, which must be non-negative and thus <span class="math inline">\(\geq 0\)</span>. Thus, the expectation is minimized when
+<span class="math display">\[\left\{\mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right\}^2 = 0\]</span>
+or
+<span class="math display">\[\mathbb{E}[Y_i \mid X_i] = \widehat{f}(X_i)\text{.}\]</span></p>
+</div>
+</div>
+<div id="context-in-linear-regression" class="section level3">
+<h3>Context in Linear Regression</h3>
+<p>What does the fact that <span class="math inline">\(\mathbb{E}[Y_i \mid X_i] = \widehat{f}(X_i)\)</span> mean? This means that since <span class="math inline">\(Y_i = \beta_0 + \beta_1 X_i + \epsilon_i\)</span>, the best estimator for <span class="math inline">\(f(X_i)\)</span> is
+<span class="math display">\[\widehat{f}(X_i) = \mathbb{E}[Y_i \mid X_i] = \mathbb{E}[\beta_0 + \beta_1 X_i + \epsilon_i \mid X_i] = \beta_0 + \beta_1 X_i\]</span>
+using the fact that <span class="math inline">\(\mathbb{E}[\epsilon_i \mid X_i] = 0\)</span>.</p>
+<p>This means, then, that even though the process <span class="math inline">\(Y_i\)</span> is given by a linear equation plus an error/noise term, the best estimate we can come up with for <span class="math inline">\(Y_i\)</span> is the underlying linear equation. We don’t need to worry about trying to incorporate the error/noise term, given the assumptions we’ve made.</p>
+<p>Unfortunately, in reality, we don’t know the values for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> in our estimator <span class="math inline">\(\widehat f(X_i) = \beta_0 + \beta_1 X_i\)</span>. We need to estimate <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> somehow.</p>
+<p>The most popular way to estimate <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> is through least-squares estimation (which can be justified by means of the <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem#Statement">Gauss-Markov Theorem</a>). We wish to find <span class="math inline">\(\widehat\beta_0\)</span> and <span class="math inline">\(\widehat\beta_1\)</span> which minimizes the sum of squared differences between <span class="math inline">\(Y_i\)</span> and our estimated linear equation <span class="math inline">\(\widehat\beta_0 + \widehat\beta_1X_i\)</span>; i.e., we aim to minimize
+<span class="math display">\[L(\widehat\beta_0, \widehat\beta_1) = \sum_{i=1}^{n}[Y_i - (\widehat\beta_0 + \widehat\beta_1X_i)]^2 = \sum_{i=1}^{n}(Y_i - \widehat\beta_0 - \widehat\beta_1X_i)^2\]</span>
+Taking partial derivatives, we obtain
+<span class="math display">\[\begin{align}
+\dfrac{\partial L}{\partial \widehat\beta_0} &amp;= -2\sum_{i=1}^{n}(Y_i - \widehat\beta_0 - \widehat\beta_1X_i)\\
+\dfrac{\partial L}{\partial \widehat\beta_1} &amp;= -2\sum_{i=1}^{n}X_i(Y_i - \widehat\beta_0 - \widehat\beta_1X_i) \\
+\dfrac{\partial^2 L}{\partial \widehat\beta_0^2} &amp;= -2\sum_{i=1}^{n}(-1) = 2n\\
+\dfrac{\partial^2 L}{\partial \widehat\beta_1^2} &amp;= -2\sum_{i=1}^{n}-X_i^2 = 2\sum_{i=1}^{n}X_i^2 \\
+\dfrac{\partial^2 L}{\partial \widehat\beta_0 \widehat\beta_1} &amp;= 0 = \dfrac{\partial^2 L}{\partial \widehat\beta_1 \widehat\beta_0}\\
+\end{align}\]</span>
+The Hessian matrix is given by
+<span class="math display">\[\mathbf{H} = \begin{bmatrix}
+2n &amp; 0 \\
+0 &amp; 2\sum_{i=1}^{n}X_i^2
+\end{bmatrix}\]</span>
+and <span class="math display">\[\det \mathbf{H} = 2n\left(2\sum_{i=1}^{n}X_i^2\right) = 4n\sum_{i=1}^{n}X_i^2 &gt; 0\]</span>
+thus <span class="math inline">\(\mathbf{H}\)</span> is a positive-definite matrix, and whatever solution we get for <span class="math inline">\((\widehat\beta_0, \widehat\beta_1)\)</span> will minimize <span class="math inline">\(L\)</span>. We start by setting the first partial derivatives equal to <span class="math inline">\(0\)</span>:
+<span class="math display">\[\dfrac{\partial L}{\partial \widehat\beta_0} = 0 \implies \sum_{i=1}^{n}(Y_i - \widehat\beta_0 - \widehat\beta_1X_i) = \sum_{i=1}^{n}Y_i - n\widehat\beta_0 - \widehat\beta_1\sum_{i=1}^{n}X_i = 0\]</span>
+thus yielding
+<span class="math display">\[\widehat\beta_0 = \dfrac{\sum_{i=1}^{n}Y_i - \widehat\beta_1\sum_{i=1}^{n}X_i }{n}\tag{2}\]</span>
+and
+<span class="math display">\[\dfrac{\partial L}{\partial \widehat\beta_1} = 0 \implies \sum_{i=1}^{n}X_i(Y_i - \widehat\beta_0 - \widehat\beta_1X_i) = \sum_{i=1}^{n}X_iY_i-\widehat\beta_0\sum_{i=1}^{n}X_i-\widehat\beta_1\sum_{i=1}^{n}X_i^2\]</span>
+thus yielding
+<span class="math display">\[\widehat\beta_1 = \dfrac{\sum_{i=1}^{n}X_iY_i-\widehat\beta_0\sum_{i=1}^{n}X_i}{\sum_{i=1}^{n}X_i^2}\text{.}\tag{3}\]</span>
+However, we’ve written <span class="math inline">\(\widehat\beta_0\)</span> in terms of <span class="math inline">\(\widehat\beta_1\)</span>, and vice versa. We thus substitute <span class="math inline">\((3)\)</span> into <span class="math inline">\((2)\)</span> and attempt to combine like terms:
+<span class="math display">\[\begin{align}
+&amp;\widehat\beta_0 = \dfrac{\sum_{i=1}^{n}Y_i - \left(\dfrac{\sum_{i=1}^{n}X_iY_i-\widehat\beta_0\sum_{i=1}^{n}X_i}{\sum_{i=1}^{n}X_i^2}\right)\sum_{i=1}^{n}X_i }{n}\\
+&amp;\implies \widehat\beta_0 = \dfrac{\sum_{i=1}^{n}Y_i}{n} - \dfrac{\sum_{i=1}^{n}X_iY_i \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2}+\widehat\beta_0\cdot \dfrac{\left(\sum_{i=1}^{n}X_i\right)^2}{n\sum_{i=1}^{n}X_i^2} \\
+&amp;\implies \left[1 - \dfrac{\left(\sum_{i=1}^{n}X_i\right)^2}{n\sum_{i=1}^{n}X_i^2}\right]\widehat\beta_0 = \dfrac{\sum_{i=1}^{n}Y_i}{n} - \dfrac{\sum_{i=1}^{n}X_iY_i \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2} \\
+&amp;\implies \left[\dfrac{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2}{n\sum_{i=1}^{n}X_i^2}\right]\widehat\beta_0 = \dfrac{\sum_{i=1}^{n}Y_i}{n} - \dfrac{\sum_{i=1}^{n}X_iY_i \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2} \\
+&amp;\implies \left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2\right]\widehat\beta_0 = \sum_{i=1}^{n}Y_i \cdot \sum_{i=1}^{n}X_i^2 - \sum_{i=1}^{n}X_iY_i \cdot \sum_{i=1}^{n}X_i \\
+&amp;\implies \widehat\beta_0 = \dfrac{\sum_{i=1}^{n}Y_i \cdot \sum_{i=1}^{n}X_i^2 - \sum_{i=1}^{n}X_iY_i \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2}
+\end{align}\]</span>
+and using <span class="math inline">\((2)\)</span> to obtain <span class="math inline">\(\widehat\beta_1\)</span>:
+<span class="math display">\[\widehat\beta_0 = \dfrac{\sum_{i=1}^{n}Y_i}{n} - \widehat\beta_1 \cdot \dfrac{\sum_{i=1}^{n}X_i}{n} = \overline{Y}_n - \widehat\beta_1\overline{X}_n \implies \widehat\beta_1 = \dfrac{\overline{Y}_n - \widehat\beta_0}{\overline{X}_n}\text{.}\tag{3}\]</span></p>
+</div>
+</div>
+<div id="bias-of-estimators" class="section level2">
+<h2>Bias of Estimators</h2>
+<p>With <span class="math inline">\(\mathbf{X} = (X_1, \dots, X_n)\)</span> fixed (or in the language of probability, “conditioned on” <span class="math inline">\(X_1, \dots, X_n\)</span>), observe that
+<span class="math display">\[\begin{align}
+\mathbb{E}\left[\widehat\beta_0 \mid \mathbf{X}\right] &amp;= \dfrac{\sum_{i=1}^{n}X_i^2 \cdot \sum_{i=1}^{n}\mathbb{E}\left[Y_i \mid \mathbf{X}\right]  - \sum_{i=1}^{n}X_i\mathbb{E}\left[Y_i \mid \mathbf{X}\right] \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \\
+&amp;= \dfrac{\sum_{i=1}^{n}X_i^2 \cdot \sum_{i=1}^{n}\mathbb{E}\left[Y_i \mid X_i\right]  - \sum_{i=1}^{n}X_i\mathbb{E}\left[Y_i \mid X_i\right] \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \\
+&amp;= \dfrac{\sum_{i=1}^{n}X_i^2 \cdot \sum_{i=1}^{n}(\beta_0 + \beta_1X_i) - \sum_{i=1}^{n}X_i(\beta_0 + \beta_1X_i) \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \\
+&amp;= \dfrac{\sum_{i=1}^{n}X_i^2 \cdot (n\beta_0 + \beta_1\sum_{i=1}^{n}X_i) - \left(\beta_0\sum_{i=1}^{n}X_i + \beta_1\sum_{i=1}^{n}X_i^2\right) \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \\
+&amp;= \dfrac{n\beta_0\sum_{i=1}^{n}X_i^2 + \beta_1\sum_{i=1}^{n}X_i \cdot \sum_{i=1}^{n}X_i^2 - \beta_0\left(\sum_{i=1}^{n}X_i\right)^2 - \beta_1\sum_{i=1}^{n}X_i^2 \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \\
+&amp;= \dfrac{n\beta_0\sum_{i=1}^{n}X_i^2 - \beta_0\left(\sum_{i=1}^{n}X_i\right)^2}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \\
+&amp;= \beta_0\left[\dfrac{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \right] \\
+&amp;= \beta_0\text{.}
+\end{align}\]</span>
+Thus, conditioned on <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(\widehat\beta_0\)</span> is an unbiased estimator for <span class="math inline">\(\beta_0\)</span>. We can also observe that by <span class="math inline">\((3)\)</span> that
+<span class="math display">\[\begin{align}
+\mathbb{E}\left[\widehat\beta_1 \mid \mathbf{X}\right] = \dfrac{\mathbb{E}\left[\overline{Y}_n \mid \mathbf{X}\right] - \mathbb{E}\left[\widehat\beta_0 \mid \mathbf{X}\right]}{\overline{X}_n}\text{.}
+\end{align}\]</span>
+Now
+<span class="math display">\[\mathbb{E}\left[\overline{Y}_n \mid \mathbf{X}\right] = \dfrac{1}{n}\sum_{i=1}^{n}\mathbb{E}\left[Y_i \mid X_i \right] = \dfrac{1}{n}\sum_{i=1}^{n}(\beta_0 + \beta_1 X_i) = \beta_0 + \beta_1\overline{X}_n\]</span>
+thus
+<span class="math display">\[\begin{align}
+\mathbb{E}\left[\widehat\beta_1 \mid \mathbf{X}\right] = \dfrac{\mathbb{E}\left[\overline{Y}_n \mid \mathbf{X}\right] - \mathbb{E}\left[\widehat\beta_0 \mid \mathbf{X}\right]}{\overline{X}_n} = \dfrac{\beta_0 + \beta_1\overline{X}_n - \beta_0}{\overline{X}_n} = \beta_1
+\end{align}\]</span>
+showing that conditioned on <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(\widehat\beta_1\)</span> is unbiased for <span class="math inline">\(\beta_1\)</span>.</p>
+</div>
+<div id="variance-of-estimators" class="section level2">
+<h2>Variance of Estimators</h2>
+<p>Here, we make the assumption that in <span class="math inline">\((1)\)</span> that conditioned on <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(\epsilon_i\)</span> are independent with <span class="math inline">\(\text{Var}\left[\epsilon_i\mid X_i\right] = \sigma^2 &gt; 0\)</span>. It follows easily that assuming <span class="math inline">\(\beta_0, \beta_1\)</span> are constants that, conditioned on <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(Y_1, \dots, Y_n\)</span> are independent with
+<span class="math display">\[\text{Var}\left[Y_i \mid X_i\right] = \sigma^2\tag{4}\]</span>
+as well. Following very similar steps to what we did for computing <span class="math inline">\(\mathbb{E}\left[\widehat\beta_0 \mid \mathbf{X}\right]\)</span>, we obtain
+<span class="math display">\[\begin{align}
+\text{Var}\left[\widehat\beta_0 \mid \mathbf{X}\right] &amp;= \dfrac{\left(\sum_{i=1}^{n}X_i^2\right)^2 \cdot \sum_{i=1}^{n}\text{Var}\left[Y_i \mid \mathbf{X}\right]  - \left(\sum_{i=1}^{n}X_i\right)^2\sum_{i=1}^{n}X_i^2\text{Var}\left[Y_i \mid \mathbf{X}\right]}{\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2\right]^2} \\
+&amp;= \dfrac{\left(\sum_{i=1}^{n}X_i^2\right)^2 \cdot \sum_{i=1}^{n}\text{Var}\left[Y_i \mid X_i\right]  - \left(\sum_{i=1}^{n}X_i\right)^2\sum_{i=1}^{n}X_i^2\text{Var}\left[Y_i \mid X_i\right]}{\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2\right]^2} \\
+&amp;= \dfrac{\left(\sum_{i=1}^{n}X_i^2\right)^2 \cdot n\sigma^2  - \left(\sum_{i=1}^{n}X_i\right)^2\sum_{i=1}^{n}X_i^2\sigma^2}{\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2\right]^2} \\
+&amp;= \sigma^2 \cdot \dfrac{n\left(\sum_{i=1}^{n}X_i^2\right)^2  - \left(\sum_{i=1}^{n}X_i\right)^2\sum_{i=1}^{n}X_i^2}{\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2\right]^2}\tag{5}
+\end{align}\]</span>
+and
+<span class="math display">\[\begin{align}
+\text{Var}\left[\widehat\beta_1 \mid \mathbf{X} \right] &amp;= \dfrac{\text{Var}\left[\overline{Y}_n \mid \mathbf{X} \right] +  \text{Var}\left[\widehat\beta_0 \mid \mathbf{X} \right] - 2 \cdot \text{Cov}(\overline{Y}_n, \widehat\beta_0 \mid \mathbf{X})}{\overline{X}_n^2} \\
+&amp;= \dfrac{\sigma^2/n +  \text{Var}\left[\widehat\beta_0 \mid \mathbf{X} \right] - 2 \cdot \text{Cov}(\overline{Y}_n, \widehat\beta_0 \mid \mathbf{X})}{\overline{X}_n^2}\text{.}
+\end{align}\]</span>
+Now
+<span class="math display">\[\begin{align}
+\text{Cov}(\overline{Y}_n, \widehat\beta_0 \mid \mathbf{X}) &amp;= \text{Cov}\left(\dfrac{1}{n}\sum_{i=1}^{n}Y_i, \dfrac{\sum_{i=1}^{n}Y_i \cdot \sum_{i=1}^{n}X_i^2 - \sum_{i=1}^{n}X_iY_i \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \mid \mathbf{X}\right) \\
+&amp;= \dfrac{\text{Cov}\left(\sum_{i=1}^{n}Y_i, \sum_{i=1}^{n}Y_i \cdot \sum_{i=1}^{n}X_i^2 - \sum_{i=1}^{n}X_iY_i \cdot \sum_{i=1}^{n}X_i \mid \mathbf{X}\right)}{n\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2 \right]} \\
+&amp;= \dfrac{\sum_{i=1}^{n}X_i^2 \cdot \text{Cov}\left(\sum_{i=1}^{n}Y_i, \sum_{i=1}^{n}Y_i \mid \mathbf{X}\right) - \sum_{i=1}^{n}X_i \cdot \text{Cov}\left(\sum_{i=1}^{n}Y_i,\sum_{i=1}^{n}X_iY_i \mid \mathbf{X}\right)}{n\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2 \right]} \\
+&amp;= \dfrac{\sum_{i=1}^{n}X_i^2 \cdot \text{Cov}\left(\sum_{i=1}^{n}Y_i, \sum_{j=1}^{n}Y_j \mid \mathbf{X}\right) - \sum_{i=1}^{n}X_i \cdot \text{Cov}\left(\sum_{i=1}^{n}Y_i,\sum_{j=1}^{n}X_jY_j \mid \mathbf{X}\right)}{n\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2 \right]} \\
+&amp;= \dfrac{\sum_{i=1}^{n}X_i^2 \cdot \sum_{i=1}^{n}\sum_{j=1}^{n}\text{Cov}\left(Y_i, Y_j \mid \mathbf{X}\right) - \sum_{i=1}^{n}X_i \cdot \sum_{i=1}^{n}\sum_{j=1}^{n}\text{Cov}\left(Y_i,X_jY_j \mid \mathbf{X}\right)}{n\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2 \right]} \\
+&amp;= \dfrac{\sum_{i=1}^{n}X_i^2 \cdot n\sigma^2 - \sigma^2\left(\sum_{i=1}^{n}X_i\right)^2}{n\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2 \right]} \\
+&amp;= \sigma^2 \cdot \dfrac{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2}{n\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2 \right]} \\
+&amp;= \dfrac{\sigma^2}{n}
+\end{align}\]</span>
+thus
+<span class="math display">\[\text{Var}\left[\widehat\beta_1 \mid \mathbf{X} \right] = \dfrac{\text{Var}\left[\widehat\beta_0 \mid \mathbf{X} \right] - \sigma^2/n}{\overline{X}_n^2}\tag{6}\]</span>
+where <span class="math inline">\(\text{Var}\left[\widehat\beta_0 \mid \mathbf{X} \right]\)</span> is computed as in <span class="math inline">\((5)\)</span>.</p>
+</div>
+<div id="statistical-inference-on-estimators" class="section level2">
+<h2>Statistical Inference on Estimators</h2>
+<p>Let us assume now that <span class="math inline">\(\epsilon_i\)</span> is normally distributed for each <span class="math inline">\(i = 1, 2, \dots, n\)</span>. Then,
+<span class="math display">\[\begin{align*}
+\widehat\beta_0 &amp;= \dfrac{\sum_{j=1}^{n}Y_j \cdot \sum_{i=1}^{n}X_i^2 - \sum_{j=1}^{n}X_jY_j \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \\
+&amp;= \dfrac{\left(n\beta_0 + \beta_1\sum_{j=1}^{n}X_i + \sum_{j=1}^{n}\epsilon_j\right) \cdot \sum_{i=1}^{n}X_i^2 - \sum_{j=1}^{n}X_j\left(\beta_0 + \beta_1X_j + \epsilon_j\right) \cdot \sum_{i=1}^{n}X_i}{n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2} \\
+&amp;= C\left[\text{a bunch of stuff} + \left(\sum_{i=1}^{n}X_i^2 \right)\sum_{j=1}^{n}\epsilon_j - \sum_{i=1}^{n}X_i\left(\sum_{j=1}^{n}X_j\epsilon_j \right)\right] \\
+&amp;= C\left[\text{a bunch of stuff} + \sum_{j=1}^{n}\left(\sum_{i=1}^{n}X_i^2 - X_j\sum_{k=1}^{n}X_k \right)\epsilon_j \right]
+\end{align*}\]</span>
+where <span class="math inline">\(C\)</span> is a placeholder constant (assuming <span class="math inline">\(\mathbf{X}\)</span> fixed). Thus, we have demonstrated that conditioned on <span class="math inline">\(\mathbf{X}\)</span>, <span class="math inline">\(\widehat\beta_0\)</span> is normally distributed since it is a linear combination of <span class="math inline">\(\epsilon_i\)</span> plus a constant, hence
+<span class="math display">\[\widehat\beta_0 \mid \mathbf{X} \sim \mathcal{N}\left(\beta_0, \sigma^2 \cdot \dfrac{n\left(\sum_{i=1}^{n}X_i^2\right)^2  - \left(\sum_{i=1}^{n}X_i\right)^2\sum_{i=1}^{n}X_i^2}{\left[n\sum_{i=1}^{n}X_i^2 - \left(\sum_{i=1}^{n}X_i\right)^2\right]^2} \right)\text{.}\]</span>
+Next, using the fact that
+<span class="math display">\[\widehat{\beta}_1 = \dfrac{\overline{Y}_n - \widehat\beta_0}{\overline{X}_n}\]</span>
+we obtain
+<span class="math display">\[\begin{align}
+\widehat{\beta}_1 &amp;= \dfrac{\beta_0 + \beta_1\overline{X}_n + \frac{1}{n}\sum_{j=1}^{n}\epsilon_j - C\left[\text{a bunch of stuff} + \sum_{j=1}^{n}\left(\sum_{i=1}^{n}X_i^2 - X_j\sum_{k=1}^{n}X_k \right)\epsilon_j \right]}{\overline{X}_n} \\
+&amp;= C^{\prime}\left[\text{a bunch of other stuff} + \sum_{j=1}^{n}\left(\dfrac{1}{n} - C\sum_{i=1}^{n}X_i^2 + CX_j\sum_{k=1}^{n}X_k\right)\epsilon_j   \right]
+\end{align}\]</span>
+which is another linear combination of <span class="math inline">\(\epsilon_i\)</span> plus a constant, hence
+<span class="math display">\[\widehat{\beta}_1 \mid \mathbf{X} \sim \mathcal{N}\left(\beta_1, \dfrac{\text{Var}\left[\widehat\beta_0 \mid \mathbf{X} \right] - \sigma^2/n}{\overline{X}_n^2}\right)\text{.}\]</span></p>
+<p>With these results in hand, we may construct confidence intervals and perform hypothesis tests for <span class="math inline">\(\beta_0 \mid \mathbf{X}\)</span> and <span class="math inline">\(\beta_1 \mid \mathbf{X}\)</span>.</p>
+</div>
+<div id="theoretical-conclusions" class="section level2">
+<h2>Theoretical Conclusions</h2>
+<ul>
+<li>The true process that is assumed is that <span class="math inline">\(Y_i = \beta_0 + \beta_1 X_i + \epsilon_i\)</span>, with <span class="math inline">\(\mathbb{E}\left[\epsilon_i \mid X_i\right] = 0\)</span>.</li>
+<li>Based on expected squared differences between <span class="math inline">\(Y_i\)</span> and a given function we can use to estimate <span class="math inline">\(Y_i\)</span> dependent only on <span class="math inline">\(X_i\)</span>, the optimal choice is <span class="math inline">\(\mathbb{E}[Y_i \mid X_i] = \beta_0 + \beta_1 X_i\)</span>.</li>
+<li>Finding corresponding coefficients for a linear equation that best fits a set of points is our attempt to estimate <span class="math inline">\(\mathbb{E}[Y_i \mid X_i]\)</span>.</li>
+<li>The <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem#Statement">Gauss-Markov Theorem</a> provides rationale as to why least-squares estimators for the coefficients are the “best” estimators to use.</li>
+<li>The least-squares estimators of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are unbiased, conditioned on <span class="math inline">\(X_1, \dots, X_n\)</span> fixed.</li>
+<li>The heteroskedasticity assumption that <span class="math inline">\(\text{Var}[\epsilon_i \mid X_i]= \sigma^2 &gt; 0\)</span> and independence of <span class="math inline">\(\epsilon_1, \dots, \epsilon_n\)</span> given <span class="math inline">\(\mathbf{X}\)</span> is only necessary for computation of the variances of the least-squares estimators of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>.</li>
+<li>Independence of <span class="math inline">\(\epsilon_1, \dots, \epsilon_n\)</span> given <span class="math inline">\(\mathbf{X}\)</span> implies independence of <span class="math inline">\(Y_1, \dots, Y_n\)</span> given <span class="math inline">\(\mathbf{X}\)</span>.</li>
+<li>Hypothesis tests for the least-squares estimators of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> rely on the assumption that <span class="math inline">\(\epsilon_1, \dots, \epsilon_n\)</span> are normally distributed.</li>
+</ul>
+</div>
+<div id="next-steps" class="section level2">
+<h2>Next Steps</h2>
+<p>It is my philosophy that theory needs to drive good practice in statistics. In a future blog post, I will be detailing how these theoretical results have implications for practical analytical issues.</p>
+</div>

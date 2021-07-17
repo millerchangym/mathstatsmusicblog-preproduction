@@ -1,7 +1,7 @@
 ---
 title: Everything You Cared to Know about Simple Linear Regression
 author: "Yeng Miller-Chang"
-date: '2021-06-27'
+date: '2021-07-17'
 slug: everything-simple-lin-reg
 categories: []
 tags:
