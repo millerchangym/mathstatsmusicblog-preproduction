@@ -10,6 +10,8 @@ tags:
 - linear-algebra
 ---
 
+*Views and opinions expressed are solely my own.*
+
 Users of linear regression often assume when performing linear regression, error terms have to be normally distributed and have constant variance for each fixed $x$-value. While these assumptions are true to some extent, not every aspect of linear regression relies on these two assumptions. 
 
 The aim of this post is to give a (mostly) complete exposition of simple linear regression, carefully only making assumptions where necessary, and providing a summary at the end.  
