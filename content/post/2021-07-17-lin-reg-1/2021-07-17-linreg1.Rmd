@@ -20,7 +20,7 @@ We show that the justification for fitting a line of best fit through two-dimens
 
 ## The Underlying Model
 
-Suppose we have $n$ two-dimensional random variables $(X_1, Y_1), \dots, (X_n, Y_n)$. The assumption underlying linear regression is that the true process, 
+Suppose we have $n$ two-dimensional random vectors $(X_1, Y_1), \dots, (X_n, Y_n)$. The assumption underlying linear regression is that the true process, 
 
 $$Y_i = \beta_0 + \beta_1X_i + \epsilon_i$$
 
