@@ -76,7 +76,7 @@ regardless of what $\widehat f(X_i)$ is, hence $\widehat f(X_i) = \mathbb{E}[Y_i
 
 #### A Solution with Less Restrictive Conditions
 
-While the solution above motivates the solution well, it is restrictive in that it requires a continuous random variable with density, and allowing the interchange of integration and differentiation. To avoid this problem, let's start off with the quantity $\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\}$ again. Subtract and add $\mathbb{E}[Y_i \mid X_i]$:
+While the solution above motivates the solution well, it is restrictive in that it requires a continuous random variable with density, and requires allowing the interchange of integration and differentiation. To avoid this problem, let's start off with the quantity $\mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\}$ again. Subtract and add $\mathbb{E}[Y_i \mid X_i]$:
 $$\begin{align}
 \mathbb{E}\left\{\left[Y_i - \widehat{f}(X_i)\right]^2 \mid X_i\right\} &= \mathbb{E}\left\{\left[Y_i - \mathbb{E}[Y_i \mid X_i] + \mathbb{E}[Y_i \mid X_i] - \widehat{f}(X_i)\right]^2 \mid X_i\right\}\text{.}
 \end{align}$$
