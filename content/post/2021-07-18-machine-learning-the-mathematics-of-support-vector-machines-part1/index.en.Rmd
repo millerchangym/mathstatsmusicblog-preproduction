@@ -3,7 +3,7 @@ title: 'Machine Learning: The Mathematics of Support Vector Machines'
 subtitle: 'Part 1: Linearly Separable Case, Formulating the Objective Function'
 author: Yeng Miller-Chang
 date: '2021-07-18'
-slug: machine-learning-the-mathematics-of-support-vector-machines
+slug: SVM-lin-sep-part-1
 tags:
   - machine-learning
 ---
