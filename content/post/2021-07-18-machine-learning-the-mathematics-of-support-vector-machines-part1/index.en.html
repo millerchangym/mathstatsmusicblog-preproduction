@@ -102,8 +102,8 @@ hence the Euclidean distance from <span class="math inline">\(\mathbf{x}\)</span
 \end{align*}\]</span>
 Hence, the perpendicular distances of these two points to any point <span class="math inline">\(\mathbf{x}\)</span> on the decision boundary is given by
 <span class="math display">\[\begin{align*}
-&amp;\dfrac{\mu(\mathbf{x}_{+1})}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{+1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \\
-&amp;\dfrac{\mu(\mathbf{x}_{-1})}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{-1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \text{.}
+&amp;\dfrac{|\mu(\mathbf{x}_{+1})|}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{+1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \\
+&amp;\dfrac{|\mu(\mathbf{x}_{-1})|}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{-1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \text{.}
 \end{align*}\]</span>
 The sum of these two distances, given by <span class="math inline">\(M = \dfrac{2}{\|\boldsymbol\beta\|_2}\)</span>, is called the <strong>margin</strong>. Geometrically, one can think of the margin as the total perpendicular distances from the decision boundary to the closest points (<span class="math inline">\(\mathbf{x}_{+1}\)</span>, <span class="math inline">\(\mathbf{x}_{-1}\)</span>) of each of the states of the binary classifier. These points are known as the <strong>support vectors</strong>.</p>
 <p>The optimization problem with regard to SVMs is

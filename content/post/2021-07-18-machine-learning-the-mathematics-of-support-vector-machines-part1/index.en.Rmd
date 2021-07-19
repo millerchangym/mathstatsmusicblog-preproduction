@@ -108,8 +108,8 @@ Now suppose $\mathbf{x}_{+1}$ and $\mathbf{x}_{-1}$ are the closest points to th
 \end{align*}
 Hence, the perpendicular distances of these two points to any point $\mathbf{x}$ on the decision boundary is given by
 \begin{align*}
-&\dfrac{\mu(\mathbf{x}_{+1})}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{+1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \\
-&\dfrac{\mu(\mathbf{x}_{-1})}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{-1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \text{.}
+&\dfrac{|\mu(\mathbf{x}_{+1})|}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{+1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \\
+&\dfrac{|\mu(\mathbf{x}_{-1})|}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{-1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \text{.}
 \end{align*}
 The sum of these two distances, given by $M = \dfrac{2}{\|\boldsymbol\beta\|_2}$, is called the **margin**. Geometrically, one can think of the margin as the total perpendicular distances from the decision boundary to the closest points ($\mathbf{x}_{+1}$, $\mathbf{x}_{-1}$) of each of the states of the binary classifier. These points are known as the **support vectors**.
 
