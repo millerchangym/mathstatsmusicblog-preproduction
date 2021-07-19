@@ -1,0 +1,129 @@
+---
+title: 'Machine Learning: The Mathematics of Support Vector Machines'
+subtitle: 'Part 1: Linearly Separable Case, Formulating the Objective Function'
+author: Yeng Miller-Chang
+date: '2021-07-18'
+slug: machine-learning-the-mathematics-of-support-vector-machines
+tags:
+  - machine-learning
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The purpose of this post is to discuss the mathematics of support vector machines (SVMs) in detail.</p>
+</div>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>SVMs are a tool for classification. The idea is that we want to find two lines (linear equations) so that a given set of points are linearly separable according to a binary classifier, coded as <span class="math inline">\(\pm 1\)</span>, assuming such lines exist. These lines are given by the black lines given below.</p>
+<pre class="r"><code>library(ggplot2)
+set.seed(45)
+
+plus_1 &lt;- data.frame(x = runif(100, min = -3, max = 3))
+plus_1$y &lt;- plus_1$x + runif(100, min = 1.1, max = 2)
+
+minus_1 &lt;- data.frame(x = runif(100, min = -3, max = 3))
+minus_1$y &lt;- minus_1$x + runif(100, min = -2, max = -1.1)
+
+ggplot() +
+  geom_point(data = plus_1,
+             aes(x = x, y = y),
+             alpha = 0.1) +
+  geom_point(data = minus_1,
+             aes(x = x, y = y),
+             alpha = 0.1) +
+  geom_text(aes(x = 2, y = 3.5, label = &quot;y = 1&quot;),
+            color = &quot;black&quot;) + 
+  stat_function(fun = function(x){ x + 1.142233 }, 
+                color = &quot;black&quot;,
+                linetype = &quot;dashed&quot;) +
+  geom_text(aes(x = 2, y = 2.5, label = &quot;y = 0&quot;),
+            color = &quot;red&quot;) + 
+  stat_function(fun = function(x){ x + 0.0149345 }, 
+                color = &quot;red&quot;) +
+  geom_text(aes(x = 2, y = 1.5, label = &quot;y = -1&quot;),
+            color = &quot;black&quot;) + 
+  stat_function(fun = function(x){ x - 1.112364 }, 
+                color = &quot;black&quot;,
+            linetype = &quot;dashed&quot;) +
+  theme_void() + 
+  scale_x_continuous(limits = c(-3, 3)) +
+  scale_y_continuous(limits = c(-5, 5)) </code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Points at or above the <span class="math inline">\(y = 1\)</span> line are classified as <span class="math inline">\(+1\)</span>, and points at or below the <span class="math inline">\(y = -1\)</span> line are classified as <span class="math inline">\(-1\)</span>. The line labeled “<span class="math inline">\(y = 0\)</span>” is known as the <strong>decision boundary</strong>. The <span class="math inline">\(y = 1\)</span> and <span class="math inline">\(y = -1\)</span> lines are the lines touching the points which are closest to the decision boundary.</p>
+<p>Assuming the lines above all have common parameter vector <span class="math inline">\(\boldsymbol\beta \in \mathbb{R}^p \setminus \{\mathbf{0}\}\)</span> (which we assume only includes the slope-related terms) and intercept term <span class="math inline">\(\beta_0 \in \mathbb{R}\)</span>, we seek the decision boundary following the form of a linear equation: <span class="math inline">\(\boldsymbol\beta^{T}\mathbf{x} + \beta_0\)</span>. At the decision boundary, we assume the classifier is <span class="math inline">\(0\)</span>, hence we assume <span class="math inline">\(\boldsymbol\beta^{T}\mathbf{x} + \beta_0 = 0\)</span> at the decision boundary.</p>
+<p>Let <span class="math inline">\((\mathbf{x}_1, y_1), \dots, (\mathbf{x}_N, y_N)\)</span> denote the training data in <span class="math inline">\(\mathbb{R}^{p} \times \{-1, 1\}\)</span>, with each <span class="math inline">\(y_i \in \{-1, +1\}\)</span> for each <span class="math inline">\(i = 1, \dots, N\)</span>. Let <span class="math inline">\(\omega_{+1}\)</span>, <span class="math inline">\(\omega_{-1}\)</span> denote the subsets of <span class="math inline">\(\mathbb{R}^p\)</span> for which the corresponding classifiers are <span class="math inline">\(+1\)</span> and <span class="math inline">\(-1\)</span> respectively. Then we assume that
+<span class="math display">\[\begin{align*}
+&amp;\boldsymbol\beta^{T}\mathbf{x}_i + \beta_0 \geq 1\text{, }\quad \mathbf{x}_i \in \omega_{+1} \\
+&amp;\boldsymbol\beta^{T}\mathbf{x}_i + \beta_0 \leq -1\text{, }\quad \mathbf{x}_i \in \omega_{-1}
+\end{align*}\]</span>
+Since <span class="math inline">\(y_i \in \{-1, +1\}\)</span>, the above two conditions are equivalent to
+<span class="math display">\[\begin{equation*}
+y_i(\boldsymbol\beta^{T}\mathbf{x}_i + \beta_0) \geq 1\text{, } \quad\mathbf{x}_i \in \mathbb{R}^{p}\text{.}
+\end{equation*}\]</span>
+However, it is worth noting there are infinitely many possible decision boundaries that satisfy these conditions. We have to choose some sort of criteria for optimality.</p>
+</div>
+<div id="an-intermediate-result" class="section level2">
+<h2>An Intermediate Result</h2>
+<p>Consider the decision boundary <span class="math inline">\(\boldsymbol\beta^{T}\mathbf{x} + \beta_0 = 0\)</span> and a point <span class="math inline">\(\mathbf{z} = \begin{bmatrix} z_1 &amp; z_2 &amp; \cdots &amp; z_{p} \end{bmatrix}^{T}\in \mathbb{R}^{p}\)</span>. We aim to calculate the perpendicular distance from <span class="math inline">\(\mathbf{z}\)</span> to <span class="math inline">\(\mathbf{x}\)</span>, given the constraint <span class="math inline">\(\boldsymbol\beta^{T}\mathbf{x} + \beta_0 = 0\)</span>. Consider minimizing the squared Euclidean distance from <span class="math inline">\(\mathbf{x}\)</span> to <span class="math inline">\(\mathbf{z}\)</span> subject to <span class="math inline">\(\mu(\mathbf{x}) = \boldsymbol\beta^{T}\mathbf{x} + \beta_0 = 0\)</span>, by the method of Lagrange multipliers. We work with the function
+<span class="math display">\[\begin{align*}
+L(\mathbf{x}, \lambda) = \sum_{i=1}^{p}(x_i - z_i)^2 + \lambda\left(\beta_1x_1 + \cdots + \beta_px_p + \beta_0\right)\text{.}
+\end{align*}\]</span>
+Then
+<span class="math display">\[\begin{equation*}
+\dfrac{\partial L}{\partial x_i} = 2(x_i - z_i) + \lambda\beta_i = 0 \implies (x_i -z_i)^2 =  \dfrac{\lambda^2\beta_i^2}{4}\text{.}
+\end{equation*}\]</span>
+Because <span class="math inline">\(\beta_1x_1 + \cdots + \beta_px_p + \beta_0 = 0\)</span>, we have that
+<span class="math display">\[\begin{equation*}
+\sum_{i=1}^{p}\left(z_i\beta_i-\dfrac{\lambda\beta_i^2}{2}\right) + \beta_0 = \sum_{i=1}^{p}z_i\beta_i-\dfrac{\lambda}{2}\sum_{j=1}^{p}\beta_j^2 + \beta_0  = 0\text{.}
+\end{equation*}\]</span>
+This implies that
+<span class="math display">\[\begin{equation*}
+\lambda = \dfrac{2}{\sum_{j=1}^{p}\beta_j^2}\left(\beta_0 + \sum_{i=1}^{p}z_i\beta_i\right) = \dfrac{2}{\|\boldsymbol\beta\|^2_2}\mu(\mathbf{z}) \implies \dfrac{\lambda^2\beta_i^2}{4} = \dfrac{[\mu(\mathbf{z})]^2\beta_i^2}{\|\boldsymbol\beta\|_2^4}\text{.}
+\end{equation*}\]</span>
+The squared Euclidean distance is then given by
+<span class="math display">\[\begin{equation*}
+\sum_{i=1}^{p}(x_i - z_i)^2 = \dfrac{[\mu(\mathbf{z})]^2}{\|\boldsymbol\beta\|_2^4}\sum_{i=1}^{p}\beta_i^2 = \dfrac{[\mu(\mathbf{z})]^2\|\boldsymbol\beta\|_2^2}{\|\boldsymbol\beta\|_2^4} = \dfrac{[\mu(\mathbf{z})]^2}{\|\boldsymbol\beta\|_2^2}
+\end{equation*}\]</span>
+hence the Euclidean distance from <span class="math inline">\(\mathbf{x}\)</span> to <span class="math inline">\(\mathbf{z}\)</span> is given by
+<span class="math display">\[\begin{equation*}
+\sqrt{\sum_{i=1}^{p}(x_i - z_i)^2} = \dfrac{|\mu(\mathbf{z})|}{\|\boldsymbol\beta\|_2}\text{.}
+\end{equation*}\]</span></p>
+</div>
+<div id="optimality-in-svms" class="section level2">
+<h2>Optimality in SVMs</h2>
+<p>Now suppose <span class="math inline">\(\mathbf{x}_{+1}\)</span> and <span class="math inline">\(\mathbf{x}_{-1}\)</span> are the closest points to the decision boundary with classifications <span class="math inline">\(+1\)</span> and <span class="math inline">\(-1\)</span> respectively. We obtain that
+<span class="math display">\[\begin{align*}
+&amp;\boldsymbol\beta^{T}\mathbf{x}_{+1} + \beta_0 = 1 \\
+&amp;\boldsymbol\beta^{T}\mathbf{x}_{-1} + \beta_0 = -1\text{.}
+\end{align*}\]</span>
+Hence, the perpendicular distances of these two points to any point <span class="math inline">\(\mathbf{x}\)</span> on the decision boundary is given by
+<span class="math display">\[\begin{align*}
+&amp;d(\mathbf{x}, \mathbf{x}_{+1}) = \dfrac{\mu(\mathbf{x}_{+1})}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{+1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \\
+&amp;d(\mathbf{x}, \mathbf{x}_{-1}) = \dfrac{\mu(\mathbf{x}_{-1})}{\|\boldsymbol\beta\|_2} = \dfrac{|\boldsymbol\beta^{T}\mathbf{x}_{-1} + \beta_0|}{\|\boldsymbol\beta\|_2} = \dfrac{1}{\|\boldsymbol\beta\|_2} \text{.}
+\end{align*}\]</span>
+The sum of these two distances, given by <span class="math inline">\(M = \dfrac{2}{\|\boldsymbol\beta\|_2}\)</span>, is called the <strong>margin</strong>. Geometrically, one can think of the margin as the total perpendicular distances from the decision boundary to the closest points (<span class="math inline">\(\mathbf{x}_{+1}\)</span>, <span class="math inline">\(\mathbf{x}_{-1}\)</span>) of each of the states of the binary classifier. These points are known as the <strong>support vectors</strong>.</p>
+<p>The optimization problem with regard to SVMs is
+<span class="math display">\[\begin{align*}
+&amp;\max \dfrac{2}{\|\boldsymbol\beta\|_2}\\
+&amp;\text{subject to }y_i(\boldsymbol\beta^{T}\mathbf{x}_i + \beta_0) \geq 1\text{, } i = 1, \dots, n\text{.}
+\end{align*}\]</span>
+However, the objective function <span class="math inline">\(\dfrac{2}{\|\boldsymbol\beta\|_2}\)</span> is difficult to work with; instead, we minimize the reciprocal and square the Euclidean norm to avoid having to deal with square roots, leading to the problem
+<span class="math display">\[\begin{align*}
+&amp;\min \dfrac{\|\boldsymbol\beta\|_2^2}{2}\\
+&amp;\text{subject to }y_i(\boldsymbol\beta^{T}\mathbf{x}_i + \beta_0) \geq 1\text{, } i = 1, \dots, n\text{.}
+\end{align*}\]</span>
+Note that this is a convex optimization problem.</p>
+</div>
+<div id="conclusion-and-next-steps" class="section level2">
+<h2>Conclusion and Next Steps</h2>
+<p>In this post, we formulated the SVM problem as a convex optimization problem. In a future post, I will discuss more on conditions guaranteeing a solution to the SVM problem (i.e., the Karush-Kuhn-Tucker conditions).</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Bishop, C. M. (2006). <em>Pattern recognition and machine learning</em>. New York, NY: Springer Science+Business Media.</p>
+<p>Izenman, A. J. (2013). <em>Modern Multivariate Statistical Techniques</em>. New York, NY: Springer Science+Business Media.</p>
+</div>
