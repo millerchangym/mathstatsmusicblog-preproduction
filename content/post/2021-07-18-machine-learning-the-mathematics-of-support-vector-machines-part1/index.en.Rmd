@@ -134,3 +134,5 @@ In this post, we formulated the SVM problem as a convex optimization problem. In
 Bishop, C. M. (2006). *Pattern recognition and machine learning*. New York, NY: Springer Science+Business Media. 
 
 Izenman, A. J. (2013). *Modern Multivariate Statistical Techniques*. New York, NY: Springer Science+Business Media. 
+
+Wilmott, P. (2020). *Machine Learning: An Applied Mathematics Introduction*. Panda Ohana Publishing. 
