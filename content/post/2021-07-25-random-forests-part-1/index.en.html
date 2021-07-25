@@ -1,0 +1,103 @@
+---
+title: Machine Learning - The Mathematics of Decision Trees and Random Forests - Part 1
+author: Yeng Miller-Chang
+date: '2021-07-25'
+slug: random-forests-part-1
+tags:
+  - machine-learning
+subtitle: 'Regression Trees'
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The purpose of this post is to discuss the mathematics of decision trees and random forests. We first begin by discussing regression trees.</p>
+</div>
+<div id="regression-trees" class="section level2">
+<h2>Regression Trees</h2>
+<p>Suppose we have training data <span class="math inline">\((\mathbf{x}_1, y_1), \dots, (\mathbf{x}_n, y_n)\)</span> with <span class="math inline">\(\mathbf{x}_i \in R \subset \mathbb{R}^p\)</span> and <span class="math inline">\(y_i \in \mathbb{R}\)</span>. We call <span class="math inline">\(R\)</span> the <strong>predictor space</strong>. Partition <span class="math inline">\(R\)</span> into (non-overlapping, distinct) regions <span class="math inline">\(R_1, \dots, R_J\)</span> in <span class="math inline">\(\mathbb{R}^p\)</span>. We estimate the response using
+<span class="math display">\[\begin{equation*}
+\hat{f}(\mathbf{x}) = \sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x} \in R_j)
+\end{equation*}\]</span>
+where <span class="math inline">\(c_1, \dots, c_J\)</span> are constants, and <span class="math inline">\(\mathbf{I}\)</span> is the indicator function. That is, in each region, we assign a single predicted value. The loss function we aim to minimize is
+<span class="math display">\[\begin{equation*}
+L(\mathbf{c}) = \sum_{i=1}^{n}\left[y_i - \hat{f}(\mathbf{x}_i) \right]^2 = \sum_{i=1}^{n}\left[y_i - \sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x}_i \in R_j) \right]^2 \text{.}
+\end{equation*}\]</span>
+The partial derivative of <span class="math inline">\(L\)</span> with respect to <span class="math inline">\(c_k\)</span> is given by
+<span class="math display">\[\begin{align*}
+\dfrac{\partial L}{\partial c_k} &amp;= -2\sum_{i=1}^{n}\left[y_i - \sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x}_i \in R_j) \right]\mathbf{I}(\mathbf{x}_i \in R_k) \\
+&amp;= -2\left[\sum_{i=1}^{n}y_i \cdot \mathbf{I}(\mathbf{x}_i \in R_k) - \sum_{i=1}^{n}\sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x}_i \in R_j)\mathbf{I}(\mathbf{x}_i \in R_k)\right] \\
+&amp;= -2\left[\sum_{i=1}^{n}y_i \cdot \mathbf{I}(\mathbf{x}_i \in R_k) - \sum_{i=1}^{n}\sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x}_i \in R_j \cap R_k)\right]\text{.}
+\end{align*}\]</span>
+Now consider the sum
+<span class="math display">\[\begin{equation*}
+\sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x}_i \in R_j \cap R_k)\text{.}
+\end{equation*}\]</span>
+Since the regions <span class="math inline">\(R_1, \dots, R_J\)</span> are non-overlapping, <span class="math inline">\(\mathbf{I}(\mathbf{x}_i \in R_j \cap R_k) = 1\)</span> if and only if <span class="math inline">\(j = k\)</span>, and is <span class="math inline">\(0\)</span> otherwise. Thus
+<span class="math display">\[\begin{equation*}
+\sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x}_i \in R_j \cap R_k) = c_k \cdot \mathbf{I}(\mathbf{x}_i \in R_k \cap R_k) = c_k \cdot \mathbf{I}(\mathbf{x}_i \in R_k)\text{.}
+\end{equation*}\]</span>
+Lastly, the sum
+<span class="math display">\[\begin{equation*}
+\sum_{i=1}^{n}c_k \cdot \mathbf{I}(\mathbf{x}_i \in R_k) = c_k \sum_{i=1}^{n}\mathbf{I}(\mathbf{x}_i \in R_k) = c_kn_k
+\end{equation*}\]</span>
+where <span class="math inline">\(n_k\)</span> is the number of <span class="math inline">\(\mathbf{x}_i\)</span> in region <span class="math inline">\(R_k\)</span>. Hence we have
+<span class="math display">\[\begin{equation*}
+\dfrac{\partial L}{\partial c_k} = -2\left[\sum_{i=1}^{n}y_i \cdot \mathbf{I}(\mathbf{x}_i \in R_k) - c_kn_k\right]\text{.}
+\end{equation*}\]</span>
+Setting the above equal to <span class="math inline">\(0\)</span>, we obtain the optimal solution for <span class="math inline">\(c_k\)</span> is
+<span class="math display">\[\begin{equation*}
+\hat{c}_k = \dfrac{1}{n_k}\sum_{i=1}^{n}y_i \cdot \mathbf{I}(\mathbf{x}_i \in R_k) = \dfrac{1}{n_k}\sum_{\{i: \mathbf{x}_i \in R_k\}}y_i\text{.}
+\end{equation*}\]</span>
+This may be simply summarized as follows: <strong>the best prediction for data in the same region with respect to their <span class="math inline">\(\mathbf{x}_i\)</span> values is the average of their <span class="math inline">\(y_i\)</span> values.</strong></p>
+<div id="construction-of-the-regions-r_1-dots-r_j" class="section level3">
+<h3>Construction of the Regions <span class="math inline">\(R_1, \dots, R_J\)</span></h3>
+<p>For the sake of computation, it is infeasible to make the regions <span class="math inline">\(\{R_j\}_{j=1}^{J}\)</span> arbitrary subsets of <span class="math inline">\(R\)</span>. Thus, we construct these regions using an algorithm known as <strong>recursive binary splitting</strong>, which is a top-down, greedy algorithm; i.e.</p>
+<ul>
+<li>it is <strong>top-down</strong> since it begins with the entirety of the prediction space <span class="math inline">\(R\)</span> and then splits it, and</li>
+<li>it is <strong>greedy</strong> because at each step at which <span class="math inline">\(R\)</span> is split, the best split is made at that particular step.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
+</ul>
+<p>How the algorithm works is as follows: write <span class="math inline">\(R\)</span> as the Cartesian product
+<span class="math display">\[\begin{equation*}
+R = A_1 \times A_2 \times \cdots \times A_p\text{,}
+\end{equation*}\]</span>
+where each <span class="math inline">\(A_j \subset \mathbb{R}\)</span>. Let <span class="math inline">\(s \in \mathbb{R}\)</span>. Then for each <span class="math inline">\(j\)</span>, define the half-planes
+<span class="math display">\[\begin{align*}
+&amp;R_{1}(j, s) = \{R \mid A_j &lt; s\} \\
+&amp;R_{2}(j, s) = \{R \mid A_j \geq s\}
+\end{align*}\]</span>
+in <span class="math inline">\(\mathbb{R}\)</span>. We then seek to find the values of <span class="math inline">\(j\)</span> and <span class="math inline">\(s\)</span> that solve the problem
+<span class="math display">\[\begin{equation*}
+\min_{j, s}\left[\min_{c_1}\sum_{\{i: \mathbf{x}_i \in R_1(j, s)\}}(y_i - c_1)^2 + \min_{c_2}\sum_{\{i: \mathbf{x}_i \in R_2(j, s)\}}(y_i - c_2)^2  \right]\text{.}
+\end{equation*}\]</span>
+Similar to what was shown in the previous section, the optimal value of <span class="math inline">\(c_1\)</span> is the average of <span class="math inline">\(y_i\)</span> whose <span class="math inline">\(\mathbf{x}_i\)</span> are in <span class="math inline">\(R_1(j, s)\)</span>, and the optimal value of <span class="math inline">\(c_2\)</span> is the average of <span class="math inline">\(y_i\)</span> whose <span class="math inline">\(\mathbf{x}_i\)</span> are in <span class="math inline">\(R_2(j, s)\)</span>. Assuming <span class="math inline">\(p\)</span> isn’t too large, we can then find the optimal values for <span class="math inline">\(j\)</span> and <span class="math inline">\(s\)</span> (which can be time consuming).</p>
+<p>After identifying the two regions, we then choose one of those regions to split and repeat this process based on a predictor and a cutpoint and repeat this process until we reach a stopping criterion.</p>
+<p>The reason why we refer to this algorithm as a decision tree is because we have a tree of regions, starting with the predictor space <span class="math inline">\(R\)</span> and then choosing subsets of <span class="math inline">\(R\)</span> appropriately as we go through each step.</p>
+</div>
+<div id="pruning-dealing-with-overfitting" class="section level3">
+<h3>Pruning: dealing with overfitting</h3>
+<p>The procedure described above will likely lead to overfitting because the trees may be extremely complex, making the procedure difficult to generalize to new (test) data. Choose some value <span class="math inline">\(\alpha \geq 0\)</span>. Suppose we have a large tree <span class="math inline">\(T_0\)</span> that we wish to prune (i.e., create fewer regions by collapsing) into a subtree <span class="math inline">\(T \subset T_0\)</span>. Let <span class="math inline">\(|T|\)</span> be the number of terminal nodes (excluding the topmost one of the tree). Then we find <span class="math inline">\(T\)</span> which minimizes
+<span class="math display">\[\begin{equation*}
+\sum_{m=1}^{|T|}\sum_{\{i: \mathbf{x}_i \in R_m\}}(y_i - \hat{c}_m)^2 + \alpha|T|
+\end{equation*}\]</span>
+which, from what can be observed, is a loss function with regularization. If <span class="math inline">\(\alpha = 0\)</span>, we just simply have the original tree <span class="math inline">\(T_0\)</span>.</p>
+</div>
+</div>
+<div id="random-forests-from-regression-trees" class="section level2">
+<h2>Random Forests (from regression trees)</h2>
+<p>Instead of using the training data of size <span class="math inline">\(n\)</span>, one can create <span class="math inline">\(B\)</span> bootstrap samples of size <span class="math inline">\(n\)</span> from the training data, create a regression tree, find an appropriate subtree, and output an ensemble of trees <span class="math inline">\(\{T_b\}_{b=1}^{B}\)</span>. This is called a <strong>random forest</strong>. One may average the predictions coming out of trees of a random forest to yield the random forest predictor for an input <span class="math inline">\(\mathbf{x} \in \mathbb{R}^p\)</span>. Details are laid out in Sections 15.2-15.3 of Hastie, Tibshirani, and Friedman.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Hastie, T., Tisbshirani, R., &amp; Friedman, J. (2009). <em>The Elements of Statistical Learning</em> (2nd ed.). New York, NY: Springer Science+Business Media, LLC.</p>
+<p>James, G., Witten, D., Hastie, T., &amp; Tibshirani, R. (2013). <em>An Introduction to Statistical Learning</em>. New York, NY: Springer Science+Business Media.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>See also Wikipedia’s explanation of <a href="https://en.wikipedia.org/wiki/Greedy_algorithm">greedy algorithms</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
