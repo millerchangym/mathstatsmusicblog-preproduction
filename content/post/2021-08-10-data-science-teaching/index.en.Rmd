@@ -10,7 +10,7 @@ tags:
 
 *Views and opinions expressed are solely my own.*
 
-From Fall 2019 through Spring 2021, I was an adjunct instructor at Normandale Community College, teaching Foundations of Data Science (DSCI 2000). DSCI 2000 is a first-semester course in data science assuming a prerequisite background equivalent to one semester of programming and one semester of non-calculus-based statistics. It was the very first course for which I had been an instructor. The closest experience I had to this was being a grader and a teaching assistant in my undergraduate years. In Fall 2019, DSCI 2000 was in person. In Spring 2020 and afterward, DSCI 2000 was online.
+From Fall 2019 through Spring 2021, I was an adjunct instructor at Normandale Community College, teaching Foundations of Data Science (DSCI 2000). DSCI 2000 is a first-semester course in data science assuming a prerequisite background equivalent to one semester of computer science and one semester of non-calculus-based statistics. It was the very first course for which I had been an instructor. The closest experience I had to this was being a grader and a teaching assistant in my undergraduate years. In Fall 2019, DSCI 2000 was in person. In Spring 2020 and afterward, DSCI 2000 was online.
 
 In this post, I describe the transition from being a data analyst to being an instructor at a higher-ed institution, having never taught before, and strategies for introducing data science. **It is my hope that data science educators can adapt similar curriculum structures in the future to further the progression of data science education.**
 
