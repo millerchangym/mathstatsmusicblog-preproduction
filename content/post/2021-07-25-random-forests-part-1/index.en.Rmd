@@ -16,7 +16,7 @@ The purpose of this post is to discuss the mathematics of decision trees and ran
 
 ## Regression Trees
 
-Suppose we have training data $(\mathbf{x}_1, y_1), \dots, (\mathbf{x}_n, y_n)$ with $\mathbf{x}_i \in R \subset \mathbb{R}^p$ and $y_i \in \mathbb{R}$. We call $R$ the **predictor space**. Partition $R$ into (non-overlapping, distinct) regions $R_1, \dots, R_J$ in $\mathbb{R}^p$. We estimate the response using
+Suppose we have training data $(\mathbf{x}_1, y_1), \dots, (\mathbf{x}_n, y_n)$ with $\mathbf{x}_i \in R \subset \mathbb{R}^p$ and $y_i \in \mathbb{R}$. We call $R$ the **predictor space**. We partition $R$ into (non-overlapping, distinct) regions $R_1, \dots, R_J$ in $\mathbb{R}^p$. We estimate the response using
 \begin{equation*}
 \hat{f}(\mathbf{x}) = \sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x} \in R_j)
 \end{equation*}

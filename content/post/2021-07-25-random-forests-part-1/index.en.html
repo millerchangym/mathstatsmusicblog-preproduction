@@ -18,7 +18,7 @@ subtitle: 'Regression Trees'
 </div>
 <div id="regression-trees" class="section level2">
 <h2>Regression Trees</h2>
-<p>Suppose we have training data <span class="math inline">\((\mathbf{x}_1, y_1), \dots, (\mathbf{x}_n, y_n)\)</span> with <span class="math inline">\(\mathbf{x}_i \in R \subset \mathbb{R}^p\)</span> and <span class="math inline">\(y_i \in \mathbb{R}\)</span>. We call <span class="math inline">\(R\)</span> the <strong>predictor space</strong>. Partition <span class="math inline">\(R\)</span> into (non-overlapping, distinct) regions <span class="math inline">\(R_1, \dots, R_J\)</span> in <span class="math inline">\(\mathbb{R}^p\)</span>. We estimate the response using
+<p>Suppose we have training data <span class="math inline">\((\mathbf{x}_1, y_1), \dots, (\mathbf{x}_n, y_n)\)</span> with <span class="math inline">\(\mathbf{x}_i \in R \subset \mathbb{R}^p\)</span> and <span class="math inline">\(y_i \in \mathbb{R}\)</span>. We call <span class="math inline">\(R\)</span> the <strong>predictor space</strong>. We partition <span class="math inline">\(R\)</span> into (non-overlapping, distinct) regions <span class="math inline">\(R_1, \dots, R_J\)</span> in <span class="math inline">\(\mathbb{R}^p\)</span>. We estimate the response using
 <span class="math display">\[\begin{equation*}
 \hat{f}(\mathbf{x}) = \sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x} \in R_j)
 \end{equation*}\]</span>
