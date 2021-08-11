@@ -1,0 +1,106 @@
+---
+title: 'On Teaching Data Science'
+author: Yeng Miller-Chang
+date: '2021-08-10'
+slug: teaching-ds-at-a-cc
+tags:
+  - data-science
+  - education
+---
+
+*Views and opinions expressed are solely my own.*
+
+From Fall 2019 through Spring 2021, I was an adjunct instructor at Normandale Community College, teaching Foundations of Data Science (DSCI 2000). DSCI 2000 is a first-semester course in data science assuming a prerequisite background equivalent to one semester of programming and one semester of non-calculus-based statistics. It was the very first course for which I had been an instructor. The closest experience I had to this was being a grader and a teaching assistant in my undergraduate years. In Fall 2019, DSCI 2000 was in person. In Spring 2020 and afterward, DSCI 2000 was online.
+
+In this post, I describe the transition from being a data analyst to being an instructor at a higher-ed institution, having never taught before, and strategies for introducing data science. **It is my hope that data science educators can adapt similar curriculum structures in the future to further the progression of data science education.**
+
+None of the ideas presented in this post could have been successful without Cary Komoto, Dean of STEM at Normandale, and Mark Ahrens, Math and Computer Science department chair at Normandale. I am grateful that they gave me the freedom to choose how I wanted to teach my class and have been open to my strong opinions on data science education. 
+
+## Teaching Approach
+
+Upon planning for the class, I had been provided the course learning outcomes and boiled down the class to this main objective:
+
+<center>
+
+*Students need to learn how to use programming to automate data collection, cleansing, visualization, statistical analyses, and reporting.*
+
+</center>
+
+I was very familiar with training others in this content, and of course, I perform these tasks every day in my professional data work. What is particularly remarkable about teaching DSCI 2000 is that students already come in with a programming background already in C, so I don't have to spend too much time covering basic programming concepts (e.g., data types, conditional statements, and loops). 
+
+My primary goal was to take advantage of the programming background these students had, and get them up to speed on industry tools as quickly as possible. **Thus, I opted for a top-down approach, as opposed to a bottom-up approach traditionally used in many STEM classes.** I wanted to make sure that my students were comfortable with the entire data workflow as quickly as possible (from data collection to reporting to version control). If I approached this content with a bottom-up approach and studied each tool in depth, it would be years before students would be comfortable with a basic data workflow.
+
+### Build Good Habits from the Beginning
+
+In the first week of the course, I spent no time on programming, introduced students to the world of data science, and left a lot of time for Q&A. I taught them about proprietary vs. open-source software, data analysis tools, the importance of mathematics in data science, and the data pipeline. 
+
+We spent the second week on software configuration and installation. We went through all of the details of installing the software, setting up an ODBC connection to students' laptops, setting up version control with R, submitting simple code to GitLab. We then proceeded to learn about R, making connections with prior programming knowledge. 
+
+### Industry Tools
+
+In addition, I wanted students to come out of my class to understand the tools used in the industry. While I could spend the entire semester teaching R, only covering R would be a disservice to my students. 
+
+I believe that a difficult concept can seem easier when one tackles a slightly more challenging problem with a little more time. Often, a more complex problem can provide perspective, making what used to appear complicated seem easy. Thus, with the interest of teaching students as many tools as possible in one semester, I decided that I would teach
+
+* Git + GitHub (in Fall 2019) or GitLab (in Spring 2020 and afterward)
+* Data manipulation (R: Base R, dplyr, data.table; T-SQL; Excel; Access; Python: NumPy, pandas)
+* Data visualization (R: ggplot2, Python: matplotlib)
+* Data reporting (R Markdown, Jupyter Notebook)
+* String manipulation, including RegEx (R, Python)
+* Date parsing (R, Python)
+
+all in one semester. This content comprises what would usually be taught over five to six semesters of coursework, all in a single semester. However, the approach to teaching is quite simple: using the assumed programming background, explain how R is similar to C, and show everyday data manipulation tasks in R. Then, perform those same data manipulation tasks in T-SQL, Excel, Access, and Python. Additionally, one reinforces version control principles (except for Excel and Access) and pushes content to GitHub or GitLab. By introducing these topics this way, students don't view the data manipulation tools as independent tools but rather as tools that perform similar tasks. While R remains the primary emphasis of the course, students understand how other tools perform similar tasks as well.
+
+I emphasized the use of best industry practices throughout the semester, such as version control: students submitted all assignments through GitHub (in Fall 2019) or GitLab (in Spring 2020 and afterward). In addition, I wanted students to have the experience of writing actual queries, so I learned how to set up a database in Microsoft Azure for the class.
+
+### No Textbooks
+
+It then became apparent that no textbook or collection of textbooks would suffice to teach the material that I wanted to cover for DSCI 2000. Thus, I spent most of Summer 2019 translating all of the concepts in my head to LaTeX Beamer slides. These notes would serve as the "textbook" for the course at no cost to my students. They would also serve as the official source for any modes of assessment that I provide my students, such as homework or quizzes. I am thankful to every professor in my master's program, as *all* of them approached their courses this way, and while I was a student, having such notes helped me prioritize and find clarity in very dense material.
+
+If my students wanted textbooks, I had a page-long list of books available (mostly free, open-source texts) with the syllabus.
+
+### No Exams
+
+Considering that I covered *at least* four semesters of material in this class, I opted not to give my students any high-pressure, timed exams for DSCI 2000 to focus on learning the tools that I taught them in class. This idea is one I credit to Dr. Karin Dorman, who was my professor for STAT 580 (Statistical Computing) in graduate school. 
+
+To ensure students are keeping up with the material, I provided students four quizzes (30 minutes each) throughout the semester. I provided a study guide of about 20-30 questions; 10 of these questions constituted the actual quiz, and students needed only to answer 7 of them correctly to obtain a 100% on a quiz. I also provided them extra credit questions that do not come from the study guides.
+
+In Fall 2019, quizzes were in person. In Spring 2020, I proctored the first few quizzes but then transitioned to half-hour oral quizzes on Zoom when COVID-19 hit. Over Fall 2020 and Spring 2021, I resorted to half-hour oral quizzes on Zoom throughout the entire semester. I found they were very efficient and required students to focus on their communication skills more than standard paper-and-pencil quizzes.
+
+### Final Project
+
+In Fall 2019, I had students choose a topic of interest, search for their own publicly available data sets, and give an oral and written report (using R Markdown) on their findings. Based on student feedback and to avoid burdening students with having to look for data, I aimed for a different approach in Spring 2020.
+
+In Spring 2020 and afterward, I gave students a simulated job interview via Zoom, consisting of a few behavioral questions (grading based only on participation) and interview questions based on the material they learned in class. I set the expectation for all of the students that I did not expect any of them to answer all of the questions correctly and that I would curve the grades appropriately, and as far as I could tell, this approach was well-received. 
+
+### Real-World Homework Assignments
+
+Homework assignments that I provided the students were representative of things that I have had to do as a professional. They included: 
+
+* **Learning about a new data-science topic on your own**: I provided a list of current-day problems in data science and asked students to write an essay about a problem of their choice, and delivered them my feedback from my experience as a professional. There was no expectation that students would get everything correct about their topic, but it was necessary to teach students how to learn about topics independently. Essay topics included explainable AI, the GDPR, R vs. Python in data science, and the curse of dimensionality.
+
+* **Analyzing jobs in data science**: I had my students go to a website such as LinkedIn and Indeed and asked them to find some job postings that interested them. Then, I had my students analyze the job descriptions based on the material I taught them in class.
+
+* **A data analysis report**: my students submitted an R Markdown report where they documented their steps of a data analysis (reading in a file or database table, tidying up the data, visualizing it, and performing a statistical analysis) through GitHub or GitLab. Topics included actuarial science life tables (Fall 2019), working with daily COVID-19 data from Johns Hopkins University (Spring 2020), correlation of stock data with unemployment rates (Fall 2020), and correlations between multiple stocks (Spring 2021).
+
+### Participation in Contests
+
+In [Fall 2019](https://www.normandale.edu/minnemudac), [Spring 2020](https://www.normandale.edu/dataderby), and [Spring 2021](https://www.normandale.edu/community/newsroom/news-articles/normandale-students-finished-second-in-advanced-division-at-annual-mn-state-it-coe-data-derby), I had teams of students in my courses participate in contests. In particular, during the spring contests, my students placed in contests against teams of students from four-year institutions, some of whom were graduate students. Because of how demanding these contests were, I waived homework and final project requirements for students who participated in them.
+
+
+## Transition to Teaching
+
+From my perspective, the most challenging parts about teaching for the first time was:
+
+* I experienced severe impostor syndrome in a week or two before teaching in my first semester, because I was concerned that my students would not understand me.
+* One of the most significant adjustments for me was shifting my role from student to faculty in a classroom, which took a few weeks of adjustment.
+
+In the time I was teaching, I enjoyed teaching and seeing students grow. A few times, I've had a student ask for feedback on their work, and I would tell them that they are beyond the level I would expect them to be in my class and that they are succeeding at tasks that I have seen professionals struggle to learn.
+
+I will always be thankful that I had excellent students each semester I taught this class. It made the whole experience even more rewarding.
+
+## Conclusion
+
+In my view, none of the ideas presented in this post are novel. Notably, the success of these ideas requires effort on the students' part on the prerequisite programming. 
+
+I sincerely hope that data science curricula can begin to adapt to similar curriculum models, because, as time goes on, students are expected to know more by the time they graduate.
