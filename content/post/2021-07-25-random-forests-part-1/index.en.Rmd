@@ -34,7 +34,7 @@ Now consider the sum
 \begin{equation*}
 \sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x}_i \in R_j \cap R_k)\text{.}
 \end{equation*}
-Since the regions $R_1, \dots, R_J$ are non-overlapping, $\mathbf{I}(\mathbf{x}_i \in R_j \cap R_k) = 0$ if and only if $j \neq k$. Thus
+Since the regions $R_1, \dots, R_J$ are non-overlapping, $\mathbf{I}(\mathbf{x}_i \in R_j \cap R_k) = 0$ when $j \neq k$. Thus
 \begin{equation*}
 \sum_{j=1}^{J}c_j \cdot \mathbf{I}(\mathbf{x}_i \in R_j \cap R_k) = c_k \cdot \mathbf{I}(\mathbf{x}_i \in R_k \cap R_k) = c_k \cdot \mathbf{I}(\mathbf{x}_i \in R_k)\text{.}
 \end{equation*}
