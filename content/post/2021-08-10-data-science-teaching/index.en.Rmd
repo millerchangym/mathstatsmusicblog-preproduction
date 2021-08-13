@@ -26,7 +26,7 @@ Upon planning for the class, I had been provided the course learning outcomes an
 
 </center>
 
-I was very familiar with training others in this content, and of course, I perform these tasks every day in my professional data work. What is particularly remarkable about teaching DSCI 2000 is that students already come in with a programming background already in C, so I don't have to spend too much time covering basic programming concepts (e.g., data types, conditional statements, and loops). 
+I was very familiar with training others in this content, and of course, I perform these tasks every day in my professional data work. What is particularly remarkable about teaching DSCI 2000 is that students already come in with a programming background in C, so I don't have to spend too much time covering basic programming concepts (e.g., data types, conditional statements, and loops). 
 
 My primary goal was to take advantage of the programming background these students had, and get them up to speed on industry tools as quickly as possible. **Thus, I opted for a top-down approach, as opposed to a bottom-up approach traditionally used in many STEM classes.** I wanted to make sure that my students were comfortable with the entire data workflow as quickly as possible (from data collection to reporting to version control). If I approached this content with a bottom-up approach and studied each tool in depth, it would be years before students would be comfortable with a basic data workflow.
 
