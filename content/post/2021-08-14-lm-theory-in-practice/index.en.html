@@ -1,0 +1,190 @@
+---
+title: 'Linear Regression: Theory in Practice'
+author: Yeng Miller-Chang
+date: '2021-08-15'
+slug: lm-theory-in-practice
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In this post, we will be building from the <a href="/post/2021-07-17-lin-reg-1/everything-simple-lin-reg">linear regression theory post</a> and applying these concepts to a practical problem.</p>
+<p>My interest in writing this post is in outlining the complexities of doing a statistical analysis that are often omitted from textbooks, especially for a procedure that may appear to be as simple as fitting a line through points (linear regression). Statistics and machine learning textbooks often give the appearance that statistical choices may be based on a sequence of binary “this-is-true” or “this-is-not-true” decisions.</p>
+</div>
+<div id="simulating-the-setting" class="section level2">
+<h2>Simulating the Setting</h2>
+<p>As mentioned in the previous post, we assume</p>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1X_i + \epsilon_i\]</span></p>
+<p>with <span class="math inline">\(\mathbb{E}[\epsilon_i \mid X_i] = 0\)</span>. Notice it follows immediately by <a href="https://en.wikipedia.org/wiki/Law_of_total_expectation">double expectation</a> that <span class="math inline">\(\mathbb{E}[\epsilon_i] = 0\)</span>. Here is an example of such data. For convenience, we assume that the <span class="math inline">\(\epsilon_i\)</span> are normally distributed with mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(1\)</span> in our simulation.</p>
+<pre class="r"><code>library(ggplot2)
+
+set.seed(45)
+
+# generate a data frame of n x-y pairs based on
+# the linearity + noise assumption
+generate_df &lt;- function(n, beta_0, beta_1, 
+                        error_function, ...) {
+  # Generate random x values between 0 and 20
+  x &lt;- runif(n = n, min = 0, max = 20)
+  
+  # Compute y_i
+  y &lt;- beta_0 + beta_1 * x + error_function(n = n, ...)
+  
+  # Create data frame
+  return(data.frame(x = x, y = y))
+}
+
+# Set beta_0 to 0.5, beta_1 to 1
+beta_0 &lt;- 0.5
+beta_1 &lt;- 1
+
+df &lt;- generate_df(n = 200, 
+                  beta_0 = beta_0, 
+                  beta_1 = beta_1,
+                  error_function = rnorm,
+                  mean = 0, 
+                  sd = 1)
+
+# Define function for the true process, without the error term
+f &lt;- function(x, beta_0, beta_1) {
+  return(beta_0 + beta_1 * x)
+}
+
+# Plot the graph
+ggplot(df, aes(x = x, y = y)) + 
+  geom_point() + # dots
+  # the true process without the noise
+  stat_function(fun = f, 
+                args = list(beta_0 = beta_0, beta_1 = beta_1),
+                color = &quot;forestgreen&quot;,
+                size = 2) +
+  # black-and-white theme
+  theme_bw() + 
+  # blank panel grid
+  theme(panel.grid = element_blank())</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-1-1.png" width="768" /></p>
+<p>What the visualization is portraying above is that the true <span class="math inline">\(Y_i\)</span> values are a linear equation (in green) plus some “noise” whose mean is <span class="math inline">\(0\)</span>.</p>
+</div>
+<div id="application-to-actual-data" class="section level2">
+<h2>Application to Actual Data</h2>
+<p>We work with the <code>Advertising.csv</code> file from the second edition of <em>An Introduction to Statistical Learning</em>:</p>
+<pre class="r"><code>df &lt;- read.csv(&quot;https://www.statlearning.com/s/Advertising.csv&quot;,
+               row.names = 1) # row 1 contains the row labels
+
+head(df) # show first six rows</code></pre>
+<pre><code>##      TV radio newspaper sales
+## 1 230.1  37.8      69.2  22.1
+## 2  44.5  39.3      45.1  10.4
+## 3  17.2  45.9      69.3   9.3
+## 4 151.5  41.3      58.5  18.5
+## 5 180.8  10.8      58.4  12.9
+## 6   8.7  48.9      75.0   7.2</code></pre>
+<p>These data consist of <span class="math inline">\(n = 200\)</span> observations with <span class="math inline">\(p = 4\)</span> columns:</p>
+<ul>
+<li><code>sales</code> in thousands of units for a particular product, as well as</li>
+<li><code>TV</code>, <code>radio</code>, and <code>newspaper</code> advertising budgets in thousands of dollars.</li>
+</ul>
+<p>Suppose we treat <span class="math inline">\(Y_i\)</span> as <code>sales</code> and <span class="math inline">\(X_i\)</span> as <code>TV</code>. Let’s plot these data and see how they look:</p>
+<pre class="r"><code># Plot the graph
+ggplot(df, aes(x = TV, y = sales)) + 
+  geom_point() + # dots
+  # black-and-white theme
+  theme_bw() + 
+  # blank panel grid
+  theme(panel.grid = element_blank()) + 
+  # x-scale: from 0 to 300, ticks every 25
+  scale_x_continuous(limits = c(0, 300),
+                     breaks = seq(0, 300, 25)) + 
+  # y-scale: from 0 to 30, ticks every 5
+  scale_y_continuous(limits = c(0, 30),
+                     breaks = seq(0, 30, 5))</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>For simple linear regression, we would then assume that for each observation <span class="math inline">\(i = 1, \dots, 200\)</span> that the following relationship holds for some intercept <span class="math inline">\(\beta_0\)</span>, slope term <span class="math inline">\(\beta_1\)</span>, and noise term <span class="math inline">\(\epsilon_i\)</span> (with <span class="math inline">\(\mathbb{E}[\epsilon_i \mid \text{TV}_i] = 0\)</span>) for each observation:
+<span class="math display">\[\begin{equation*}
+\text{Sales}_i = \beta_0 + \beta_1 \cdot \text{TV}_i + \epsilon_i\text{.}
+\end{equation*}\]</span></p>
+<div id="is-this-assumption-true" class="section level3">
+<h3>Is this assumption true?</h3>
+<p>The reality is that, <strong>unless we are in control of how the data are generated and know that the data may be specified by the process above</strong>, we <strong>cannot</strong> guarantee that the
+<span class="math display">\[\begin{equation*}
+\text{Sales}_i = \beta_0 + \beta_1 \cdot \text{TV}_i + \epsilon_i
+\end{equation*}\]</span>
+assumption is true. That is, given a bunch of <code>TV</code> values, unless we know for a fact that <code>Sales</code> were based on the form given above (like in our simulation we did earlier in this post), we cannot guarantee this assumption holds.</p>
+<p>So the question of “is this assumption true?” turns into</p>
+</div>
+<div id="is-this-assumption-good-enough" class="section level3">
+<h3>Is this assumption good enough?</h3>
+<p>This question is a much more difficult question to answer than the prior one, and is <strong>often ignored</strong>.</p>
+<p>Two things I <strong>do not</strong> suggest for answering this question, though, include:</p>
+<ul>
+<li>Hypothesis testing for distributional fit or finding evidence of the coefficient <span class="math inline">\(\beta_1\)</span> being not equal to <span class="math inline">\(0\)</span> (such as through a <span class="math inline">\(t\)</span>-test): such procedures encourage binary, “strict-cutoff”-type thinking which may give misleading results. Additionally, such hypothesis tests assume that the <span class="math inline">\(\text{Sales}_i = \beta_0 + \beta_1 \cdot \text{TV}_i + \epsilon_i\)</span> assumption is true to begin with.</li>
+<li>Relying solely on graphical procedures to test these assumptions: there are many arbitrary decisions that go into making a graph that could influence how you view the data (e.g., the axes bounds, ticks, etc.).</li>
+</ul>
+<p><strong>The question of interest matters a lot than many textbooks suggest.</strong> If someone poses to me a question similar to “how does TV advertising budget influence sales?” I would be inclined to assume the model <span class="math inline">\(\text{Sales}_i = \beta_0 + \beta_1 \cdot \text{TV}_i + \epsilon_i\)</span> just to get a “good-enough” result to start with, and if necessary, I can make it more complex from there. <strong>In such cases, one prioritizes intepretability over precision.</strong></p>
+<p>Questions that are more detailed than “how does TV advertising budget influence sales?” - particularly if there is a sales prediction involved given a TV budget - may require more sophisticated tools than linear regression, such as <a href="https://en.wikipedia.org/wiki/Local_regression">local regression</a>, with some <a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">cross validation</a> thrown in. However, as one increases the level of sophistication of statistical tools, there is usually more of a problem of intepretability to general audiences. Back when I taught introductory data science, I referred to this phenomena as the <strong>explainability vs. complexity tradeoff</strong>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>For the purposes of this post, we will assume that the model <span class="math inline">\(\text{Sales}_i = \beta_0 + \beta_1 \cdot \text{TV}_i + \epsilon_i\)</span> holds with <span class="math inline">\(\mathbb{E}[\epsilon_i \mid \text{TV}_i] = 0\)</span>.</p>
+</div>
+<div id="executing-the-regression-procedure-and-interpretation" class="section level3">
+<h3>Executing the regression procedure, and interpretation</h3>
+<p>If we assume <span class="math inline">\(\text{Sales}_i = \beta_0 + \beta_1 \cdot \text{TV}_i + \epsilon_i\)</span> holds with <span class="math inline">\(\mathbb{E}[\epsilon_i \mid \text{TV}_i] = 0\)</span>, by the Gauss-Markov theorem, the least-squares estimators of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are their corresponding “best” estimators. In R, these may be calculated using the <code>lm</code> (linear model) function:</p>
+<pre class="r"><code># execute the least-squares procedure
+model &lt;- lm(sales ~ TV, data = df)
+
+# return summary stats
+summary(model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = sales ~ TV, data = df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -8.3860 -1.9545 -0.1913  2.0671  7.2124 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 7.032594   0.457843   15.36   &lt;2e-16 ***
+## TV          0.047537   0.002691   17.67   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.259 on 198 degrees of freedom
+## Multiple R-squared:  0.6119, Adjusted R-squared:  0.6099 
+## F-statistic: 312.1 on 1 and 198 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>The least squares estimators of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are <span class="math inline">\(\hat{\beta}_0 = 7.032594\)</span> and <span class="math inline">\(\hat{\beta}_1 = 0.047537\)</span> respectively. These may be interpreted as follows:</p>
+<ul>
+<li>A product with zero (thousands of) dollars of TV advertising budget sells roughly 7,033 (<span class="math inline">\(1000 \cdot \hat{\beta}_0\)</span>) units of the product. This interpretation is based on the value of <span class="math inline">\(\beta_0\)</span>, and recalling that both <span class="math inline">\(\text{TV}_i\)</span> and <span class="math inline">\(\text{Sales}_i\)</span> are measured in thousands.</li>
+<li>Adding one thousand dollars to the TV advertising budget for a product is associated with a $47.54 (<span class="math inline">\(1000 \cdot \hat{\beta}_1\)</span>) increase in sales.</li>
+</ul>
+<p><strong>It is important to note that these interpretations rely on all of the following assumptions holding</strong>:</p>
+<ul>
+<li><span class="math inline">\(\text{Sales}_i = \beta_0 + \beta_1 \cdot \text{TV}_i + \epsilon_i\)</span>, and</li>
+<li><span class="math inline">\(\mathbb{E}[\epsilon_i \mid \text{TV}_i] = 0\)</span>.</li>
+</ul>
+<p>The first assumption above is especially important, in that no other variables other than <span class="math inline">\(\text{TV}_i\)</span> are included in the determination of <span class="math inline">\(\text{Sales}_i\)</span>.</p>
+</div>
+</div>
+<div id="some-other-mathematical-concerns" class="section level2">
+<h2>Some other mathematical concerns</h2>
+<p>As mentioned in the prior <a href="/post/2021-07-17-lin-reg-1/everything-simple-lin-reg">linear regression theory post</a>, if we wish to calculate the variance of the least-squares estimators of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, we must also assume that <span class="math inline">\(\text{Var}[\text{Sales}_i \mid \text{TV}_i] = \sigma^2\)</span>. This condition is also known as <strong>homoskedasticity</strong>. In simple terms, homoskedasticity assumes that the variability of the <span class="math inline">\(\text{Sales}_i\)</span> is constant regardless of the value of <span class="math inline">\(\text{TV}_i\)</span> we have. When this condition does not hold, the model is said to exhibit <strong>heteroskedasticity</strong>, which is given emphasis in econometrics more often than statistics.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> I haven’t had much of a chance to dive into this world, but may cover this material in a future post.</p>
+<p>From a naive visual inspection, one should observe that the <span class="math inline">\(\text{Sales}_i\)</span> values seem to be more spread out as the <span class="math inline">\(\text{TV}_i\)</span> values increase, which would suggest that we have heteroskedasticity. The variability of <span class="math inline">\(\text{Sales}_i\)</span> values seems to increase as <span class="math inline">\(\text{TV}_i\)</span> increases, roughly approximated by the red lines and arrows below.</p>
+<p><img src="images/heteroskedasticity.png" style="width:80.0%;height:10.0%" /></p>
+<p>If we desire, we could assume the model <span class="math inline">\(\text{Sales}_i = \beta_0 + \beta_1 \cdot \text{TV}_i + \epsilon_i\)</span> holds with the variance of <span class="math inline">\(\epsilon_i\)</span> being proportional to <span class="math inline">\(X_i\)</span>; i.e., <span class="math inline">\(\text{Var}[\epsilon_i \mid \text{TV}_i] = \sigma^2 \cdot \text{TV}_i\)</span>. This is a more complicated version of simple linear regression than we’ve discussed so far, known as the <a href="https://en.wikipedia.org/wiki/Generalized_least_squares">Aitken Model or Generalized Least Squares</a>. I may write a post on this topic in the future.</p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>I hope this posts illustrates how complex a simple procedure such as univariate linear regression is, with regard to the thought process that has to go into validating assumptions and making tradeoffs between complexity and intepretability. Statistical education needs to make such thought processes more explicit.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>James, G., Witten, D., Hastie, T., &amp; Tibshirani, R. (2021). <em>An Introduction to Statistical Learning</em> (2nd ed.). New York, NY: Springer Science+Business Media.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Artificial Intelligence is trying to address this issue through <a href="https://en.wikipedia.org/wiki/Explainable_artificial_intelligence">explainable AI</a>, but I am a skeptic about the long-term implications of this movement being successful.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>See the <a href="https://en.wikipedia.org/wiki/Heteroscedasticity">Wikipedia page on heteroskedasticity</a> for more information.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
