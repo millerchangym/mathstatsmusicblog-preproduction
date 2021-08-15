@@ -17,7 +17,7 @@ slug: lm-theory-in-practice
 <div id="simulating-the-setting" class="section level2">
 <h2>Simulating the Setting</h2>
 <p>As mentioned in the previous post, we assume</p>
-<p><span class="math display">\[Y_i = \beta_0 + \beta_1X_i + \epsilon_i\]</span></p>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1X_i + \epsilon_i = \text{intercept } + \text{slope }\cdot X_i + \unicode{x201C}\text{noise/error}\unicode{x201D}\]</span></p>
 <p>with <span class="math inline">\(\mathbb{E}[\epsilon_i \mid X_i] = 0\)</span>. Notice it follows immediately by <a href="https://en.wikipedia.org/wiki/Law_of_total_expectation">double expectation</a> that <span class="math inline">\(\mathbb{E}[\epsilon_i] = 0\)</span>. Here is an example of such data. For convenience, we assume that the <span class="math inline">\(\epsilon_i\)</span> are normally distributed with mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(1\)</span> in our simulation.</p>
 <pre class="r"><code>library(ggplot2)
 

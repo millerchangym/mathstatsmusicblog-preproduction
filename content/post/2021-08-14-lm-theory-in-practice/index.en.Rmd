@@ -17,7 +17,7 @@ My interest in writing this post is in outlining the complexities of doing a sta
 
 As mentioned in the previous post, we assume
 
-$$Y_i = \beta_0 + \beta_1X_i + \epsilon_i$$
+$$Y_i = \beta_0 + \beta_1X_i + \epsilon_i = \text{intercept } + \text{slope }\cdot X_i + \unicode{x201C}\text{noise/error}\unicode{x201D}$$
 
 with $\mathbb{E}[\epsilon_i \mid X_i] = 0$. Notice it follows immediately by [double expectation](https://en.wikipedia.org/wiki/Law_of_total_expectation) that $\mathbb{E}[\epsilon_i] = 0$. Here is an example of such data. For convenience, we assume that the $\epsilon_i$ are normally distributed with mean $0$ and variance $1$ in our simulation.
 
