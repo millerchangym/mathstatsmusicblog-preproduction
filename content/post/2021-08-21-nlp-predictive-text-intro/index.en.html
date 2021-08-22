@@ -73,7 +73,7 @@ sonnets &lt;- all_works_df %&gt;%
 
 # replace the character \032 with an apostrophe
 sonnets$content &lt;- gsub(&quot;\032&quot;, &quot;&#39;&quot;, sonnets$content)</code></pre>
-<p>Then, we gather all unigrams, bigrams, and trigrams from the sonnets and compute their counts.</p>
+<p>We will be using a trigram model to perform the simulation. Thus, we gather all unigrams, bigrams, and trigrams from the sonnets and compute their counts.</p>
 <pre class="r"><code># gather unigrams
 unigrams &lt;- sonnets %&gt;% 
   unnest_tokens(unigram, content, token = &quot;ngrams&quot;, n = 1)

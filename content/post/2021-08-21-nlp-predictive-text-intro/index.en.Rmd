@@ -77,7 +77,7 @@ sonnets <- all_works_df %>%
 sonnets$content <- gsub("\032", "'", sonnets$content)
 ```
 
-Then, we gather all unigrams, bigrams, and trigrams from the sonnets and compute their counts.
+We will be using a trigram model to perform the simulation. Thus, we gather all unigrams, bigrams, and trigrams from the sonnets and compute their counts.
 
 ```{r}
 # gather unigrams
