@@ -170,18 +170,22 @@ text_gen &lt;- function(bigram_init, trigrams_df, seed = 50,
   
   # checks on sim_length
   sim_length &lt;- as.integer(sim_length)
-  if (sim_length &lt; 2) {
+  if (sim_length &lt;= 2) {
     stop(&quot;sim_length must be greater than 2!&quot;)
   }
   
   # generate next work based on maximum likelihood estimate
   out &lt;- paste(bigram_init, next_word(bigram_init, trigrams_df, seed))
-  for (i in 1:(sim_length - 3)) {
-    # extract the most recent bigram
-    last_bigram &lt;- str_extract(out, &quot;(\\w|&#39;)+ (\\w|&#39;)+$&quot;)
-    # append the next word
-    out &lt;- paste(out, next_word(last_bigram, trigrams_df, seed))
-    out &lt;- str_trim(out, side = &quot;both&quot;)
+  
+  # stop if the desired sim_length is 3, otherwise, keep adding words
+  if (sim_length &gt;= 4) {
+    for (i in 1:(sim_length - 3)) {
+      # extract the most recent bigram
+      last_bigram &lt;- str_extract(out, &quot;(\\w|&#39;)+ (\\w|&#39;)+$&quot;)
+      # append the next word
+      out &lt;- paste(out, next_word(last_bigram, trigrams_df, seed))
+      out &lt;- str_trim(out, side = &quot;both&quot;)
+    }
   }
   return(out)
 }</code></pre>

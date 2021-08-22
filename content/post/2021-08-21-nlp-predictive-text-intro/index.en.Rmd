@@ -190,18 +190,22 @@ text_gen <- function(bigram_init, trigrams_df, seed = 50,
   
   # checks on sim_length
   sim_length <- as.integer(sim_length)
-  if (sim_length < 2) {
+  if (sim_length <= 2) {
     stop("sim_length must be greater than 2!")
   }
   
   # generate next work based on maximum likelihood estimate
   out <- paste(bigram_init, next_word(bigram_init, trigrams_df, seed))
-  for (i in 1:(sim_length - 3)) {
-    # extract the most recent bigram
-    last_bigram <- str_extract(out, "(\\w|')+ (\\w|')+$")
-    # append the next word
-    out <- paste(out, next_word(last_bigram, trigrams_df, seed))
-    out <- str_trim(out, side = "both")
+  
+  # stop if the desired sim_length is 3, otherwise, keep adding words
+  if (sim_length >= 4) {
+    for (i in 1:(sim_length - 3)) {
+      # extract the most recent bigram
+      last_bigram <- str_extract(out, "(\\w|')+ (\\w|')+$")
+      # append the next word
+      out <- paste(out, next_word(last_bigram, trigrams_df, seed))
+      out <- str_trim(out, side = "both")
+    }
   }
   return(out)
 }
