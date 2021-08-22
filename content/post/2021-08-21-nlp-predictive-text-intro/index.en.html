@@ -130,9 +130,11 @@ trigrams_pred &lt;- trigrams %&gt;%
 
 # clear memory
 rm(bigrams, trigrams)</code></pre>
-<p>We also compute the probability of each unigram.</p>
-<pre class="r"><code>unigrams &lt;- unigrams %&gt;%
-  mutate(prob = count/sum(count))</code></pre>
+<!-- We also compute the probability of each unigram. -->
+<!-- ```{r} -->
+<!-- unigrams <- unigrams %>% -->
+<!--   mutate(prob = count/sum(count)) -->
+<!-- ``` -->
 <p>Now, we simulate some text. We will begin with a prespecified bigram, and choosing subsequent words based on maximum probabilities conditioned on the prior bigram.</p>
 <pre class="r"><code># function to choose the most likely next word, given a 
 # preceding bigram

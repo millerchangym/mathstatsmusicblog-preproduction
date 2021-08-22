@@ -147,12 +147,12 @@ trigrams_pred <- trigrams_pred %>%
 rm(bigrams, trigrams)
 ```
 
-We also compute the probability of each unigram.
+<!-- We also compute the probability of each unigram. -->
 
-```{r}
-unigrams <- unigrams %>%
-  mutate(prob = count/sum(count))
-```
+<!-- ```{r} -->
+<!-- unigrams <- unigrams %>% -->
+<!--   mutate(prob = count/sum(count)) -->
+<!-- ``` -->
 
 Now, we simulate some text. We will begin with a prespecified bigram, and choosing subsequent words based on maximum probabilities conditioned on the prior bigram.
 
