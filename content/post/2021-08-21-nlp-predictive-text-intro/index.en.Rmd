@@ -225,7 +225,7 @@ text_gen("thou art", trigrams_pred, seed = 30, sim_length = 15)
 
 ## Next Steps and Conclusion
 
-In the above, I had purposefully chosen phrases that I knew were likely to work, but one of the disadvantages of the maximum likelihood approach given is that it relies on exact matching to generate phrases. That is, if a bigram does not currently exist in the data provided, the code above would error out. There are probably probabilistic matching methods and other sophisticated ways to deal with these problems.
+In the above, I had purposefully chosen bigrams that I knew were likely to work, but one of the disadvantages of the maximum likelihood approach given is that it relies on exact matching to generate phrases. That is, if a bigram does not currently exist in the data provided, the code above would error out. There are probably probabilistic matching methods and other sophisticated ways to deal with these problems.
 
 One may run into numerical underflow problems given the above procedure. We will discuss this in a subsequent post.
 
