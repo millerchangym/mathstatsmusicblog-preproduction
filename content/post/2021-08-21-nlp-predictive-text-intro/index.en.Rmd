@@ -25,7 +25,7 @@ The objective of **text normalization** is analogous to the concept of tidying d
 There are various algorithms that exist for executing these steps. I won't be covering these in detail for the current post. However, there are some things that are worth mentioning:
 
 * What *is* a word? The answer to this question depends on the application. **Filler words**, such as "uh" or "um," may occur when doing speech-to-text transcription and may not be desirable to use in normalized text in some cases.
-* What is a sentence? In English, we can tokenize sentences by looking for characters such as periods, exclamation marks, etc. - but not all instances of such characters can be used to tokenize sentence, for example, the word "Ph.D.."  
+* What is a sentence? In English, we can tokenize sentences by looking for characters such as periods, exclamation marks, etc. - but not all instances of such characters can be used to tokenize sentences, for example, the word "Ph.D.."  
 * The [Porter Stemming Algorithm](https://tartarus.org/martin/PorterStemmer/) is one example of a lemmatization algorithm.
 
 An **$n$-gram** is a sequence of words of length $n$, given by $w_1, \dots, w_n$, which may also be denoted $w_{1:n}$. Using the language of probability, we may let $W_1, \dots, W_n$ be a sequence of random variables and consider the joint probability mass function
