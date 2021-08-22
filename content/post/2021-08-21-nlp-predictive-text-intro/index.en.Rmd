@@ -1,0 +1,234 @@
+---
+title: 'Natural Language Processing: An Introduction to Predictive Text'
+author: Yeng Miller-Chang
+date: '2021-08-22'
+slug: nlp-predictive-text-intro
+categories: []
+tags:
+  - nlp
+  - data-science
+---
+
+## Introduction
+
+This post explains the mathematics behind predictive text in natural language processing (NLP), as well as a brief simulation.
+
+## Some Jargon
+
+The objective of **text normalization** is analogous to the concept of tidying data when working with structured data: cleaning up text so that it is easier to work with. Several steps go into text normalization:
+
+* **Tokenization**: separating text into individual subsets, such as **word tokenization** (separating text into its word subsets), or **sentence tokenization** (separating text into sentence subsets).
+* **Lemmatization**: the act of converting all words with the same root (e.g., "cat" and "cats" would be lemmatized to "cat").
+
+There are various algorithms that exist for executing these steps. I won't be covering these in detail for the current post. However, there are some things that are worth mentioning:
+
+* What *is* a word? The answer to this question depends on the application. **Filler words**, such as "uh" or "um," may occur when doing speech-to-text transcription and may not be desirable to use in normalized text in some cases.
+* The [Porter Stemming Algorithm](https://tartarus.org/martin/PorterStemmer/) is one example of a lemmatization algorithm.
+
+An **$n$-gram** is a sequence of words of length $n$, given by $w_1, \dots, w_n$, which may also be denoted $w_{1:n}$. Using the language of probability, we may let $W_1, \dots, W_n$ be a sequence of random variables and consider the joint probability mass function
+\begin{equation*}
+\mathbb{P}(W_1 = w_1, \dots, W_n = w_n) = p(w_1, \dots, w_n)\text{.}
+\end{equation*}
+By the [probability chain rule](https://en.wikipedia.org/wiki/Chain_rule_(probability)), we may write
+\begin{equation*}
+p(w_1, \dots, w_n) = p(w_1)p(w_2 \mid w_1) \cdots p(w_n \mid w_{1:n-1}) = p(w_1)\prod_{i=2}^{n}p(w_i \mid w_{1:i-1})\text{.}
+\end{equation*}
+The product above is, of course, extremely difficult to calculate, but we may choose to implement any number of simplfying assumptions to make the product tractable. For example, if we assume the [Markov property](https://en.wikipedia.org/wiki/Markov_property) holds, 
+\begin{equation*}
+p(w_1, \dots, w_n) = p(w_1)p(w_2 \mid w_1) \cdots p(w_n \mid w_{1:n-1}) = p(w_1)\prod_{i=2}^{n}p(w_i \mid w_{i-1})\text{.}
+\end{equation*}
+In NLP, the Markov property is known as the **bigram** ($2$-gram) model - i.e., the conditional probability only includes two words. In general, the $k$-gram model assumes that
+\begin{equation*}
+p(w_i \mid w_{1:i-1}) = p(w_i \mid w_{i-1}, \dots, w_{i-(k-1)}) = p(w_i \mid w_{i-(k-1):i-1})
+\end{equation*}
+for appropriately chosen values of $k$.
+
+We estimate these probabilities via maximum likelihood estimation, drawing from a **corpus** of $N > n$ words to estimate these probabilities.^[Details are provided in Lei Mao's Log Book at https://leimao.github.io/blog/Maximum-Likelihood-Estimation-Ngram/.] For the $k$-gram model, the maximum likelihood estimator is given by
+\begin{equation*}
+\hat{p}(w_i \mid w_{i-(k-1):i-1}) = \dfrac{C(w_{i-(k-1):i-1}, w_i)}{C(w_{i-(k-1):i-1})}
+\end{equation*}
+where $C(w_{i-(k-1):i-1}, w_i)$ is the count of word sequences $w_{i-(k-1):i-1}w_i$, and $C(w_{i-(k-1):i-1})$ is the count of the word sequence $w_{i-(k-1):i-1}$.
+
+One can find the word $w_i$ which maximizes the above probability based on a corpus so as to predict text. 
+
+## Simulating Shakespearean Text
+
+We obtain all of Shakespeare's sonnets in a tidy format using `bardr`, and then do some additional data cleansing.
+
+```{r warning=FALSE, message=FALSE}
+library(bardr)
+library(dplyr)
+library(tidyr)
+library(tidytext)
+library(stringr)
+
+sonnets <- all_works_df %>% 
+  # show only Sonnets
+  filter(name == "Sonnets") %>% 
+  # Remove "THE SONNETS", "THE END", and
+  # number labels for the sonnets
+  filter(!grepl("THE SONNETS", content) & 
+           !grepl("THE END", content) & 
+           !grepl("^( )*[0-9]+( )*", content))
+
+# replace the character \032 with an apostrophe
+sonnets$content <- gsub("\032", "'", sonnets$content)
+```
+
+Then, we gather all unigrams, bigrams, and trigrams from the sonnets and compute their counts.
+
+```{r}
+# gather unigrams
+unigrams <- sonnets %>% 
+  unnest_tokens(unigram, content, token = "ngrams", n = 1)
+
+# gather bigrams
+bigrams <- sonnets %>% 
+  unnest_tokens(bigram, content, token = "ngrams", n = 2)
+
+# gather trigrams
+trigrams <- sonnets %>% 
+  unnest_tokens(trigram, content, token = "ngrams", n = 3)
+rm(sonnets)
+
+# compute counts by unigram, trigram, and bigram
+unigrams <- unigrams %>%
+  group_by(unigram) %>%
+  summarize(count = n()) %>%
+  as.data.frame()
+
+bigrams <- bigrams %>%
+  group_by(bigram) %>%
+  summarize(count = n()) %>%
+  as.data.frame()
+
+trigrams <- trigrams %>%
+  group_by(trigram) %>%
+  summarize(count = n()) %>%
+  as.data.frame()
+  
+```
+
+Then, we create a third data frame with a predicted word conditioned on a preceding bigram.
+
+```{r}
+# extract predicted (third) word from trigram 
+trigrams_pred <- trigrams %>%
+  # look for a word, followed by a space, 
+  # then a second word and then a second space.
+  # replace with blank
+  mutate(pred_word = gsub("((\\w|')+\\s*(\\w|')+)\\s", "", trigram)) %>%
+  # remove the last word from the trigram: 
+  # look for one space, a word (with possibly an apostrophe)
+  # right at the end
+  mutate(prior_bigram = sub(" {1}(\\w|')+$", "", trigram)) %>%
+  select(pred_word, prior_bigram, trigram) %>%
+  distinct()
+```
+
+We compute the maximum likelihood estimates of these probabilities using the formula previously given by joining these data.
+
+```{r}
+trigrams_pred <- trigrams_pred %>%
+  # join to preceding bigrams data, gather count of bigrams
+  left_join(bigrams, by = c("prior_bigram" = "bigram")) %>%
+  # join to trigrams data, gather count of trigrams
+  left_join(trigrams, by = "trigram", 
+            suffix = c(".bigram", ".trigram")) %>%
+  # compute maximum likelihood estimate
+  mutate(prob = count.trigram/count.bigram) %>%
+  # some cleansing
+  select(pred_word, prior_bigram, prob) %>%
+  arrange(pred_word, prior_bigram)
+
+# clear memory
+rm(bigrams, trigrams)
+```
+
+We also compute the probability of each unigram.
+
+```{r}
+unigrams <- unigrams %>%
+  mutate(prob = count/sum(count))
+```
+
+Now, we simulate some text. We will begin with a prespecified bigram, and choosing subsequent words based on maximum probabilities conditioned on the prior bigram.
+
+```{r}
+# function to choose the most likely next word, given a 
+# preceding bigram
+next_word <- function(preceding_bigram, trigrams_df, seed) {
+  set.seed(seed)
+  preceding_bigram <- tolower(preceding_bigram)
+  
+  # show all possible next words based on the bigram,
+  # and show the one with the highest probability
+  trigrams_df <- trigrams_df %>% 
+    filter(prior_bigram == preceding_bigram) %>%
+    filter(prob == max(prob))
+  
+  # if there are multiple words with the same probability,
+  # randomly (uniformly) choose one of the predicted words
+  if (nrow(trigrams_df) > 1) {
+    next_word <- sample(trigrams_df$pred_word, size = 1)
+    
+  } else {
+    # otherwise, just choose the corresponding word
+    next_word <- trigrams_df$pred_word
+  }
+  return(next_word)
+}
+
+# generate some text, with an initial bigram
+# sim_length is the number of words of the output, 
+# which must be greater than 2.
+text_gen <- function(bigram_init, trigrams_df, seed = 50,
+                     sim_length) {
+  
+  # checks on sim_length
+  sim_length <- as.integer(sim_length)
+  if (sim_length < 2) {
+    stop("sim_length must be greater than 2!")
+  }
+  
+  # generate next work based on maximum likelihood estimate
+  out <- paste(bigram_init, next_word(bigram_init, trigrams_df, seed))
+  for (i in 1:(sim_length - 3)) {
+    # extract the most recent bigram
+    last_bigram <- str_extract(out, "(\\w|')+ (\\w|')+$")
+    # append the next word
+    out <- paste(out, next_word(last_bigram, trigrams_df, seed))
+    out <- str_trim(out, side = "both")
+  }
+  return(out)
+}
+```
+
+We then use the function above to simulate some Shakespearean phrases, with prespecified bigrams.
+
+```{r}
+# "A friend"
+text_gen("a friend", trigrams_pred, seed = 30, sim_length = 10)
+# "A fool"
+text_gen("a fool", trigrams_pred, seed = 30, sim_length = 15)
+# "There is"
+text_gen("there is", trigrams_pred, seed = 40, sim_length = 8)
+# "In The"
+text_gen("in the", trigrams_pred, seed = 20, sim_length = 14)
+text_gen("in the", trigrams_pred, seed = 30, sim_length = 14)
+# "Thou Art"
+text_gen("thou art", trigrams_pred, seed = 20, sim_length = 14)
+text_gen("thou art", trigrams_pred, seed = 30, sim_length = 15)
+```
+
+## Next Steps and Conclusion
+
+In the above, I had purposefully chosen phrases that I knew were likely to work, but one of the disadvantages of the maximum likelihood approach given is that it relies on exact matching to generate phrases. That is, if a bigram does not currently exist in the data provided, the code above would error out. There are probably probabilistic matching methods and other sophisticated ways to deal with these problems.
+
+One may run into numerical underflow problems given the above procedure. We will discuss this in a subsequent post.
+
+It is also worth noting that we did not use cross validation for prediction for subsequent words, or any sort of smoothing techniques to deal with zero-frequency bigrams. These will likely be explored in a future post.
+
+## References
+
+Jurafsky, D. &amp; Martin, J. H.  (2020). *Speech and Language Processing* (3rd ed.). August 21, 2021, https://web.stanford.edu/~jurafsky/slp3/.
