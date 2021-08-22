@@ -9,6 +9,8 @@ tags:
   - data-science
 ---
 
+*Views and opinions expressed are solely my own.*
+
 ## Introduction
 
 This post explains the mathematics behind predictive text in natural language processing (NLP), as well as a brief simulation.
