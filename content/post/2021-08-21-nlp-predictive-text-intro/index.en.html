@@ -27,6 +27,8 @@ tags:
 <p>There are various algorithms that exist for executing these steps. I won’t be covering these in detail for the current post. However, there are some things that are worth mentioning:</p>
 <ul>
 <li>What <em>is</em> a word? The answer to this question depends on the application. <strong>Filler words</strong>, such as “uh” or “um,” may occur when doing speech-to-text transcription and may not be desirable to use in normalized text in some cases.</li>
+<li>What is a sentence? In English, we can tokenize sentences by looking for characters such as periods, exclamation marks, etc. - but not all instances of such characters can be used to tokenize sentence, for example, the word “Ph.D..”<br />
+</li>
 <li>The <a href="https://tartarus.org/martin/PorterStemmer/">Porter Stemming Algorithm</a> is one example of a lemmatization algorithm.</li>
 </ul>
 <p>An <strong><span class="math inline">\(n\)</span>-gram</strong> is a sequence of words of length <span class="math inline">\(n\)</span>, given by <span class="math inline">\(w_1, \dots, w_n\)</span>, which may also be denoted <span class="math inline">\(w_{1:n}\)</span>. Using the language of probability, we may let <span class="math inline">\(W_1, \dots, W_n\)</span> be a sequence of random variables and consider the joint probability mass function
