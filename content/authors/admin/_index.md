@@ -1,7 +1,7 @@
 ---
 authors:
 - admin
-bio: I am a Research Data Analyst with the University of Minnesota - Twin Cities. Views and opinions expressed are my own.
+bio: I am a Senior Data Scientist - Global Knowledge Solutions with General Mills, Inc. Views and opinions expressed are my own.
 title: Yeng Miller-Chang
 social:
 - icon: linkedin
