@@ -42,7 +42,7 @@ The basic plan I had for the code was:
 
 ## The Code
 
-Below is the code I used for this problem. I appreciate the assistance I had from [StackOverflow](https://stackoverflow.com/q/70544466/3625022) as well as a Discord user who wishes to remain anonymous.
+Below is the code I used for this problem. I appreciate the assistance I had from Stackoverflow as well as a Discord user who wishes to remain anonymous.
 
 ```{r eval=FALSE}
 ########################## Set variables
