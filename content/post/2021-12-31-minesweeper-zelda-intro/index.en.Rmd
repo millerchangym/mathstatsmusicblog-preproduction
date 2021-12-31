@@ -1,0 +1,256 @@
+---
+title: Minesweeper, Zelda Style
+author: Yeng Miller-Chang
+date: '2021-12-31'
+slug: minesweeper-zelda-intro
+categories: []
+tags:
+  - statistics
+  - video-games
+  - zelda
+---
+
+*Views and opinions expressed are solely my own.*
+
+The analogue to the popular game Minesweeper in Zelda's *Skyward Sword HD* is known as [Thrill Digger](https://www.ign.com/wikis/the-legend-of-zelda-skyward-sword/Thrill_Digger). I wrote R code to help assist me in playing Thrill Digger.
+
+## Background
+
+Solely focusing on the Beginner mode, Thrill Digger is like Minesweeper except:
+
+* The main character, Link, has to pay 30 to play the game.
+* There are four bombs laid out in four spots of a 4-by-5 grid.
+* When a spot is chosen, if it is a bomb, the game ends. If it is not a bomb:
+  * if the spot contains a green rupee (worth 1), there are no bombs adjacent to that spot.
+  * if the spot contains a blue rupee (worth 5), there are 1 or 2 bombs adjacent to that spot.
+  * if the spot contains a red rupee (worth 20), there are 3 or 4 bombs adjacent to that spot.
+
+The goals for this project were as follows:
+
+* Have a program give one the ability to input each step of Thrill Digger as they choose spots (namely, the x-coordinate, the y-coordinate, and the number of rupees at each spot).
+* Compute the probability that each square of the grid does not have a bomb.
+* Give suggestions for what squares should be chosen next.
+
+## Planning The Code
+
+The basic plan I had for the code was:
+
+* Generate a list of all possible 4-by-5 grids with four bombs.
+* Insert the rupee amounts in each grid based on the bomb placements.
+* As input is provided as someone plays Thrill Digger, filter the original list for all grids that contain the values that have values matching the inputs provided to that point.
+* Use the filtered list to compute the probabilities that each cell does not have a bomb.
+
+## The Code
+
+Below is the code I used for this problem. I appreciate the assistance I had from [StackOverflow](https://stackoverflow.com/q/70544466/3625022) as well as a Discord user who wishes to remain anonymous.
+
+```{r eval=FALSE}
+########################## Set variables
+row_n <- 4
+col_n <- 5
+bomb_count <- 4
+bomb_cost <- -30
+rupee_vector <- c(1, 5, 20, 100, 200)
+rupoor_count <- 0 # 0 for beginner, 4 for advanced, 8 for intermediate
+
+########################## Define functions
+insert_indices <- function(nrow, ncol, indices, cost) {
+  x <- matrix(0, nrow, ncol)
+  x[indices] <- bomb_cost
+  return(x)
+}
+
+generate_matrices <- function(nrow, ncol, bomb_count, rupoor_count, bomb_cost) {
+  out <- combn(seq_len(nrow * ncol), 
+               m = bomb_count + rupoor_count, 
+               FUN = function(x){ insert_indices(nrow, ncol, x) },
+               simplify = FALSE)
+  return(out)
+}
+
+# Input rupee amounts
+insert_rupees <- function(x, bomb_cost) {
+  # For each cell
+  for (i in 1:nrow(x)) {
+    for (j in 1:ncol(x)) {
+      # without a bomb or rupoor
+      if (x[i,j] != bomb_cost & x[i,j] != -10) {
+        # gather submatrix around the cell
+        submatrix <- x[ifelse(i-1 >= 1,
+                              i-1,
+                              i):ifelse(i+1 <= nrow(x),
+                                        i+1,
+                                        i),
+                       ifelse(j-1 >= 1,
+                              j-1,
+                              j):ifelse(j+1 <= ncol(x),
+                                        j+1,
+                                        j)]
+        # convert to vector
+        submatrix <- c(submatrix)
+        
+        # Compute bomb and rupoor counts
+        bad_counts <- sum(submatrix %in% c(bomb_cost, -10))
+        
+        # If bad_counts is 0, set reward to 1. 
+        # If 1 or 2, then 5.
+        # If 3 or 4, then 20. 
+        # If 5 or 6, then 100.
+        # If 7 or 8, then 200.
+        x[i,j] <- ifelse(
+          bad_counts == 0, 1, 
+          ifelse(bad_counts %in% 1:2, 5, 
+                 ifelse(bad_counts %in% 3:4, 20, 
+                        ifelse(bad_counts %in% 5:6, 100,
+                               ifelse(bad_counts %in% 7:8, 200, NA))))
+        )
+        rm(bad_counts, submatrix)
+      }
+      
+    }
+  }
+  rm(i, j)
+  return(x)
+}
+
+p_bomb <- function(i, j, rupee, lst, rupee_vals = rupee_vector) {
+  # Subset of matrices corresponding to filter
+  L_subset <- Filter(function(x) x[i,j] == rupee, lst)
+  
+  # Dimension of the matrices
+  d <- dim(lst[[1]])
+  
+  # List of i, j pairwise
+  df_ij <- expand.grid(1:d[1], 1:d[2])
+  list_ij <- split(as.matrix(df_ij), 1:prod(d))
+  
+  # Iterate over each i, j
+  p <- Map(function(ij) {
+    i = ij[1]
+    j = ij[2]
+    mean(unlist(Map(function(x) ifelse(x[i,j] %in% rupee_vals, 1, 0), L_subset)))
+  }, ij = list_ij)
+  
+  out <- matrix(0, nrow = d[1], ncol = d[2])
+  out[as.matrix(df_ij)] <- unlist(p)
+  return(list(probs = out, new_list = L_subset))
+}
+
+l <- generate_matrices(row_n, col_n, bomb_count, rupoor_count, bomb_cost)
+l <- lapply(X = l, FUN = insert_rupees, bomb_cost)
+rm(generate_matrices, insert_rupees, insert_indices)
+
+########################## Begin game simulation
+i <- 0
+j <- 0
+rupee <- 0
+temp_list <- l
+
+# History of positions
+positions_df <- data.frame(
+  i = integer(),
+  j = integer(),
+  rupee = numeric()
+)
+
+# Begin game
+while(rupee != bomb_cost) {
+  i <- as.integer(readline("Indicate the row of the cell (top = 1): "))
+  j <- as.integer(readline("Indicate the column of the cell (left = 1): "))
+  rupee <- as.numeric(
+    readline(paste0("Indicate the rupee value of the cell (", 
+                    paste0(rupee_vector, collapse = ", "),
+                    "); use -30 for bombs or rupoors): "))
+  )
+  positions_df[nrow(positions_df) + 1,] <- list(i, j, rupee)
+  if (i %in% 1:row_n & j %in% 1:col_n & rupee %in% c(rupee_vector, bomb_cost)) {
+    out <- p_bomb(i, j, rupee, temp_list)
+    temp_list <- out$new_list
+    print(out$probs)
+    # Matrix for finding the most likely spot without a bomb
+    max_matrix <- out$probs 
+    
+    # NA out all spots we have already chosen
+    for (r in 1:nrow(positions_df)) {
+      max_matrix[positions_df$i[r],positions_df$j[r]] <- NA
+    }
+    print(which(out$probs == max(max_matrix, na.rm = TRUE), arr.ind = TRUE))
+  } else {
+    stop("Invalid input.")
+  }
+}
+```
+
+## An Actual Simulation
+
+Below is an excerpt of one test I performed on this code. I ended up losing at the last step from choosing `[1, 1]` which contained a bomb. There was not an optimal choice for the last step, as each remaining cell was safe with probability `0.25`.
+
+```{r eval=FALSE, highlight=FALSE}
+Indicate the row of the cell (top = 1): 4
+Indicate the column of the cell (left = 1): 3
+Indicate the rupee value of the cell (1, 5, 20, 100, 200); use -30 for bombs or rupoors): 1
+          [,1]      [,2]      [,3]      [,4]      [,5]
+[1,] 0.7142857 0.7142857 0.7142857 0.7142857 0.7142857
+[2,] 0.7142857 0.7142857 0.7142857 0.7142857 0.7142857
+[3,] 0.7142857 1.0000000 1.0000000 1.0000000 0.7142857
+[4,] 0.7142857 1.0000000 1.0000000 1.0000000 0.7142857
+     row col
+[1,]   3   2
+[2,]   4   2
+[3,]   3   3
+[4,]   4   3
+[5,]   3   4
+[6,]   4   4
+...
+Indicate the row of the cell (top = 1): 4
+Indicate the column of the cell (left = 1): 4
+Indicate the rupee value of the cell (1, 5, 20, 100, 200); use -30 for bombs or rupoors): 5
+          [,1]      [,2]      [,3]      [,4]      [,5]
+[1,] 0.3636364 0.3181818 0.6818182 0.5909091 0.6363636
+[2,] 1.0000000 1.0000000 1.0000000 1.0000000 0.6818182
+[3,] 1.0000000 1.0000000 1.0000000 1.0000000 0.5909091
+[4,] 1.0000000 1.0000000 1.0000000 1.0000000 0.1363636
+     row col
+[1,]   1   3
+[2,]   2   5
+Indicate the row of the cell (top = 1): 1
+Indicate the column of the cell (left = 1): 3
+Indicate the rupee value of the cell (1, 5, 20, 100, 200); use -30 for bombs or rupoors): 5
+          [,1] [,2] [,3]      [,4]      [,5]
+[1,] 0.3333333  0.2    1 0.4666667 0.6000000
+[2,] 1.0000000  1.0    1 1.0000000 0.6666667
+[3,] 1.0000000  1.0    1 1.0000000 0.5333333
+[4,] 1.0000000  1.0    1 1.0000000 0.2000000
+     row col
+[1,]   2   5
+Indicate the row of the cell (top = 1): 2
+Indicate the column of the cell (left = 1): 5
+Indicate the rupee value of the cell (1, 5, 20, 100, 200); use -30 for bombs or rupoors): 5
+     [,1] [,2] [,3] [,4] [,5]
+[1,]  0.3  0.2    1  0.4  0.5
+[2,]  1.0  1.0    1  1.0  1.0
+[3,]  1.0  1.0    1  1.0  0.4
+[4,]  1.0  1.0    1  1.0  0.2
+     row col
+[1,]   1   5
+Indicate the row of the cell (top = 1): 1
+Indicate the column of the cell (left = 1): 5
+Indicate the rupee value of the cell (1, 5, 20, 100, 200); use -30 for bombs or rupoors): 5
+     [,1] [,2] [,3] [,4] [,5]
+[1,] 0.25 0.25    1    0 1.00
+[2,] 1.00 1.00    1    1 1.00
+[3,] 1.00 1.00    1    1 0.25
+[4,] 1.00 1.00    1    1 0.25
+     row col
+[1,]   1   1
+[2,]   1   2
+[3,]   3   5
+[4,]   4   5
+Indicate the row of the cell (top = 1): 
+```
+
+## Conclusions
+
+This was a fun simulation to do, another example of complexities in games. It may be worth pursuing reinforcement learning for this problem in the future, but I'm not sure, since the total number of possibilities is relatively small (i.e., $\binom{20}{4} = 4845$ possibilities). 
+
+It would be worth figuring out how to extend this simulation for the intermediate and advanced cases in Thrill Digger, but I haven't gotten to them.
