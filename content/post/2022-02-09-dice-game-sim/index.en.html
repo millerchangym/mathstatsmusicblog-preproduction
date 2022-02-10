@@ -1,0 +1,93 @@
+---
+title: Simulating "The Dice Game" in R
+author: Yeng Miller-Chang
+date: '2022-02-09'
+slug: dice-game-sim
+categories: []
+tags:
+  - dnd
+  - probability
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<p>A friend sent me the <a href="https://www.tiktok.com/@dimension20/video/7051989932579261742">following TikTok video</a> where the speaker refers to “The Dice Game,” consisting of the following steps:</p>
+<ul>
+<li>Roll a 4-sided die (d4). If you roll a 4, go on; otherwise, start over.</li>
+<li>Roll a 6-sided die (d6). If you roll a 6, go on; otherwise, start over from the 4-sided die.</li>
+<li>And repeat the process for a d8, d10, d12, and d20, starting over from the d4 if you do not attain the maximum value of the die you are rolling.</li>
+</ul>
+<div id="how-many-rolls-should-we-expect-to-roll-to-win-the-dice-game" class="section level2">
+<h2>How many rolls should we expect to roll to “win” the dice game?</h2>
+<p>We answer this question via a Monte Carlo simulation. This code could have not been written without the assistance of <a href="https://math.stackexchange.com/users/602473/david">David</a> and an anonymous Discord user.</p>
+<pre class="r"><code>library(future.apply)
+plan(multisession)
+start_time &lt;- proc.time()
+n_throws &lt;- function(){
+  throws &lt;- 0
+  repeat {
+    repeat {
+      repeat {
+        repeat {
+          repeat {
+            repeat {
+              dice4 &lt;- sample.int(4, 1)
+              throws &lt;- throws + 1
+              if (dice4 == 4) break
+            }
+            dice6 &lt;- sample.int(6, 1)
+            throws &lt;- throws + 1
+            if (dice6 == 6) break
+          }
+          dice8 &lt;- sample.int(8, 1)
+          throws &lt;- throws + 1
+          if (dice8 == 8) break
+        }
+        dice10 &lt;- sample.int(10, 1)
+        throws &lt;- throws + 1
+        if (dice10 == 10) break
+      }
+      dice12 &lt;- sample.int(12, 1)
+      throws &lt;- throws + 1
+      if (dice12 == 12) break
+    }
+    dice20 &lt;- sample.int(20, 1)
+    throws &lt;- throws + 1
+    if (dice20 == 20) break
+  }
+  return(throws)
+}
+
+data &lt;- future_replicate(2000, n_throws())
+&gt; (proc.time() - start_time)/60
+       user      system     elapsed 
+0.006500000 0.001333333 7.040000000 </code></pre>
+<p>Below we show a histogram of these data.</p>
+<pre class="r"><code>library(ggplot2)
+ggplot(data.frame(x = data), aes(x = x)) + 
+  geom_histogram(breaks = seq(0, 5e6, 500000), 
+                 fill = &quot;blue&quot;, 
+                 alpha = 0.25) + 
+  stat_bin(aes(y = ..count.., label = ..count..), 
+           geom=&quot;text&quot;, 
+           breaks = seq(0, 5e6, 500000), 
+           position = position_stack(vjust = 1.05)) +
+  scale_x_continuous(labels = function(x) { x/1e6 }) + 
+  scale_y_continuous(breaks = seq(0, 1000, 200)) + 
+  theme_bw() + 
+  ylab(&quot;Count&quot;) + 
+  xlab(&quot;Number of Dice Rolls (in millions)&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="864" />
+Noticeably, these data are right-skewed (skewness estimate of 1.7978162). Our standard five-number summary in summarizing these data is:</p>
+<pre class="r"><code>summary(data)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      44  183009  444204  642058  891602 4145846</code></pre>
+<p>Thus 25% of the time (roughly 500 of the 2000 trials), we have up to 183,000 or so rolls; and about 50% of the time, we have up to around 445,000 rolls. This is an astonishing amount of variability; one would hope that these estimates would stabilize eventually. On average, we have an estimate of around 642,000 rolls; however, one must keep the variability in these data in mind when attempting to interpret this average.</p>
+<p>Obviously, if I have more time available, I will increase the number of trials for this simulation.</p>
+</div>
+<div id="some-comments-on-theory" class="section level2">
+<h2>Some Comments on Theory</h2>
+<p>One can observe this is a Markov chain, where the states can all be given by rolling the given dice, and the only possible transitions are d4 to d4, d4 to any one of the other die, and d20 to an ending state of finishing the game. I am not as familiar with the theory of stochastic processes as I’d like, but I would imagine additional insight can be provided there.</p>
+</div>
