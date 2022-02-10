@@ -17,6 +17,8 @@ A friend sent me the [following TikTok video](https://www.tiktok.com/@dimension2
 * Roll a 6-sided die (d6). If you roll a 6, go on; otherwise, start over from the 4-sided die.
 * And repeat the process for a d8, d10, d12, and d20, starting over from the d4 if you do not attain the maximum value of the die you are rolling.
 
+If you manage to roll a 20 on the d20, you "win" the game.
+
 ## How many rolls should we expect to roll to "win" the dice game?
 
 We answer this question via a Monte Carlo simulation. This code could have not been written without the assistance of [David](https://math.stackexchange.com/users/602473/david) and an anonymous Discord user. 
