@@ -88,10 +88,6 @@ Noticeably, these data are right-skewed (skewness estimate of 1.7978162). Our st
 <p>Thus 25% of the time (roughly 500 of the 2000 trials), we have up to 183,000 or so rolls; and about 50% of the time, we have up to around 445,000 rolls. This is an astonishing amount of variability; one would hope that these estimates would stabilize eventually. On average, we have an estimate of around 642,000 rolls; however, one must keep the variability in these data in mind when attempting to interpret this average.</p>
 <p>Obviously, if I have more time available, I will increase the number of trials for this simulation.</p>
 </div>
-<div id="some-comments-on-theory" class="section level2">
-<h2>Some Comments on Theory</h2>
-<p>One can observe this is a Markov chain, where the states can all be given by rolling the given dice as well as the finishing state, and the only possible transitions are d4 to d4, d4 to any one of the other die, and d20 to an ending state of finishing the game. I am not as familiar with the theory of stochastic processes as I’d like, but I would imagine additional insight can be provided there.</p>
-</div>
 <div id="extending-to-100000-trials" class="section level2">
 <h2>Extending to 100,000 trials</h2>
 <p>Thank you, again, to David, who has run 100,000 trials of the above code. Below we show a histogram and five-number summary of these data.</p>
@@ -120,4 +116,9 @@ ggplot(data.frame(x = vec), aes(x = x)) +
 <div id="conclusion-what-do-the-data-suggest" class="section level2">
 <h2>Conclusion: What do the data suggest?</h2>
 <p>Regardless of how far these two estimates are, one thing is clear: about 50% of the time, it will take roughly 420,000 rolls to “win” the game; and about 75% of the time, it will take 850,000 or so rolls to “win” the game. That is a lot of rolling!</p>
+</div>
+<div id="some-comments-on-theory" class="section level2">
+<h2>Some Comments on Theory</h2>
+<p>One can observe this is a Markov chain, where the states can all be given by rolling the given dice as well as the finishing state, and the only possible transitions are d4 to d4, d4 to any one of the other die, and d20 to an ending state of finishing the game. I am not as familiar with the theory of stochastic processes as I’d like, but I would imagine additional insight can be provided there.</p>
+<p>I would speculate we should be able to compute our five-number summaries exactly using some of the theory from Markov chains.</p>
 </div>

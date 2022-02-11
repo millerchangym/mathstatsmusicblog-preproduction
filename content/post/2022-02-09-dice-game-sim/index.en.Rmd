@@ -348,10 +348,6 @@ Thus 25% of the time (roughly 500 of the 2000 trials), we have up to 183,000 or 
 
 Obviously, if I have more time available, I will increase the number of trials for this simulation.
 
-## Some Comments on Theory
-
-One can observe this is a Markov chain, where the states can all be given by rolling the given dice as well as the finishing state, and the only possible transitions are d4 to d4, d4 to any one of the other die, and d20 to an ending state of finishing the game. I am not as familiar with the theory of stochastic processes as I'd like, but I would imagine additional insight can be provided there.
-
 ## Extending to 100,000 trials
 
 Thank you, again, to David, who has run 100,000 trials of the above code. Below we show a histogram and five-number summary of these data.
@@ -383,3 +379,9 @@ The median last time was 445,000 rolls; now it's about 415,700 rolls. Additional
 ## Conclusion: What do the data suggest?
 
 Regardless of how far these two estimates are, one thing is clear: about 50% of the time, it will take roughly 420,000 rolls to "win" the game; and about 75% of the time, it will take 850,000 or so rolls to "win" the game. That is a lot of rolling!
+
+## Some Comments on Theory
+
+One can observe this is a Markov chain, where the states can all be given by rolling the given dice as well as the finishing state, and the only possible transitions are d4 to d4, d4 to any one of the other die, and d20 to an ending state of finishing the game. I am not as familiar with the theory of stochastic processes as I'd like, but I would imagine additional insight can be provided there.
+
+I would speculate we should be able to compute our five-number summaries exactly using some of the theory from Markov chains.
