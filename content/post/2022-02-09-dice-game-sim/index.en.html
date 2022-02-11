@@ -90,5 +90,34 @@ Noticeably, these data are right-skewed (skewness estimate of 1.7978162). Our st
 </div>
 <div id="some-comments-on-theory" class="section level2">
 <h2>Some Comments on Theory</h2>
-<p>One can observe this is a Markov chain, where the states can all be given by rolling the given dice, and the only possible transitions are d4 to d4, d4 to any one of the other die, and d20 to an ending state of finishing the game. I am not as familiar with the theory of stochastic processes as I’d like, but I would imagine additional insight can be provided there.</p>
+<p>One can observe this is a Markov chain, where the states can all be given by rolling the given dice as well as the finishing state, and the only possible transitions are d4 to d4, d4 to any one of the other die, and d20 to an ending state of finishing the game. I am not as familiar with the theory of stochastic processes as I’d like, but I would imagine additional insight can be provided there.</p>
+</div>
+<div id="extending-to-100000-trials" class="section level2">
+<h2>Extending to 100,000 trials</h2>
+<p>Thank you, again, to David, who has run 100,000 trials of the above code. Below we show a histogram and five-number summary of these data.</p>
+<pre class="r"><code>vec &lt;- eval(parse(&quot;dnd.txt&quot;))
+ggplot(data.frame(x = vec), aes(x = x)) + 
+  geom_histogram(breaks = seq(0, 5e6, 500000), 
+                 fill = &quot;blue&quot;, 
+                 alpha = 0.25) + 
+  stat_bin(aes(y = ..count.., label = ..count..), 
+           geom=&quot;text&quot;, 
+           breaks = seq(0, 5e6, 500000), 
+           position = position_stack(vjust = 1.05)) +
+  scale_x_continuous(labels = function(x) { x/1e6 }) + 
+  scale_y_continuous(breaks = seq(0, 60000, 10000)) + 
+  theme_bw() + 
+  ylab(&quot;Count&quot;) + 
+  xlab(&quot;Number of Dice Rolls (in millions)&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-5-1.png" width="864" /></p>
+<pre class="r"><code>summary(vec)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       9  171488  415741  597603  831499 7876177</code></pre>
+<p>Previously, 25% of the time, we had up to about 180,000 rolls; this time, it’s up to about 172,000. While these estimates are still quite different, in the grand scheme of things, these are relatively close.</p>
+<p>The median last time was 445,000 rolls; now it’s about 415,700 rolls. Additionally, the mean was around 642,000 rolls last time; now it is around 600,000 rolls.</p>
+<p>75% of the time last time, we had around 890,000 rolls; now, it is more like 830,000.</p>
+</div>
+<div id="conclusion-what-do-the-data-suggest" class="section level2">
+<h2>Conclusion: What do the data suggest?</h2>
+<p>Regardless of how far these two estimates are, one thing is clear: about 50% of the time, it will take roughly 420,000 rolls to “win” the game; and about 75% of the time, it will take 850,000 or so rolls to “win” the game. That is a lot of rolling!</p>
 </div>
