@@ -1,0 +1,195 @@
+---
+title: An Exact Solution to "The Dice Game" using R, Python, and Markov Chains
+author: Yeng Miller-Chang
+date: '2022-02-12'
+slug: an-exact-solution-to-the-dice-game
+categories: []
+tags:
+  - dnd
+  - probability
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<p>To recall “The Dice Game,” a friend sent me the <a href="https://www.tiktok.com/@dimension20/video/7051989932579261742">following TikTok video</a> where the speaker refers to “The Dice Game,” consisting of the following steps:</p>
+<ul>
+<li>Roll a 4-sided die (d4). If you roll a 4, go on; otherwise, start over.</li>
+<li>Roll a 6-sided die (d6). If you roll a 6, go on; otherwise, start over from the 4-sided die.</li>
+<li>And repeat the process for a d8, d10, d12, and d20, starting over from the d4 if you do not attain the maximum value of the die you are rolling.</li>
+</ul>
+<p>If you manage to roll a 20 on the d20, you “win” the game.</p>
+<p>The question we aim to answer in this post is <strong>what is the distribution of the number of rolls it takes to win this game?</strong> In a prior <a href="/post/dice-game-sim/">post</a>, I described work I had done with collaborators to perform Monte Carlo simulations for the dice game, to find that results were highly variable and would likely take a very long time to converge. In this post, we use results from the theory of Markov chains to describe this problem, building from the theoretical work from collaboration from Math StackExchange.</p>
+<div id="mathematical-theory" class="section level2">
+<h2>Mathematical Theory</h2>
+<p>The Dice Game can be represented as a seven-state <a href="https://en.wikipedia.org/wiki/Discrete-time_Markov_chain">discrete-time Markov chain</a> whose transition matrix is given by
+<span class="math display">\[\mathbf{P} = \begin{array}{cc}
+\begin{array}{c}
+\end{array} &amp; 
+\begin{array}{ccccccc}
+\text{d}4 \hspace{1cm} &amp; \text{d}6\hspace{0.25cm} &amp; \text{d}8 \hspace{0.25cm}&amp; \text{d}10\hspace{0.25cm} &amp; \text{d}12 \hspace{0.25cm}&amp; \text{d}20\hspace{0.25cm} &amp; \text{win}
+\end{array} \\ 
+\begin{array}{c}
+\text{d}4 \\
+\text{d}6 \\
+\text{d}8 \\
+\text{d}10 \\
+\text{d}12 \\
+\text{d}20 \\
+\text{win}
+\end{array} &amp; 
+\left[\begin{array}{ccccccc}
+3/4 &amp; 1/4 \\
+5/6 &amp; &amp; 1/6 \\
+7/8 &amp; &amp; &amp; 1/8 \\
+9/10 &amp; &amp; &amp; &amp; 1/10 \\
+11/12 &amp; &amp; &amp; &amp; &amp; 1/12 \\
+19/20 &amp; &amp; &amp; &amp; &amp; &amp; 1/20 \\
+&amp; &amp; &amp; &amp; &amp; &amp; 1
+\end{array}\right]
+\end{array}\text{.}\]</span>
+All blank cells above are assumed to be <span class="math inline">\(0\)</span>.</p>
+<p>To understand how to interpret the above, we represent transitions between the dice rolls by starting from the left and making our way up. For example, assuming you’re currently rolling the d4 (left side of the matrix), the probability that you will be rolling a d4 subsequently (top of the matrix) is <span class="math inline">\(3/4\)</span> (i.e., you will roll the d4 again if you don’t obtain a 4). Similarly, assuming you’re currently rolling the d4 (left side of the matrix), the probability you will be rolling a d6 subsequently (top of the matrix) is <span class="math inline">\(1/4\)</span> (i.e., you will roll the d6 if you roll a 4 on the d4).</p>
+<p>A fact of Markov chains is that if <span class="math inline">\(\mathbf{P}\)</span> is a transition matrix for one transition (as given above), then <span class="math inline">\(\mathbf{P}^n\)</span> is the transition matrix for <span class="math inline">\(n\)</span> steps, with <span class="math inline">\(n \geq 1\)</span> an integer.</p>
+<p>The desired probability we seek can be described using linear algebra; namely, consider the fact that the probability we seek, from a <span class="math inline">\(1\)</span>-step transition, is given by
+<span class="math display">\[\underbrace{\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}\mathbf{P}}_{\text{the d4 row}}\begin{bmatrix}
+0 \\
+0 \\
+0 \\
+0 \\
+0 \\
+0 \\
+1
+\end{bmatrix} = \mathbf{u}^{T}\mathbf{P}\mathbf{v} = \mathbf{P}_{\text{d4}, \text{win}}\text{.}\]</span>
+The corresponding element of <span class="math inline">\(\mathbf{P}^n\)</span> is thus <span class="math inline">\(\mathbf{u}^{T}\mathbf{P}^n\mathbf{v} = \mathbf{P}^n_{\text{d4}, \text{win}}\)</span>. However, note that this probability is <em>cumulative</em> in that it describes the probability that a transition is made from d4 to the win state <em>within</em> <span class="math inline">\(n\)</span> transitions, not <em>strictly</em> at <span class="math inline">\(n\)</span> transitions.</p>
+<p>The probability of d4 to winning in one transition (though obviously <span class="math inline">\(0\)</span>) is <span class="math inline">\(\mathbf{P}_{\text{d4, win}}\)</span>. In two transitions, <span class="math inline">\(\mathbf{P}^2_{\text{d4, win}}\)</span> would contain the probability of a d4 to a win <em>within</em> two transitions, not strictly at two transitions. Thus, the probability of a d4 to a win in <em>exactly</em> two transitions is <span class="math inline">\(\mathbf{P}^2_{\text{d4, win}} - \mathbf{P}_{\text{d4, win}}\)</span>.</p>
+<p>Similarly, the probability of a d4 to a win in <em>exactly</em> three transitions <span class="math inline">\(\mathbf{P}^3_{\text{d4, win}} - \mathbf{P}^2_{\text{d4, win}}\)</span> since we must consider the differences between the probabilities <em>within</em> three transitions and the probabilities <em>within</em> two transitions to yield the probability of <em>exactly</em> three transitions.</p>
+<p>Thus, the probability of a transition being made from d4 to the win state in <em>exactly</em> <span class="math inline">\(n\)</span> transitions is
+<span class="math display">\[p(n) = \mathbf{P}^n_{\text{d4, win}} - \mathbf{P}^{n-1}_{\text{d4, win}}\]</span>
+for each <span class="math inline">\(n \geq 2\)</span>, and <span class="math inline">\(p(1) = \mathbf{P}_{\text{d4, win}}\)</span>. Obviously, <span class="math inline">\(p(1)\)</span> through <span class="math inline">\(p(5)\)</span> will all be <span class="math inline">\(0\)</span> since a minimum of <span class="math inline">\(6\)</span> transitions is necessary to win the game.</p>
+<p>It is also worth noting that <span class="math inline">\(\mathbf{P}^n_{\text{d4, win}} = P(n)\)</span> is the cumulative distribution function of the number of rolls it takes to win the game. Thus, we may compute <span class="math inline">\(P(n)\)</span> and then compute pairwise differences to compute <span class="math inline">\(p(n) = P(n) - P(n-1)\)</span>.</p>
+</div>
+<div id="programming" class="section level2">
+<h2>Programming</h2>
+<p>The logical question to consider next is how large <span class="math inline">\(n\)</span> needs to be so that the sum of the probabilities (considering floating-point error in R) is close enough to <span class="math inline">\(1\)</span>. Equivalently, what large value <span class="math inline">\(N\)</span> do we need so that <span class="math inline">\(P(N) \approx 1\)</span>?</p>
+<p>In each time I ran the above computation for <span class="math inline">\(P(n)\)</span>, the probabilities were close to <span class="math inline">\(1\)</span> for R at roughly <span class="math inline">\(N = 22,806,186\)</span> rolls. Thus, I computed <span class="math inline">\(P(n)\)</span> from <span class="math inline">\(n = 1\)</span> to 23 million using R, and took pairwise differences to compute <span class="math inline">\(p(n)\)</span> from <span class="math inline">\(n = 1\)</span> to 23 million. I then saved this information into a table so that I would not have to worry about running this code again.</p>
+<pre class="r"><code>library(expm)
+
+A &lt;- matrix(
+  c(  3/4, 1/4,   0,    0,     0,     0,    0,
+      5/6,   0, 1/6,    0,     0,     0,    0,
+      7/8,   0,   0,  1/8,     0,     0,    0,
+     9/10,   0,   0,    0,  1/10,     0,    0,
+    11/12,   0,   0,    0,     0,  1/12,    0,
+    19/20,   0,   0,    0,     0,     0, 1/20,
+        0,   0,   0,    0,     0,     0,    1),
+  nrow = 7,
+  ncol = 7,
+  byrow = TRUE
+)
+
+mat_power &lt;- function(A, n) {
+  A %^% n
+}
+
+# around 23 million is fine
+# exact: 22,806,186
+end_idx &lt;- 23000000
+init_state &lt;- 1
+final_state &lt;- 7
+
+# Compute the CDF and the PMF
+rolls_cdf &lt;- sapply(X = 1:end_idx, 
+                    FUN = function(x) { mat_power(A, x)[init_state, final_state] })
+rolls_pmf &lt;- c(0, diff(rolls_cdf))
+rm(init_state, final_state)
+rm(mat_power)
+rm(A)
+
+# Throw into a single table
+df &lt;- data.frame(
+  x = 1:end_idx,
+  cdf = rolls_cdf,
+  pmf = rolls_pmf
+)
+rm(rolls_cdf, rolls_pmf, end_idx)
+write.table(df, &quot;20220211_exact_sim.txt&quot;, row.names = FALSE)</code></pre>
+<p>Of course, we will run into floating point errors, but it is worth performing some initial visualizations to make sure that what we output looks reasonable. R’s plotting functions are extremely slow given the number of points we are trying to plot, so we instead use the <code>reticulate</code> package to load Python into R, using <code>matplotlib</code> to do our plotting.</p>
+<p>We combine R and Python code via the <code>reticulate</code> package to generate an image of the CDF <span class="math inline">\(P(n)\)</span> using <code>matplotlib</code>.</p>
+<pre class="r"><code>library(data.table)
+library(reticulate)
+library(png)
+
+df &lt;- fread(&quot;20220211_exact_sim.txt&quot;)
+Sys.setenv(RETICULATE_MINICONDA_PATH = &quot;C:/MincondaPython39&quot;)
+# py_install(&quot;matplotlib&quot;)
+# py_install(&quot;pandas&quot;)</code></pre>
+<pre class="python"><code>import pandas as pd
+df = pd.DataFrame.from_dict(r.df)
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+mpl.use(&#39;Agg&#39;)
+plt.rcParams[&#39;agg.path.chunksize&#39;] = 0
+
+plt.figure()
+df.plot(x = &quot;x&quot;, y = &quot;cdf&quot;, legend = None)
+plt.xlabel(&quot;Number of Rolls (in millions)&quot;)
+plt.ylabel(&quot;Cumulative Distribution Function&quot;)
+plt.show()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="python"><code>plt.close(plt.gcf())</code></pre>
+<p>Visually, this appears to meet all of the <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function#Properties">properties of a valid CDF</a>: it is non-decreasing, has left-infinite limit of <span class="math inline">\(0\)</span>, and a right-infinite limit of <span class="math inline">\(1\)</span>.</p>
+<p>The CDF looks reasonable, so then we plot the PMF.</p>
+<pre class="python"><code>plt.figure()
+df.plot(x = &quot;x&quot;, y = &quot;pmf&quot;, legend = None)
+plt.xlabel(&quot;Number of Rolls (in millions)&quot;)
+plt.ylabel(&quot;Probability Mass Function (divided by 10^(-5))&quot;)
+plt.show()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
+<pre class="python"><code>plt.close(plt.gcf())</code></pre>
+<p>This PMF appears to roughly align with <a href="/post/dice-game-sim#extending-to-100000-trials">what we observed previously</a> via Monte Carlo simulation.</p>
+</div>
+<div id="statistical-computations" class="section level2">
+<h2>Statistical Computations</h2>
+<p>We can use basic probability to compute some quantities we would be interested in.</p>
+<p><strong>Question 1</strong>: How many rolls would you need to win the game 25% of the time?</p>
+<pre class="r"><code>min(which(df$cdf &gt;= 0.25))</code></pre>
+<pre><code>## [1] 171997</code></pre>
+<p><strong>Question 2</strong>: Extend question 1, but now for 50%, 75%, 95%, and 99% of the time?</p>
+<pre class="r"><code># 50% 
+min(which(df$cdf &gt;= 0.5))</code></pre>
+<pre><code>## [1] 414407</code></pre>
+<pre class="r"><code># 75%
+min(which(df$cdf &gt;= 0.75))</code></pre>
+<pre><code>## [1] 828808</code></pre>
+<pre class="r"><code># 95%
+min(which(df$cdf &gt;= 0.95))</code></pre>
+<pre><code>## [1] 1791018</code></pre>
+<pre class="r"><code># 99%
+min(which(df$cdf &gt;= 0.99))</code></pre>
+<pre><code>## [1] 2753228</code></pre>
+<p><strong>Question 3</strong>: What is the average number of rolls we would expect to roll to win?</p>
+<p>Recalling from probability that the expected value is given by
+<span class="math display">\[\mathbb{E}[X] = \sum_n n \cdot p(n)\]</span>
+we thus have</p>
+<pre class="r"><code>sum(df$x * df$pmf)</code></pre>
+<pre><code>## [1] 597860</code></pre>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>If you want to win The Dice Game:</p>
+<ul>
+<li>25% of the time, you should expect to roll your dice 171,997 times.</li>
+<li>50% of the time: 414,407 times.</li>
+<li>75% of the time: 828,808 times.</li>
+<li>95% of the time: 1,791,018 times.</li>
+<li>99% of the time: 2,753,228 times.</li>
+</ul>
+<p>The average (mean) number of times you should expect to roll is 597,860 times.</p>
+</div>
