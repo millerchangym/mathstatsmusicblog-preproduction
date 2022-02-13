@@ -157,7 +157,7 @@ plt.rcParams['agg.path.chunksize'] = 0
 
 plt.figure()
 df.plot(x = "x", y = "cdf", legend = None)
-plt.xlabel("Number of Rolls (in millions)")
+plt.xlabel("Number of Rolls (in tens of millions)")
 plt.ylabel("Cumulative Distribution Function")
 plt.show()
 plt.close(plt.gcf())
@@ -170,7 +170,7 @@ The CDF looks reasonable, so then we plot the PMF.
 ```{python}
 plt.figure()
 df.plot(x = "x", y = "pmf", legend = None)
-plt.xlabel("Number of Rolls (in millions)")
+plt.xlabel("Number of Rolls (in tens of millions)")
 plt.ylabel("Probability Mass Function (divided by 10^(-5))")
 plt.show()
 plt.close(plt.gcf())

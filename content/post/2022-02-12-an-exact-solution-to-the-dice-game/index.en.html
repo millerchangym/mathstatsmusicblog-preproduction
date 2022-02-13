@@ -139,7 +139,7 @@ plt.rcParams[&#39;agg.path.chunksize&#39;] = 0
 
 plt.figure()
 df.plot(x = &quot;x&quot;, y = &quot;cdf&quot;, legend = None)
-plt.xlabel(&quot;Number of Rolls (in millions)&quot;)
+plt.xlabel(&quot;Number of Rolls (in tens of millions)&quot;)
 plt.ylabel(&quot;Cumulative Distribution Function&quot;)
 plt.show()</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
@@ -148,7 +148,7 @@ plt.show()</code></pre>
 <p>The CDF looks reasonable, so then we plot the PMF.</p>
 <pre class="python"><code>plt.figure()
 df.plot(x = &quot;x&quot;, y = &quot;pmf&quot;, legend = None)
-plt.xlabel(&quot;Number of Rolls (in millions)&quot;)
+plt.xlabel(&quot;Number of Rolls (in tens of millions)&quot;)
 plt.ylabel(&quot;Probability Mass Function (divided by 10^(-5))&quot;)
 plt.show()</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
