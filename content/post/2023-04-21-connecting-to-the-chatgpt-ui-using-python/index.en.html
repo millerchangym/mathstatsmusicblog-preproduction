@@ -1,0 +1,84 @@
+---
+title: Connecting to the ChatGPT API using Python and Docker
+author: Yeng Miller-Chang
+date: '2023-04-21'
+slug: chatgpt-api-python-docker
+tags:
+  - ai
+  - api
+  - chatgpt
+  - docker
+  - python
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The <a href="https://platform.openai.com/docs/quickstart">quickstart page</a> on the OpenAI website covers how to set up a connection to the ChatGPT API using Python. However, it does not explain how to replicate this same workflow using Docker, which would be useful for reproducibility purposes. We explain how to perform this same workflow using Docker.</p>
+</div>
+<div id="setting-up-access-to-the-chatgpt-api" class="section level2">
+<h2>Setting up access to the ChatGPT API</h2>
+<p>The website for setting up accessing to the ChatGPT API (<a href="https://platform.openai.com/" class="uri">https://platform.openai.com/</a>) is <em>not</em> the same as the website for accessing OpenAI’s ChatGPT UI (<a href="https://chat.openai.com/" class="uri">https://chat.openai.com/</a>). It is also worth noting that billing for the ChatGPT UI is <em>not</em> the same as the billing associated with the ChatGPT API. ChatGPT Plus, which currently uses GPT-4, currently costs $20/month. The ChatGPT API currently <a href="https://openai.com/pricing">costs</a> $0.002/1000 tokens.</p>
+<p>Using the ChatGPT API link given above, after logging in, click on the top right and go to “Manage Account.” Click “Billing” on the left toolbar. You must have a payment method in your account in order to use the ChatGPT API. Once you have a payment method included, you may go to the OpenAI <a href="https://platform.openai.com/docs/quickstart">quickstart tutorial</a> and you should be able to click through the examples without any issues.</p>
+</div>
+<div id="setting-up-the-docker-container" class="section level2">
+<h2>Setting up the Docker container</h2>
+<p>I am using WSL2 and Ubuntu with the Docker CLI. In brief, to set these up, you will need to enable <a href="https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v">Hyper-V using PowerShell</a>, enable <a href="https://stackoverflow.com/a/68854362/3625022">containers using PowerShell</a>, and enable <a href="https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1">virtualization</a>. Then WSL2 <a href="https://learn.microsoft.com/en-us/windows/wsl/install">can be installed</a> and then one can follow the Docker <a href="https://docs.docker.com/desktop/windows/wsl/">installation instructions</a>.</p>
+<p>Continue to follow the <a href="https://platform.openai.com/docs/quickstart">quickstart tutorial</a> until after the API key is created. You should have cloned OpenAI’s Git repository, and included your secret API key in an <code>.env</code> file.</p>
+<p>With thanks to guidance from <a href="https://pythonspeed.com/articles/activate-virtualenv-dockerfile/">Turner-Trauring</a>, we can use the following Dockerfile and add to the Git repository:</p>
+<pre><code>FROM python:3.11.3
+
+ENV VIRTUAL_ENV=/opt/venv
+ENV PIP_ROOT_USER_ACTION=ignore
+ENV FLASK_ENV=development
+
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH=&quot;$VIRTUAL_ENV/bin:$PATH&quot;
+
+COPY requirements.txt .
+COPY app.py .
+COPY templates ./templates
+COPY .env .
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+CMD [&quot;flask&quot;, &quot;run&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;]</code></pre>
+<p>To avoid errors with <code>pip</code>, I changed the <code>numpy</code> line of <code>requirements.txt</code> to</p>
+<pre><code>numpy==1.22.0</code></pre>
+</div>
+<div id="docker-command-execution" class="section level2">
+<h2>Docker command execution</h2>
+<p><strong>First</strong>, be sure that the file <code>/etc/resolv.conf</code> has the correct DNS configuration for your purposes. See <a href="https://stackoverflow.com/a/62087459/3625022">this link</a>. Your correct DNS can be found by navigating to your Command Prompt, running <code>ipconfig -all</code> and looking for the value next to <code>Default Gateway</code>. The file <code>/etc/resolv.conf</code> is a read-only file, and if you use <code>vi</code> or <code>vim</code> to edit it, you will need to use <code>:w !sudo tee %</code> to edit the file after making the change (see <a href="https://superuser.com/a/785016">this link</a>).</p>
+<p>In WSL2, navigate to the directory in which the Git repository is located. Run the command</p>
+<pre><code>docker build -t chatgpt:1 .</code></pre>
+<p>This creates a Docker image based on the Dockerfile, tagging it with the name <code>chatgpt:1</code>. Pandas, in particular, will take a long time to install.</p>
+<p>Then, one can execute the command</p>
+<pre><code>docker run -p 5001:5000 chatgpt:1</code></pre>
+<p>The following will appear:</p>
+<pre><code> * Serving Flask app &#39;app&#39; (lazy loading)
+ * Environment: development
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://172.17.0.2:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 336-956-833</code></pre>
+<p><strong>In a new command prompt window</strong>, open WSL2 again and if you don’t have a web browser installed already, install one. (I use <a href="https://askubuntu.com/questions/510056/how-to-install-google-chrome">Google Chrome in Ubuntu</a>.) In your web browser, navigate to the address <code>localhost:5001</code>. This will yield the following window.</p>
+<p align="center">
+<img src="images/browser.png" title="fig:" alt="Picture of web browser with text box asking you for an animal" />
+</p>
+<p>I typed in the word “dog” before clicking the “Generate names” button.</p>
+<p align="center">
+<img src="images/browser2.png" title="fig:" alt="Dog name suggestions" />
+</p>
+<p>ChatGPT suggested the names “Super Sniffer,” “Captain Paws,” and “The Bark Knight.” You can then move on to the remainder of the quickstart page provided by OpenAI.</p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>We demonstrated how to replicate OpenAI’s quickstart tutorial using Docker and Python within WSL2. This tutorial can be easily extended to individual needs.</p>
+</div>
