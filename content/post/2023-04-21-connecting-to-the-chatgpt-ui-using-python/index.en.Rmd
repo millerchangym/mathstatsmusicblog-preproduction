@@ -19,7 +19,7 @@ The [quickstart page](https://platform.openai.com/docs/quickstart) on the OpenAI
 
 ## Setting up access to the ChatGPT API
 
-The website for setting up accessing to the ChatGPT API (https://platform.openai.com/) is *not* the same as the website for accessing OpenAI's ChatGPT UI (https://chat.openai.com/). It is also worth noting that billing for the ChatGPT UI is *not* the same as the billing associated with the ChatGPT API. ChatGPT Plus, which currently uses GPT-4, currently costs $20/month. The ChatGPT API currently [costs](https://openai.com/pricing) $0.002/1000 tokens.
+The website for setting up access to the ChatGPT API (https://platform.openai.com/) is *not* the same as the website for accessing OpenAI's ChatGPT UI (https://chat.openai.com/). It is also worth noting that billing for the ChatGPT UI is *not* the same as the billing associated with the ChatGPT API. ChatGPT Plus, which currently uses GPT-4, currently costs $20/month. The ChatGPT API currently [costs](https://openai.com/pricing) $0.002/1000 tokens.
 
 Using the ChatGPT API link given above, after logging in, click on the top right and go to "Manage Account." Click "Billing" on the left toolbar. You must have a payment method in your account in order to use the ChatGPT API. Once you have a payment method included, you may go to the OpenAI [quickstart tutorial](https://platform.openai.com/docs/quickstart) and you should be able to click through the examples without any issues.
 
