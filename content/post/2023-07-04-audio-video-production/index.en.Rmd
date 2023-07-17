@@ -1,0 +1,50 @@
+---
+title: A minimal audio and video production setup for lecturing
+author: Yeng Miller-Chang
+date: '2023-07-04'
+slug: audio-video-production
+categories: []
+tags:
+  - education
+  - technology
+---
+
+*Views and opinions expressed are solely my own.*
+
+## Introduction
+
+When I taught at Normandale Community College from Fall 2019 through Spring 2021, I transitioned the course I taught from an in-person to online mode of instruction in Spring 2020. I am not a professional producer or video editor, and had to go through many iterations to find an optimal setup for delivering high-quality sound alongside reading PowerPoint-like files, with video edits and captions. Here, I describe the equipment that was necessary to execute these goals.
+
+## TL;DR
+
+A minimal setup for the above consists of:
+
+* a decent microphone
+* an audio interface
+* a pre-amp
+* audio and screen capturing software
+* video editing and captioning software
+
+I was not interested in spending a lot of money and went through many iterations of the above equipment until I was satisfied. I am not compensated for any links that I've provided here; the links are solely provided for your convenience.
+
+The equipment that worked out best for me were
+
+* an [Electro-Voice RE20 microphone with broadcast arm](https://www.amazon.com/Electro-Voice-Microphone-Shockmount-Two-Section-Broadcast/dp/B00U1S4YY4), currently valued at $500
+* a [Focusrite Scarlett audio interface](https://www.amazon.com/gp/product/B07QSC92NG), currently valued at $229
+* a [dbx 286s pre-amp](https://www.amazon.com/gp/product/B004LWH79A), currently valued at $289
+* [OBS Studio](https://obsproject.com/), thankfully free
+* [Adobe Premiere Pro](https://www.adobe.com/products/premiere.html), currently valued at $20.99/month.
+
+## Why the expense?
+
+I tried at least 4-5 different microphones before I pursued the RE20.^[I cannot recall the specific microphones at the moment, but I know the [Blue Yeti](https://www.amazon.com/gp/product/B00N1YPXW2) was one of them.] In testing each microphone, I recorded myself using OBS Studio and wanted to make sure that, using my headphones, I could clearly hear myself and my voice was sufficiently resonant. One problem that came up frequently was that no matter how close I was to some of these microphones or how I set up the microphones, I would sound very distant in the recording. 
+
+A pre-amp is necessary to filter out ambient noise. However, pre-amps use XLR cables, which cannot be directly connected to laptops. Since I needed to record both my computer screen and myself talking simultaneously, I needed the audio interface to taken in the XLR input to a USB output, which my laptop would take in. 
+
+I tried quite a few software products before landing on Premiere Pro, but none of them offered the sort of flexibility I needed when it came to cutting out audio and video, as well as captioning.
+
+If you have very long videos (30 minutes or more) that have to be processed, like I did, I would strongly recommend having a laptop with a decent amount of power. My laptop doesn't have a great GPU, but it has a GPU nevertheless, which helped speed up Premiere Pro substantially.
+
+## An example
+
+You may find an example of a recorded lecture [here](https://www.youtube.com/watch?v=2IUn-V2i6-A).
