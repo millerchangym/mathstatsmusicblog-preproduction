@@ -21,7 +21,7 @@ user_groups:
 
 *Views and opinions expressed are solely my own.*
 
-I am a Senior Data Scientist - Global Knowledge Solutions at [General Mills, Inc.](https://www.generalmills.com/)
+I am a Senior ITQ (Innovation, Technology, and Quality) Data Scientist at [General Mills, Inc.](https://www.generalmills.com/) Beginning Fall 2023, I will be a student in the [Georgia Tech M.S. Computer Science program](https://omscs.gatech.edu/home), focusing primarily on computer vision, extensions of machine learning (deep learning, reinforcement learning, and NLP), and distributed computing.
 
 Prior to my current role, most of my experience was in education in the public sector, including statistics for medical-education research, research and planning at the community-college level, and K-12 educational accountability. I have also held private-sector roles in digital marketing, electronic health records, life insurance, and actuarial education.
 
