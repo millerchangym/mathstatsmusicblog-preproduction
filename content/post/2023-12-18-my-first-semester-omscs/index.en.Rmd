@@ -1,0 +1,71 @@
+---
+title: 'Review of my first semester of OMSCS: Computer Vision and Reinforcement Learning'
+author: Yeng Miller-Chang
+date: '2023-12-18'
+slug: my-first-semester-omscs
+categories: []
+tags:
+  - computer-science
+  - computer-vision
+  - reinforcement-learning
+  - omscs
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2023-12-18T19:15:07-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+*Views and opinions expressed are solely my own.*
+
+**The inevitable question**: I got an A in [Computer Vision (CS 6476)](https://omscs.gatech.edu/cs-6476-computer-vision) and a B in [Reinforcement Learning (CS 7642)](https://omscs.gatech.edu/cs-7642-reinforcement-learning). 
+
+## Introduction 
+
+This post marks the day when my grades for Computer Vision (CV) and Reinforcement Learning (RL) have been released for my first semester in OMSCS (Fall 2023). I will describe my experiences going through both courses.
+
+## Disclaimer
+
+**I do not recommend that anyone take these courses simultaneously in OMSCS, especially in your first semester of the program, and especially while working full-time**. I *chose* to do what I did because I wanted to pick up the skills and background quickly, and I had the prerequisite background to do well in them. I do not have an undergraduate CS degree, but frankly, these two courses are much more mathematical in content than pure-CS-infrastructure-ish courses like [Operating Systems](https://omscs.gatech.edu/cs-6200-introduction-operating-systems). I was familiar with some Python and pandas, but was completely unfamiliar with the NumPy, OpenCV, and PyTorch APIs which were used throughout these two courses. However, at the same time, I hold a graduate degree in statistics from a decent institution and did some PhD-level coursework, so I had an idea of what I was stepping into. **Do not do what I did, especially while working full-time, if you have not yet had to deal with the demands of graduate-level coursework.**^[To top that all off, I bought my first house this semester. Don't ask me how I managed that on top of everything else, because I'm not sure how I did.]
+
+## Coming from math and statistics
+
+These courses were eye-opening, to say the least. I have quite a bit of experience programming using R, Python, C, and Java professionally, but these courses forced me to write object-oriented code with appropriate citations. Furthermore, it was quite an experience to not have my hand held when it came to figuring out code optimizations: especially in reinforcement learning, I would have code that if not optimized, would take (linearly extrapolating) 30+ hours to run. Do I need to use a GPU? Do I need to perform parallelization? These were decisions I had to make *myself*, **without** anyone telling me to do them.
+
+Much of the content in these two courses involved reading papers, because the textbooks we used did not cover this material. My math and statistics backgrounds helped substantially; however, in this program, there is the extra burden of **having to replicate exactly what is in the paper using code**, tailoring it to your specific problem, and if appropriate, **optimizing the code.** This was an experience I frankly never had to deal with throughout my math or stats degrees, and was forced on us especially in computer vision, where we students would have to pay attention to an autograder that would time out after 15-20 minutes (depending on the assignment).
+
+Another aspect which was new to me in these courses is the focus on **hyperparameter tuning**. Especially when building out a deep neural net or executing a complicated computer vision algorithm, there are so many correlated variables to keep track of, and one has to be wise about how hyperparameters are set (otherwise convergence, for example, may not even happen!). This was such a departure from what I learned in math and stats courses. I had been used to, for the most part, justifying *mathematically* why I set certain values, and this whole idea of just setting hyperparameters until something works was completely foreign to me.  
+
+## Computer Vision
+
+I will not rehash everything that was covered in this course (you can click the links above for more specific details), but to summarize briefly, we covered the following topics: template matching, fast Fourier transform, marker detection, augmented reality, image stitching (panoramas), motion detection, object tracking, image classification, and a final project. Our tasks varied from playing *Where's Waldo?* using template matching to following people walking using particle filtering.
+
+As mentioned previously, **code optimization is a core part of this course.** I wasted *days* of work trying to figure out why my code kept timing out only to find that some loop was causing the autograder to time out. As I have learned from my experience in R, if you wish to do well in this course, **learn to fear the loop**. Use NumPy functions whenever possible, avoid loops where you can, and use loops only if you know for sure if the number of iterations involved in the loop will be small. 
+
+Another issue which comes up in this course is the problem of **robustness**. Many of the problems that are processed through the autograder are randomly generated, and if you wish to pass such cases, **your code must be robust enough to handle randomly-generated output.** In some situations, you may have to just re-submit your code until you get a decently-high score on a problem because the output generated is random. 
+
+Robustness comes up in another way in this course as well: many problems in the problem sets are cumulative by nature, **in that future problems rely on solutions from past problems.** Therefore, even though you may have tuned your algorithm to pass an earlier problem, it may fail a later problem. Similarly, if you re-tune your algorithm to pass a later problem, it may fail an earlier problem.
+
+You will also learn about the **struggle of digging through OpenCV documentation**. Much of the OpenCV documentation is outdated and/or is in C++ rather than Python, the lecture videos are mostly in MATLAB with typos for the equivalent code files in Python, and there are many functions that have poor documentation for which you will need to rely on Stack Overflow and similar tutorial websites to explain sufficiently.
+
+You will also learn the struggle of **sorting through computer vision literature**. I chose the Stereo Correspondence problem for my final project (i.e., figuring out what points of two images taken from different positions simultaneously correspond) and learned what it was like to parse, with little guidance, the literature on my own. I learned about max-flow algorithms in graph theory and how they solve the stereo correspondence problem, and coded an algorithm on my own for my final project.
+
+Overall, **I am glad that I had this experience** learning this material via OMSCS, as I couldn't have done this nearly as efficiently if I had tried to learn this material on my own. However, this is the type of course where you have to be willing to put in 30-40 hours a week if necessary to finish the problem sets. Once you get past the 3rd or 4th problem set, the course becomes marginally more manageable. Admittedly, I did not do as well as I'd like on the 3rd problem set, especially since there was one part of the assignment that was both assessed by the autograder and assessed by visual inspection which I performed relatively poorly on.
+
+## Reinforcement Learning
+
+To summarize briefly, we covered temporal difference learning, $Q$-learning, SARSA, the Knows What It Knows (KWIK) framework, game theory, and multi-agent reinforcement learning. The homework assignments are extremely straightforward and can take anywhere from 10 minutes to maybe 3-4 hours if you know what you're doing. 
+
+By far the most-time consuming portion of this course are the projects, especially the second and third projects. I spent both projects getting exposure to PyTorch for the first time in the context of deep-$Q$ networks and its multi-agent analogues. **PyTorch is not straightforward to use, and much of my frustration was learning about the intricacies of how to have it do deep-$Q$ networks efficiently.** I do recommend that if you could take Deep Learning (CS 7643) before this course - which I will be taking next semester - you should do it, as I've heard it introduces PyTorch in greater depth than Reinforcement Learning.
+
+**I learned the struggle of watching a reinforcement learning algorithm train overnight only for it not to converge, and for me to shut it down.** As a result of this course, I have paid for a monthly Colab Pro subscription so that I can use GPUs as necessary. For students who will be taking this course, be aware that **there is a hidden rubric** and the TAs hint that **they care a lot about the rationale behind why you did what you did, beyond presenting the mere results**. 
+
+Similar to CV, **I am glad that I had this experience** learning this material via OMSCS and I couldn't have tried to learn this material nearly as efficiently on my own. **The multi-agent reinforcement learning sections are still quite rough** given that they seem to have been added after the transition of instructors for this course. **The lectures demand a decent amount of math**: not only linear algebra, calculus, and probability, but some hints from real analysis (more specifically dealing with inequalities and contraction mappings) and convex optimization as well. I do recommend making sure your foundations in the topics above are solid if you wish to get the most out of this course, but in all honesty, if you wish to optimize for a high grade, you are likely best focusing your efforts on deep-$Q$ networks using PyTorch and multi-agent reinforcement learning. See, for example, the original [Atari](https://arxiv.org/abs/1312.5602) paper, and this [multi-agent reinforcent learning](https://www.marl-book.com/) book.
+
+## Conclusion
+
+OMSCS has surpassed my expectations in terms of what I expected to learn this semester. Don't double up on courses - especially very difficult ones - if you are not ready for the work it will entail. I look forward to taking **only** [Deep Learning (CS 7643)](https://omscs.gatech.edu/cs-7643-deep-learning) next semester.
