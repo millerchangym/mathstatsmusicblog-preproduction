@@ -69,3 +69,7 @@ Similar to CV, **I am glad that I had this experience** learning this material v
 ## Conclusion
 
 OMSCS has surpassed my expectations in terms of what I expected to learn this semester. Don't double up on courses - especially very difficult ones - if you are not ready for the work it will entail. I look forward to taking **only** [Deep Learning (CS 7643)](https://omscs.gatech.edu/cs-7643-deep-learning) next semester.
+
+## Some comments about OMSCS in general
+
+I have really enjoyed being part of this program. The sense of community in this program, especially due to its sheer size, is unlike any other graduate program I've been in. Students are very supportive of each other and it has been a nice way to meet tons of people from various walks of life.
