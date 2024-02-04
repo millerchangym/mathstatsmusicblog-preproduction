@@ -16,11 +16,11 @@ Users of linear regression often assume when performing linear regression, error
 
 The aim of this post is to give a (mostly) complete exposition of simple linear regression, carefully only making assumptions where necessary, and providing a summary at the end.  
 
-We show that the justification for fitting a line of best fit through two-dimensional points only requires the assumption that error terms, given a fixed $x$-value, have a mean of $0$, with no other assumptions required. With no additional assumptions, we demonstrate that the least-squares estimates of the slope and intercept are unbiased for the corresponding linear model parameters. Lastly, we demonstrate that it is only once we begin discussing variances and hypothesis tests with the least-squares estimates of the slope and intercept that we need heteroskedasticity (constant variance of the error terms) and normality of the error terms.
+We show that the justification for fitting a line of best fit through two-dimensional points only requires the assumption that error terms, given a fixed $x$-value, have a mean of $0$, with no other assumptions required. With no additional assumptions, we demonstrate that the least-squares estimates of the slope and intercept are unbiased for the corresponding linear model parameters. Lastly, we demonstrate that it is only once we begin discussing variances and hypothesis tests with the least-squares estimates of the slope and intercept that we need homoskedasticity (constant variance of the error terms) and normality of the error terms.
 
 ## The Underlying Model
 
-Suppose we have $n$ two-dimensional random vectors $(X_1, Y_1), \dots, (X_n, Y_n)$. The assumption underlying linear regression is that the true process, 
+Suppose we have $n$ two-dimensional random vectors $(X_1, Y_1), \dots, (X_n, Y_n)$. The assumption underlying linear regression is that the true process
 
 $$Y_i = \beta_0 + \beta_1X_i + \epsilon_i$$
 
@@ -235,7 +235,7 @@ With these results in hand, we may construct confidence intervals and perform hy
 * Finding corresponding coefficients for a linear equation that best fits a set of points is our attempt to estimate $\mathbb{E}[Y_i \mid X_i]$.
 * The [Gauss-Markov Theorem](https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem#Statement) provides rationale as to why least-squares estimators for the coefficients are the "best" estimators to use.
 * The least-squares estimators of $\beta_0$ and $\beta_1$ are unbiased, conditioned on $X_1, \dots, X_n$ fixed.
-* The heteroskedasticity assumption that $\text{Var}[\epsilon_i \mid X_i]= \sigma^2 > 0$ and independence of $\epsilon_1, \dots, \epsilon_n$ given $\mathbf{X}$ is only necessary for computation of the variances of the least-squares estimators of $\beta_0$ and $\beta_1$. 
+* The homoskedasticity assumption that $\text{Var}[\epsilon_i \mid X_i]= \sigma^2 > 0$ and independence of $\epsilon_1, \dots, \epsilon_n$ given $\mathbf{X}$ is only necessary for computation of the variances of the least-squares estimators of $\beta_0$ and $\beta_1$. 
 * Independence of $\epsilon_1, \dots, \epsilon_n$ given $\mathbf{X}$ implies independence of $Y_1, \dots, Y_n$ given $\mathbf{X}$.
 * Hypothesis tests for the least-squares estimators of $\beta_0$ and $\beta_1$ rely on the assumption that $\epsilon_1, \dots, \epsilon_n$ are normally distributed.
 
