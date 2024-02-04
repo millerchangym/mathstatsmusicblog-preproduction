@@ -174,6 +174,8 @@ $$\begin{align}
 \end{align}$$
 showing that conditioned on $\mathbf{X}$, $\widehat\beta_1$ is unbiased for $\beta_1$.
 
+There is one thing worth pointing out here: the discussion of "bias" of estimators is completely predicated on the model $(1)$ being true. "Bias" does not make sense without $(1)$ being true..
+
 ## Variance of Estimators
 
 Here, we make the assumption that in $(1)$ that conditioned on $\mathbf{X}$, $\epsilon_i$ are independent with $\text{Var}\left[\epsilon_i\mid X_i\right] = \sigma^2 > 0$. It follows easily that assuming $\beta_0, \beta_1$ are constants that, conditioned on $\mathbf{X}$, $Y_1, \dots, Y_n$ are independent with
