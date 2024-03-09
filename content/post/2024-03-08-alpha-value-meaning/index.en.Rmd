@@ -43,7 +43,7 @@ I don't think I was able to convince them otherwise after that discussion. The c
 
 ## With each alpha value, there is at least one corresponding value measured in units of the existing data which is deemed the boundary for "significance."
 
-Let's suppose, for example, that in this scenario, we have two versions of a website as described above and we had 1500 people each who saw both websites. Suppose in the first version website that 5\% (or 75 people) of the users clicked on an ad. If we deem a 1\% increase as being "statistically significant," we can find an $\alpha$ value that corresponds to this. Here's how: we assume we have a 1\% increase in the number of people (or 90 people) who have clicked in an ad in the second group compared to the first group. The test statistic is obtained by
+Let's suppose, for example, that in this scenario, we have two versions of a website as described above and we had 1500 people each who saw both websites (assume we've chosen to fix these sample sizes). Suppose in the first version website that 5\% (or 75 people) of the users clicked on an ad. If we deem a 1\% increase as being "statistically significant," we can find an $\alpha$ value that corresponds to this. Here's how: we assume we have a 1\% increase in the number of people (or 90 people) who have clicked in an ad in the second group compared to the first group. The test statistic is obtained by
 \begin{equation}
 z = \dfrac{(0.05 + 0.01) - 0.05}{\sqrt{p(1-p)\left(\dfrac{2}{1500} \right)}}
 \end{equation}
