@@ -85,7 +85,7 @@ so we solve
 \begin{equation}
 \dfrac{\dfrac{n}{1500} - 0.05}{\sqrt{\dfrac{n+75}{3000}\left(1-\dfrac{n+75}{3000}\right)\left(\dfrac{2}{1500} \right)}} = 1.644854\text{.}
 \end{equation}
-Using something like [Wolfram Alpha](https://www.wolframalpha.com/input?i=solve+%28%28n%2F1500%29-0.05%29%2Fsqrt%28%28n%2B75%29%2F3000+*+%281+-+%28n%2B75%29%2F3000%29+*+%282%2F1500%29%29+%3D+1.644854), one obtains $n = 96$. Thus, in the situation outlined above, the analyst should have recognized by setting $\alpha = 0.05$, they were aiming for a $\dfrac{96}{3000}$ being marked as "statistically significant," or an increase of  
+Using something like [Wolfram Alpha](https://www.wolframalpha.com/input?i=solve+%28%28n%2F1500%29-0.05%29%2Fsqrt%28%28n%2B75%29%2F3000+*+%281+-+%28n%2B75%29%2F3000%29+*+%282%2F1500%29%29+%3D+1.644854), one obtains $n = 96$. Thus, in the situation outlined above, the analyst should have recognized by setting $\alpha = 0.05$, they were aiming for a $\dfrac{96}{1500}$ being marked as "statistically significant," or an increase of  
 \begin{equation}
 \dfrac{96}{1500} - \dfrac{75}{1500} = 0.014
 \end{equation}
