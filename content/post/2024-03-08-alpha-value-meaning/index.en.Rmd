@@ -1,0 +1,100 @@
+---
+title: Using conventional alpha values for hypothesis tests obscures the meaning
+  of "statistical significance"
+author: Yeng Miller-Chang
+date: '2024-03-08'
+slug: alpha-value-meaning
+categories: []
+tags:
+  - statistics
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2024-03-08T23:09:34-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+*Views and opinions expressed are solely my own.*
+
+I once had a conversation with someone who wanted help designing an A/B test for a website. The design was more or less what one would have for a conventional two-sample proportions $Z$-test: users would be assigned randomly, by IP address, to one of two versions of a website. The goal was to see which of the two versions of this website would lead to a higher proportion of users clicking ads. 
+
+This analyst set $\alpha = 0.05$, simulated fictitious data, and executed their hypothesis test on these data. Upon executing this procedure some large number of times, they pinged me again, and said to me, "Yeng, something's wrong with this test." I reviewed their R code: found nothing wrong with the computations, and I asked them to elaborate. Then they told me what was actually wrong:
+
+*In digital marketing, a 1% increase in ad clicks is huge.*
+
+Yes, I know that is the case, I told them.
+
+*So why is my hypothesis test not labeling such a test as "significant"?*, they asked.
+
+I told them: it's your $\alpha$ value.
+
+*But I was told to always set $\alpha = 0.05$,* they told me.
+
+Sure - but by setting your $\alpha$ value, you are in fact making a judgement call on what is deemed "statistically significant," I told them.
+
+---
+
+I don't think I was able to convince them otherwise after that discussion. The convention of setting $\alpha = 0.05$ seemed to have been ingrained in the way they executed their hypothesis tests, but just like any rule of thumb, *one must know why such rules of thumbs exist* and therefore *when such rules of thumb may fail*. In this post, I am here to make one point:
+
+## With each alpha value, there is at least one corresponding value measured in units of the existing data which is deemed the boundary for "significance."
+
+Let's suppose, for example, that in this scenario, we have two versions of a website as described above and we had 1500 people each who saw both websites. Suppose in the first version website that 5\% (or 75 people) of the users clicked on an ad. If we deem a 1\% increase as being "statistically significant," we can find an $\alpha$ value that corresponds to this. Here's how: we assume we have a 1\% increase in the number of people (or 90 people) who have clicked in an ad in the second group compared to the first group. The test statistic is obtained by
+\begin{equation}
+z = \dfrac{(0.05 + 0.01) - 0.05}{\sqrt{p(1-p)\left(\dfrac{2}{1500} \right)}}
+\end{equation}
+where
+\begin{equation}
+p = \dfrac{75+90}{2(1500)} = \dfrac{165}{3000}\text{.}
+\end{equation}
+Suppose $Z$ is of the standard normal distribution, with mean $0$ and variance $1$. Then since this is a right-tailed test, any value $\alpha$ for which
+\begin{equation}
+\mathbb{P}(Z \geq z) \leq \alpha
+\end{equation}
+will lead to "statistical significance." The probability above can easily be calculated:
+```{r}
+z_num <- (0.05 + 0.01) - 0.05
+p <- (75 + 90)/(2 * 1500)
+z_denom <- sqrt(p * (1-p) * (2/1500))
+print(1 - pnorm(z_num/z_denom))
+```
+So as you see above: this defies convention. For this particular use case, assuming this analyst had similar numbers to what I had above, an $\alpha \geq 0.114$ would suffice for this problem. This problem illustrates that blindly setting $\alpha$ to conventional values like $0.05$ or $0.01$ *when one already has in mind what is deemed "significant"* does not make sense. 
+
+##  The inverse problem
+
+However, the inverse problem is true too: when one sets an $\alpha$ value, one can express what is deemed "statistically significant" in terms of units of the original statistic. Suppose we set $\alpha = 0.05$. Suppose we also know that $75$ people clicked on the ad in the first version and $n$ people clicked on the ad in the second version. Using the same logic as above, this would be the same as finding $n$ such that
+\begin{equation}
+\mathbb{P}(Z \geq z) \leq \alpha = 0.05
+\end{equation}
+\begin{equation}
+z = \dfrac{\dfrac{n}{1500} - 0.05}{\sqrt{p(1-p)\left(\dfrac{2}{1500} \right)}}
+\end{equation}
+where
+\begin{equation}
+p = \dfrac{75+n}{2(1500)} = \dfrac{n+75}{3000}\text{.}
+\end{equation}
+Such a corresponding $z$, at minimum, must be equal to
+```{r}
+qnorm(0.95)
+```
+so we solve
+\begin{equation}
+\dfrac{\dfrac{n}{1500} - 0.05}{\sqrt{\dfrac{n+75}{3000}\left(1-\dfrac{n+75}{3000}\right)\left(\dfrac{2}{1500} \right)}} = 1.644854\text{.}
+\end{equation}
+Using something like [Wolfram Alpha](https://www.wolframalpha.com/input?i=solve+%28%28n%2F1500%29-0.05%29%2Fsqrt%28%28n%2B75%29%2F3000+*+%281+-+%28n%2B75%29%2F3000%29+*+%282%2F1500%29%29+%3D+1.644854), one obtains $n = 96$. Thus, in the situation outlined above, the analyst should have recognized by setting $\alpha = 0.05$, they were aiming for a $\dfrac{96}{3000}$ being marked as "statistically significant," or an increase of  
+\begin{equation}
+\dfrac{96}{1500} - \dfrac{75}{1500} = 0.014
+\end{equation}
+which means that at a $1.4\%$ increase or higher, the result would have been "statistically significant" - which is larger than what the analyst intended in this case for being marked as "significant."
+
+The principles outlined here can be extended to virtually any hypothesis test.
+
+## Conclusion
+
+Please do not blindly set your $\alpha$ values to conventional values because of convention. Know that every time an $\alpha$ value is set, you are in fact making a decision in terms of the units of your original data (percentages in this case) what is deemed "statistically significant." This is also true with $p$-values, too: each $p$-value you calculate can be expressed in the original units as well.
+
+I hope eventually we can move on from using $\alpha$ values and $p$-values as indicators for statistical significance, and simply express cutoffs in the original units of the data to be more explicit about what we mean when we talk about "statistical significance." 
