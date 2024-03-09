@@ -95,6 +95,6 @@ The principles outlined here can be extended to virtually any hypothesis test.
 
 ## Conclusion
 
-Please do not blindly set your $\alpha$ values to values because of convention. Know that every time an $\alpha$ value is set, you are in fact making a decision in terms of the units of your original data (percentages in this case) what is deemed "statistically significant." This is also true with $p$-values, too: each $p$-value you calculate can be expressed in the original units as well.
+Please do not blindly set your $\alpha$ values because of convention. Know that every time an $\alpha$ value is set, you are in fact making a decision in terms of the units of your original data (percentages in this case) what is deemed "statistically significant." This is also true with $p$-values, too: each $p$-value you calculate can be expressed in the original units as well.
 
 I hope eventually we can move on from using $\alpha$ values and $p$-values as indicators for statistical significance, and simply express cutoffs in the original units of the data to be more explicit about what we mean when we talk about "statistical significance." 
