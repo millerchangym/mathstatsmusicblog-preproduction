@@ -333,7 +333,7 @@ if staticMap:
   grid = ThrillDigger(mode)
 ```
 
-You may be confused at this point for why I am defining some of the above variables - that's fine! Here, I will go through the paper which covers why we have the above variables. This paper draws on the approach from https://arxiv.org/abs/1312.5602, modified by https://huggingface.co/learn/deep-rl-course/en/unit3/deep-q-algorithm.
+You may be confused at this point for why I am defining some of the above variables - that's fine! Here, I will go through the pseudocode which covers why we have the above variables. I draw from the approach from https://arxiv.org/abs/1312.5602, modified by https://huggingface.co/learn/deep-rl-course/en/unit3/deep-q-algorithm.
 
 ---
 
