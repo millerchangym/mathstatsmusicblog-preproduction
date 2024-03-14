@@ -230,7 +230,7 @@ class ThrillDigger:
 </ul>
 <p>For the reasons given above, one could view the way I have represented as three channels, each with a 2D representation. This is extremely similar to how images are represented, in that images are 2D matrices with three channels: red, green, and blue. For this reason, analogous to how images are used in neural networks, I am using a convolutional neural network to learn how to play Thrill Digger.</p>
 <pre class="python"><code>class NeuralNetwork(nn.Module):
-    def __init__(self, hidden_layers, OUTPUT_SIZE):
+    def __init__(self, OUTPUT_SIZE):
         super(NeuralNetwork, self).__init__()
         layers = []
         # https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html#torch.nn.Conv2d

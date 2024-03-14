@@ -232,7 +232,7 @@ For the reasons given above, one could view the way I have represented as three 
 
 ```python
 class NeuralNetwork(nn.Module):
-    def __init__(self, hidden_layers, OUTPUT_SIZE):
+    def __init__(self, OUTPUT_SIZE):
         super(NeuralNetwork, self).__init__()
         layers = []
         # https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html#torch.nn.Conv2d
