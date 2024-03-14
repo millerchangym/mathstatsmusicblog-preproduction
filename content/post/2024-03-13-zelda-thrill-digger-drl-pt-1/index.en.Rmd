@@ -219,7 +219,7 @@ To explain the code above, at a high level, several enhancements have been made 
   * A channel with 0/1 values describing whether or not the contents of the cells are known.
   * A channel with 0/1 values describing whether or not the cells consist of a bomb.
   * A channel consisting of the rupee reward amount.
-* To determine the number of bad spaces (rupoors, bombs) adjacent to a space, I performed a two-dimensional convolution, convolving all bad spaces with
+* To determine the number of bad spaces (rupoors, bombs) adjacent to a space, I performed a two-dimensional convolution, convolving the grid of all bad spaces (-1/0 indicators) with
 \begin{equation}
 \begin{bmatrix}
 1 & 1 & 1 \\
