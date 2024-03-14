@@ -265,7 +265,7 @@ class ThrillDigger:
 <pre class="python"><code>device = &quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;
 print(&quot;Using {} device&quot;.format(device))
 
-M = 300 # number of episodes for training
+M = 1000000 # number of episodes for training
 mode = &quot;beginner&quot;
 grid = ThrillDigger(mode)
 initState = grid.reset()

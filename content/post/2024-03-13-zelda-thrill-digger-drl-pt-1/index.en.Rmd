@@ -271,7 +271,7 @@ Now we continue with some setup as needed:
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("Using {} device".format(device))
 
-M = 300 # number of episodes for training
+M = 1000000 # number of episodes for training
 mode = "beginner"
 grid = ThrillDigger(mode)
 initState = grid.reset()
