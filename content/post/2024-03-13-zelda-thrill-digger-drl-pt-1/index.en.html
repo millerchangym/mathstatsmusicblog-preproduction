@@ -325,6 +325,7 @@ Initialize expReplay with capacity replayCapcity
 Initialize model with parameters theta
 Initialize modelTarget with parameters theta
 for each episode:
+  decay epsilon
   while the episode has not terminated:
     observe a 3-channel state s_t
     execute a greedy action a_t on the grid
