@@ -1,0 +1,47 @@
+---
+title: 'Review of my second semester of OMSCS: Deep Learning'
+author: Yeng Miller-Chang
+date: '2024-05-06'
+slug: my-second-semester-omscs
+categories: []
+tags:
+  - deep-learning
+  - computer-vision
+  - neural-network
+  - omscs
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2024-05-06T22:39:45-05:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+*Views and opinions expressed are solely my own.*
+
+**The inevitable question**: I got an A in [Deep Learning (CS 6473)](https://omscs.gatech.edu/cs-7643-deep-learning). 
+
+## Introduction 
+
+This post marks the day when my grade for Deep Learning (DL) has been released for my second semester in OMSCS (Spring 2024). I will describe my experiences going through this course.
+
+## Recommendations for future students
+
+I'm very glad that I took [Computer Vision (CV, CS 6476)](https://omscs.gatech.edu/cs-6476-computer-vision) before this course. There was a decent amount of context (e.g., convolutions, object detection) that was skimmed over that was otherwise covered in CV. I do recommend, based on my [previous semester's post](/post/my-first-semester-omscs/), taking DL before [Reinforcement Learning (RL, CS 7642)](https://omscs.gatech.edu/cs-7642-reinforcement-learning) as DL provides more background on how PyTorch works than RL.
+
+## What did I learn?
+
+This was an excellent course starting from the ground up on how neural nets work: we started off with coding basic neural nets and convolutional neural nets from scratch (with NumPy, but without PyTorch), and gradually transitioned into PyTorch. We then dived into gradient visualizations for CNNs, style transfer, and then the use of sequential models (RNN, Seq2Seq, LSTM, Transformer) for neural machine translation. The semester ended with a final group project. Many of the same principles from my [previous semester's post](/post/my-first-semester-omscs/) apply here and I will not rehash them here. 
+
+I am glad I had GPUs via Google Colab available for this course: my group's final project required roughly 4 hours to train the model per training session; however, this was nowhere near as demanding as RL (thankfully).
+
+There are no good textbooks for this material. We were relying on papers throughout the semester to guide us. 
+
+## Conclusion
+
+Just like last semester, I am glad for the interaction that I've had with students throughout this program. I am taking the summer off to think intentionally about the remainder of my degree and to have a much needed break.
+
+One thing I can say for sure at this point is I will likely be switching my focus for the remainder of this degree. I am thankful for the machine learning content I have learned through these three courses, but I am feeling a pull toward learning more about computational architecture. Stay tuned.
