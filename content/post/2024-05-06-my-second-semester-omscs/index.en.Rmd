@@ -22,7 +22,7 @@ projects: []
 ---
 *Views and opinions expressed are solely my own.*
 
-**The inevitable question**: I got an A in [Deep Learning (CS 6473)](https://omscs.gatech.edu/cs-7643-deep-learning). 
+**The inevitable question**: I got an A in [Deep Learning (CS 7643)](https://omscs.gatech.edu/cs-7643-deep-learning). 
 
 ## Introduction 
 
