@@ -40,6 +40,8 @@ I am glad I had GPUs via Google Colab available for this course: my group's fina
 
 There are no good textbooks for this material. We were relying on papers throughout the semester to guide us. 
 
+If you want to get a taste of what I've learned, see my post on the [Zelda Thrill Digger](/post/zelda-thrill-digger-drl-pt-1/) problem.
+
 ## Conclusion
 
 Just like last semester, I am glad for the interaction that I've had with students throughout this program. I am taking the summer off to think intentionally about the remainder of my degree and to have a much needed break.
