@@ -1,0 +1,80 @@
+---
+title: 'Data Tech 2024: a preview'
+author: Yeng Miller-Chang
+date: '2024-05-20'
+slug: data-tech-2024-preview
+tags:
+  - data-tech-2024
+  - reinforcement-learning
+  - deep-reinforcement-learning
+  - deep-learning
+authors: []
+lastmod: '2024-05-20T20:19:49-05:00'
+featured: no
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In my talk in <a href="https://minneanalytics.org/datatech-2024/">Data Tech 2024</a> on June 7, 2024, I will be taking the audience from a background in undergraduate probability through a journey through what I have learned about reinforcement learning over the last school year, through an intro to deep reinforcement learning (DRL). The code for my presentation is <a href="https://github.com/millerchangym/data-tech-2024-deepRL">here</a>.</p>
+</div>
+<div id="q-learning" class="section level2">
+<h2><span class="math inline">\(Q\)</span>-learning</h2>
+<p>We will start off the presentation by using finance (?!) to motivate the basics of reinforcement learning, making our way through introductory reinforcement learning. The first algorithm we will cover is <span class="math inline">\(Q\)</span>-learning.</p>
+<p>I will discuss the <code>gymnasium</code> (<a href="https://gymnasium.farama.org/" class="uri">https://gymnasium.farama.org/</a>) package briefly, and will show how to solve the <a href="https://gymnasium.farama.org/environments/toy_text/cliff_walking/">Cliff Walking environment</a> using <span class="math inline">\(Q\)</span>-learning.</p>
+<p><img src="images/cliff_walking.png" /></p>
+<p>The Cliff Walking environment, visualized above, works as follows:</p>
+<ul>
+<li>The agent starts at the bottom left and aims to reach the bottom right without falling into the “cliff” between the two spaces.</li>
+<li>Rewards are <span class="math inline">\(-1\)</span> for each space the agent travels, and <span class="math inline">\(-100\)</span> if the agent falls into the cliff.</li>
+<li>The agent must move up, down, left, or right on every turn. No other actions are permissible. Note the highest possible reward is <span class="math inline">\(-13\)</span>.</li>
+</ul>
+<p>One core principle of machine learning is <strong>though a model may perform well in training, it does not necessarily mean it will perform well in testing.</strong> My first implementation of this was unsuccessful in testing, though in training it seemed to do fine.</p>
+<div style="text-align: center;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1lSOBP8W-lo?si=Ew_VtZRUTWds_q-E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
+</div>
+<p>The above model I trained, when tested, led the agent to go up until it was stuck at the top-left corner, and hit the top wall at an infinite loop. After doing some hyperparameter tuning, I performed the training below:</p>
+<div style="text-align: center;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/L0hLNSii3c0?si=18oxMrfmuRuJfQk3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
+</div>
+<p>As you can see below, the agent in testing more or less executes the most optimal path to solve the environment:</p>
+<div style="text-align: center;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vhl1KZK7uYY?si=5_zzb61pF2eeTtbq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
+</div>
+</div>
+<div id="deep-q-network-dqn" class="section level2">
+<h2>Deep-<span class="math inline">\(Q\)</span> network (DQN)</h2>
+<p>We will also illustrate a first algorithm of deep reinforcement learning, known as deep-<span class="math inline">\(Q\)</span> networks (DQN). We will use the <code>torch</code> package with the <a href="https://gymnasium.farama.org/environments/classic_control/cart_pole/">Cart Pole environment</a> to illustrate DQN. As described in the website:</p>
+<blockquote>
+<p>A pole is attached by an un-actuated joint to a cart, which moves along a frictionless track. The pendulum is placed upright on the cart and the goal is to balance the pole by applying forces in the left and right direction on the cart.</p>
+</blockquote>
+<p><img src="images/cart_pole.png" /></p>
+<p>Two actions are possible: we either push the cart to the left or the right. There are 4 continuous variables that are observed: the cart position and velocity, and the pole’s angle and angular velocity. Termination occurs either when the center of the cart is out of bounds, or the pole has an angle greater than <span class="math inline">\(\pm 12\)</span> degrees. A reward of 1 is alloted for each step taken.</p>
+<p>I did not spend the time to really tune this, but show the results of my naive tuning here. Here’s how the agent performed in training:</p>
+<div style="text-align: center;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bU-FQZnrlDA?si=t9aBRq3jQBUAOVGK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
+</div>
+<p>and here’s how it performed in testing:</p>
+<div style="text-align: center;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/S-o7WFidLE8?si=T1Ywp07Okun-tL7R" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
+</div>
+<p>I look forward to seeing you at Data Tech 2024!</p>
+</div>
+<div id="suggested-readings-and-citations" class="section level2">
+<h2>Suggested readings and citations</h2>
+<p>Albrecht, S. V., Christianos, F., Schäfer, L. (2024). Multi-Agent Reinforcement Learning: Foundations and Modern Approaches. MIT Press. <a href="https://www.marl-book.com/" class="uri">https://www.marl-book.com/</a></p>
+<p>Littman, M. L. (1996). Algorithms for sequential decision-making. Ph.D. Dissertation. Brown University, USA.</p>
+<p>Mnih V. et al. (2013). Playing Atari with Deep Reinforcement Learning. <a href="https://arxiv.org/abs/1312.5602" class="uri">https://arxiv.org/abs/1312.5602</a></p>
+<p>Morales, M. (2020). Grokking deep reinforcement learning. Manning Publications Co.</p>
+<p>Sutton, R. and Barto, A. (2020). Reinforcement Learning: An Introduction. MIT Press. <a href="http://incompleteideas.net/book/the-book-2nd.html" class="uri">http://incompleteideas.net/book/the-book-2nd.html</a></p>
+<p>Watkins, C. J. C. H. (1989). Learning from Delayed Rewards. PhD thesis, University of
+Cambridge.</p>
+</div>
