@@ -13,6 +13,12 @@ lastmod: '2024-05-20T20:19:49-05:00'
 featured: no
 ---
 
+*Views and opinions expressed are solely my own.*
+
+## Introduction
+
+In my talk in [Data Tech 2024](https://minneanalytics.org/datatech-2024/) on June 7, 2024, I will be taking the audience from a background in undergraduate probability through a journey through what I have learned about reinforcement learning over the last school year, through an intro to deep reinforcement learning (DRL). The code for my presentation is [here](https://github.com/millerchangym/data-tech-2024-deepRL).
+
 <html>
 <style>
 .videowrapper {
@@ -33,12 +39,6 @@ featured: no
 }
 </style>
 </html>
-
-*Views and opinions expressed are solely my own.*
-
-## Introduction
-
-In my talk in [Data Tech 2024](https://minneanalytics.org/datatech-2024/) on June 7, 2024, I will be taking the audience from a background in undergraduate probability through a journey through what I have learned about reinforcement learning over the last school year, through an intro to deep reinforcement learning (DRL). The code for my presentation is [here](https://github.com/millerchangym/data-tech-2024-deepRL).
 
 ## $Q$-learning
 
