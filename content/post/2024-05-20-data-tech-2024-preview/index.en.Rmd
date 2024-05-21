@@ -15,7 +15,7 @@ featured: no
 
 <html>
 <style>
-.youtube-video {
+.yt-vid {
   aspect-ratio: 16 / 9;
   width: 100%;
 }
@@ -44,20 +44,20 @@ The Cliff Walking environment, visualized above, works as follows:
 
 One core principle of machine learning is **though a model may perform well in training, it does not necessarily mean it will perform well in testing.** My first implementation of this was unsuccessful in testing, though in training it seemed to do fine.
 
-<div class="yt-vid", style="text-align: center;">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/1lSOBP8W-lo?si=Ew_VtZRUTWds_q-E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div style="text-align: center;">
+<iframe class="yt-vid" src="https://www.youtube.com/embed/1lSOBP8W-lo?si=Ew_VtZRUTWds_q-E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
 The above model I trained, when tested, led the agent to go up until it was stuck at the top-left corner, and hit the top wall at an infinite loop. After doing some hyperparameter tuning, I performed the training below:
 
-<div class="yt-vid", style="text-align: center;">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/L0hLNSii3c0?si=18oxMrfmuRuJfQk3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div style="text-align: center;">
+<iframe class="yt-vid" src="https://www.youtube.com/embed/L0hLNSii3c0?si=18oxMrfmuRuJfQk3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
 As you can see below, the agent in testing more or less executes the most optimal path to solve the environment:
 
-<div class="yt-vid", style="text-align: center;">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/vhl1KZK7uYY?si=5_zzb61pF2eeTtbq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div style="text-align: center;">
+<iframe class="yt-vid" src="https://www.youtube.com/embed/vhl1KZK7uYY?si=5_zzb61pF2eeTtbq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
 ## Deep-$Q$ network (DQN)
@@ -72,14 +72,14 @@ Two actions are possible: we either push the cart to the left or the right. Ther
 
 I did not spend the time to really tune this, but show the results of my naive tuning here. Here's how the agent performed in training:
 
-<div class="yt-vid", style="text-align: center;">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/bU-FQZnrlDA?si=t9aBRq3jQBUAOVGK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div style="text-align: center;">
+<iframe class="yt-vid" src="https://www.youtube.com/embed/bU-FQZnrlDA?si=t9aBRq3jQBUAOVGK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
 and here's how it performed in testing:
 
-<div class="yt-vid", style="text-align: center;">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/S-o7WFidLE8?si=T1Ywp07Okun-tL7R" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div style="text-align: center;">
+<iframe class="yt-vid" src="https://www.youtube.com/embed/S-o7WFidLE8?si=T1Ywp07Okun-tL7R" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
 I look forward to seeing you at Data Tech 2024!
