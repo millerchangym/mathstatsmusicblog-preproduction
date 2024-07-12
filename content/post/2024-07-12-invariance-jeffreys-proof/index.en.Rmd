@@ -77,3 +77,7 @@ Therefore
 which implies
 $$\pi_{\Gamma}(\gamma) = \pi_{\Theta}(\theta) \cdot \left|\dfrac{\text{d}\theta}{\text{d}\gamma}\right| \propto \sqrt{I(\theta)}\left|\dfrac{\text{d}\theta}{\text{d}\gamma}\right| = \sqrt{I(\gamma)}$$
 as desired.
+
+## Bibliography
+
+Lehmann, E. L., Casella, G. (1998). Theory of Point Estimation, Second Edition. Springer-Verlag New York, Inc.
