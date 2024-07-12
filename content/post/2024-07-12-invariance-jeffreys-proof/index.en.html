@@ -1,0 +1,78 @@
+---
+title: Proof of the invariance of Jeffreys' prior
+author: Yeng Miller-Chang
+date: '2024-07-12'
+slug: invariance-jeffreys-proof
+tags:
+  - statistics
+  - bayesian-statistics
+lastmod: '2024-07-12T14:48:05-05:00'
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p><em>Views and opinions expressed are solely my own.</em></p>
+<p>As I have been learning Bayesian statistics, one result that I have been somewhat aware of but have found it very difficult to find a proof of is the following statement: <strong>Jeffreys’ prior is invariant</strong>. In this post, I define specifically what we mean by invariance, motivate it, and then offer a proof of this statement.</p>
+<p>By Bayes’ theorem, we may write
+<span class="math display">\[\begin{equation}
+f_{\Theta \mid \mathbf{X}}(\theta \mid \mathbf{x}) \propto f_{\mathbf{X} \mid \Theta}(\mathbf{x} \mid \theta)\pi_{\Theta}(\theta)\text{,}
+\end{equation}\]</span>
+where <span class="math inline">\(f_{\mathbf{X} \mid \Theta}\)</span> is the likelihood function, <span class="math inline">\(\pi_{\Theta}\)</span> is the prior of <span class="math inline">\(\Theta\)</span>, and <span class="math inline">\(f_{\Theta \mid \mathbf{X}}\)</span> is the posterior distribution of <span class="math inline">\(\Theta\)</span>.</p>
+<p>A <strong>non-informative prior</strong> is one in which <span class="math inline">\(\pi_\Theta(\theta) \propto c \in \mathbb{R}_{&gt; 0}\)</span> whenever <span class="math inline">\(\pi_\Theta(\theta) \neq 0\)</span>. Suppose <span class="math inline">\(\pi_\Theta\)</span> is a valid mass/density function. In the case of a finite countable set, this would mean <span class="math inline">\(\pi_\Theta\)</span> is the mass function of a discrete uniform distribution. In the case of a bounded interval, we have the density function of a continuous uniform distribution. If we assume that <span class="math inline">\(\pi_\Theta\)</span> need not be a density, we would have that either <span class="math inline">\(\sum_{\theta}\pi_\Theta(\theta) = \infty\)</span> or <span class="math inline">\(\int_{\theta}\pi_\Theta(\theta) = \infty\)</span>, in which case we call <span class="math inline">\(\pi_\Theta\)</span> an <strong>improper prior</strong>.</p>
+<p>Suppose <span class="math inline">\(\gamma = h(\theta)\)</span> for some injective function <span class="math inline">\(h\)</span>. As an example, suppose we impose an improper prior on <span class="math inline">\(\Theta\)</span> for <span class="math inline">\(\theta &gt; 0\)</span>, and that <span class="math inline">\(h = \log\)</span>. We have that <span class="math inline">\(\theta = e^{\gamma}\)</span> and
+<span class="math display">\[\begin{equation}
+\pi_\Gamma(\gamma) = \pi_\Theta(\theta) \cdot \left|\dfrac{\mathrm{d}\theta}{\mathrm{d}\gamma}\right| \propto c \cdot |e^{\gamma}| \propto e^{\gamma} \text{.}
+\end{equation}\]</span>
+This doesn’t make sense intuitively: if we have a non-informative prior for a parameter, it should remain non-informative even upon transformation. So then we consider the following question: does there exist a function <span class="math inline">\(g\)</span> such that the following two statements hold?
+<span class="math display">\[\begin{align}
+&amp;\pi_\Theta(\theta) \propto g(\theta) \\
+&amp;\pi_\Gamma(\gamma) \propto g(\gamma)
+\end{align}\]</span>
+It turns out there is such a function. Suppose, from Lehmann and Casella Lemma 5.3, we assume the following conditions hold:</p>
+<ul>
+<li>The parameter spaces are an open interval.</li>
+<li>The sets <span class="math inline">\(\{\theta: \pi_\Theta(\theta) &gt; 0\}\)</span> and <span class="math inline">\(\{\gamma: \pi_\Gamma(\gamma) &gt; 0\}\)</span> are independent of <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\gamma\)</span> respectively.</li>
+<li>The derivatives <span class="math inline">\(\pi_\Theta^{\prime}\)</span> and <span class="math inline">\(\pi_\Gamma^{\prime}\)</span> exist and are finite.</li>
+<li>As a function of <span class="math inline">\(\tau\)</span> (where <span class="math inline">\(\tau\)</span> may be either <span class="math inline">\(\theta\)</span> or <span class="math inline">\(\gamma\)</span>), the function
+<span class="math display">\[\begin{equation}
+\int_{-\infty}^{\infty}\pi(\tau)f_{\mathbf{X} \mid T}(\mathbf{x} \mid \tau) \text{ d}x
+\end{equation}\]</span>
+is twice differentiable under the integral sign.</li>
+<li>The second derivative of <span class="math inline">\(\log f_{\mathbf{X} \mid T}(\mathbf{x} \mid \tau)\)</span> with respect to <span class="math inline">\(\tau\)</span> (where <span class="math inline">\(\tau\)</span> may be either <span class="math inline">\(\theta\)</span> or <span class="math inline">\(\gamma\)</span>) exists for all <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\tau\)</span>.</li>
+</ul>
+<p>Then the Fisher information of <span class="math inline">\(\tau\)</span> is given by
+<span class="math display">\[\begin{equation}
+I(\tau) = -\mathbb{E}_{\mathbf{X} \mid \tau}\left[\dfrac{\mathrm{d}^2}{\mathrm{d}\tau^2}\log f_{\mathbf{X} \mid T}(\mathbf{X} \mid \tau)\right]\text{.}
+\end{equation}\]</span>
+<strong>Jeffreys’ prior</strong> refers to the case in which <span class="math inline">\(g(\theta) = \sqrt{I(\theta)}\)</span>. We prove that Jeffreys’ prior does satisfy the desired conditions.</p>
+<div id="proof" class="section level2">
+<h2>Proof</h2>
+<p>Since <span class="math inline">\(h\)</span> is one-to-one, we observe <span class="math inline">\(\theta = h^{-1}(\gamma)\)</span>. Hence
+<span class="math display">\[\begin{equation}
+f_{\mathbf{X} \mid \Theta}(\mathbf{x} \mid \theta) = f_{\mathbf{X} \mid \Theta}(\mathbf{x} \mid h^{-1}(\gamma))\text{.}
+\end{equation}\]</span>
+Then the derivative of <span class="math inline">\(\log f_{\mathbf{X} \mid \Theta}(\mathbf{x} \mid h^{-1}(\gamma))\)</span> with respect to <span class="math inline">\(\gamma\)</span> is
+<span class="math display">\[\begin{equation}
+\dfrac{\text{d} \log f_{\mathbf{X} \mid \Theta}(\mathbf{x} \mid \theta)}{\text{d}\theta}\dfrac{\text{d}\theta}{\text{d}\gamma}
+\end{equation}\]</span>
+by the chain rule. The second derivative is, by the product rule,
+<span class="math display">\[\begin{equation}
+\dfrac{\text{d}^2 \log f_{\mathbf{X} \mid \Theta}(\mathbf{x} \mid \theta)}{\text{d}\theta^2}\dfrac{\text{d}\theta}{\text{d}\gamma} \cdot \dfrac{\text{d}\theta}{\text{d}\gamma} + \dfrac{\text{d} \log f_{\mathbf{X} \mid \Theta}(\mathbf{x} \mid \theta)}{\text{d}\theta}\dfrac{\text{d}^2\theta}{\text{d}\gamma^2}\text{.}
+\end{equation}\]</span>
+Since the expectation of the second term is <span class="math inline">\(0\)</span> since it is the <a href="https://en.wikipedia.org/wiki/Informant_(statistics)#Mean">score function</a>, we obtain
+<span class="math display">\[\begin{equation}
+I(\gamma) = -\mathbb{E}\left[\dfrac{\text{d}^2 \log f_{\mathbf{X} \mid \Theta}(\mathbf{X} \mid \theta)}{\text{d}\theta^2}\left(\dfrac{\text{d}\theta}{\text{d}\gamma}\right)^2\right]\text{.}
+\end{equation}\]</span>
+But the second term doesn’t depend on <span class="math inline">\(\mathbf{X}\)</span> so we pull it out. Hence
+<span class="math display">\[\begin{equation}
+I(\gamma) = \left(\dfrac{\text{d}\theta}{\text{d}\gamma}\right)^2 \cdot -\mathbb{E}\left[\dfrac{\text{d}^2 \log f_{\mathbf{X} \mid \Theta}(\mathbf{X} \mid \theta)}{\text{d}\theta^2}\right] =  \left(\dfrac{\text{d}\theta}{\text{d}\gamma}\right)^2 I(\theta)\text{.}
+\end{equation}\]</span>
+Therefore
+<span class="math display">\[\begin{equation}
+\sqrt{I(\gamma)} =  \left|\dfrac{\text{d}\theta}{\text{d}\gamma}\right| \sqrt{I(\theta)}
+\end{equation}\]</span>
+which implies
+<span class="math display">\[\pi_{\Gamma}(\gamma) = \pi_{\Theta}(\theta) \cdot \left|\dfrac{\text{d}\theta}{\text{d}\gamma}\right| \propto \sqrt{I(\theta)}\left|\dfrac{\text{d}\theta}{\text{d}\gamma}\right| = \sqrt{I(\gamma)}\]</span>
+as desired.</p>
+</div>
