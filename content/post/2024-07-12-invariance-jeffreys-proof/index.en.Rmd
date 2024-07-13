@@ -37,7 +37,7 @@ It turns out there is such a function. Suppose, from Lehmann and Casella Lemma 5
 * The derivatives $\pi_\Theta^{\prime}$ and $\pi_\Gamma^{\prime}$ exist and are finite.
 * As a function of $\tau$ (where $\tau$ may be either $\theta$ or $\gamma$), the function
 \begin{equation}
-\int_{-\infty}^{\infty}\pi(\tau)f_{\mathbf{X} \mid T}(\mathbf{x} \mid \tau) \text{ d}x
+\int_{-\infty}^{\infty}\pi(\tau)f_{\mathbf{X} \mid T}(\mathbf{x} \mid \tau) \text{ d}\mathbf{x}
 \end{equation}
 is twice differentiable under the integral sign.
 * The second derivative of $\log f_{\mathbf{X} \mid T}(\mathbf{x} \mid \tau)$ with respect to $\tau$ (where $\tau$ may be either $\theta$ or $\gamma$) exists for all $\mathbf{x}$ and $\tau$.
