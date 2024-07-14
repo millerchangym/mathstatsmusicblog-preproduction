@@ -32,7 +32,7 @@ This doesn't make sense intuitively: if we have a non-informative prior for a pa
 \end{align}
 It turns out there is such a function. Suppose, from Lehmann and Casella Lemma 5.3, we assume the following conditions hold:
 
-* The parameter spaces are an open interval.
+* The parameter spaces are open intervals.
 * The sets $\{\theta: \pi_\Theta(\theta) > 0\}$ and $\{\gamma: \pi_\Gamma(\gamma) > 0\}$ are independent of $\theta$ and $\gamma$ respectively.
 * The derivatives $\pi_\Theta^{\prime}$ and $\pi_\Gamma^{\prime}$ exist and are finite.
 * As a function of $\tau$ (where $\tau$ may be either $\theta$ or $\gamma$), the function
