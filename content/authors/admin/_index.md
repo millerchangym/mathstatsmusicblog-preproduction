@@ -1,7 +1,7 @@
 ---
 authors:
 - admin
-bio: I am a Senior Data Scientist (Team Lead) at Design Interactive, Inc. and a student in the Georgia Tech OMSCS. Views and opinions expressed are solely my own.
+bio: I am a student in the Georgia Tech OMSCS. Views and opinions expressed are solely my own.
 title: Yeng Miller-Chang
 social:
 - icon: linkedin
