@@ -21,7 +21,7 @@ user_groups:
 
 *Views and opinions expressed are solely my own.*
 
-I am a student in the [Georgia Tech OMSCS](https://omscs.gatech.edu/home). My primary foci are data strategy, machine learning, generative AI, statistics, and high-performance computation. 
+I am a student in the [Georgia Tech OMSCS](https://omscs.gatech.edu/). My primary foci are data strategy, machine learning, generative AI, statistics, and high-performance computation. 
 
 I hold an M.S. Statistics from [Iowa State University](https://www.iastate.edu/) and a B.S. Mathematics from the [University of Wisconsin -- Eau Claire](https://www.uwec.edu/). In a past life, I was an adjunct instructor of data science at the community-college level. You may find my lecture videos posted [here](https://www.youtube.com/playlist?list=PLQ_-ultplRe6UPakUMCXczDLTzIgQSY1F).
 

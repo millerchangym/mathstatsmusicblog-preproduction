@@ -1,14 +1,14 @@
 ---
-title: My third semester of OMSCS
-author: Yeng Miller-Chang
+title: "My third semester of OMSCS"
+author: "Yeng Miller-Chang"
 date: '2025-12-16'
 slug: my-third-semester-of-omscs
 categories: []
 tags:
-  - omscs
-  - computer-science
-  - computer-networks
-  - database-development
+- omscs
+- computer-science
+- computer-networks
+- database-development
 subtitle: ''
 summary: ''
 authors: []
