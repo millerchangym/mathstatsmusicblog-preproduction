@@ -1,0 +1,69 @@
+---
+title: My third semester of OMSCS
+author: Yeng Miller-Chang
+date: '2025-12-16'
+slug: my-third-semester-of-omscs
+categories: []
+tags:
+  - omscs
+  - computer-science
+  - computer-networks
+  - database-development
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2025-12-16T20:36:24-06:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+*Views and opinions expressed are solely my own.*
+
+**The inevitable question**: I got an A in [Computer Networks (CS 6250)](https://omscs.gatech.edu/cs-6250-computer-networks) and a B in [Database System Implementation (CS 6422)](https://omscs.gatech.edu/cs-6422-database-system-implementation). 
+
+## Introduction 
+
+This post marks the day when my grades for Computer Networks (CN) and Database System Implmentation (DSI) have been released. I will describe my experiences going through these courses.
+
+## What made this semester so different?
+
+I took a year-long hiatus from school to focus on personal development. I attempted [Graduate Introduction to Operating Systems (GIOS)](https://omscs.gatech.edu/cs-6200-introduction-operating-systems) in Fall of 2024, but with my personal life having taken priority (with a foundation repair, among other things), I needed to get out of school for a bit.
+
+Among other things, I felt it was time to revisit the path I was taking. I took some of the advanced courses in machine learning OMSCS had to provide (Reinforcement Learning, Computer Vision, Deep Learning), and if I continued down the [machine-learning specialization](https://omscs.gatech.edu/specialization-machine-learning), there really wasn't much left for me to learn, seeing that I had already taken the advanced courses. 
+
+At first, I was considering the [computing-systems specialization](https://omscs.gatech.edu/specialization-computing-systems), but the fact that I had heard so many horror stories about the core algorithms course landed me at what is now known as the [artificial-intelligence](https://omscs.gatech.edu/specialization-artificial-intelligence-formerly-interactive-intelligence) specialization. I've decided this path will be how I will end this degree. 
+
+In terms of the courses I took this semester, things were different this time. CN and DSI have little if anything to do with mathematics, statistics, and machine learning, and I saw this as a way to ease into the systems side of things, to get a taste of what systems programming is like and stretch myself out a bit. 
+
+I would say that goal was attained.
+
+## Computer Networks
+
+I know many people complain that CN is easy, but for me, as someone who is very new to this space, I would say the difficulty of CN was just right. Sure, the quizzes and exams became rote memorization and got tedious at times. But I got what I needed out of it.
+
+It was a useful way for me to learn about networks (forwarding and routing) in a formal classroom setting. The fundamentals of transmitting information through a network, as well as an introduction to cybersecurity concerns were really what I got out of this course. It also helped me to see some of the graph algorithms that I had long neglected learning (e.g., Dijkstra) in context. 
+
+Everything in this class was in Python. I do suggest having some background in Python data structures before taking this class, but it's nothing that a standard one-semester computer-science course in Python wouldn't cover.
+
+Some of the concepts that I struggled with in GIOS, particularly at the first project, were covered in here - things like how TCP and sockets work. In hindsight, I should have taken CN before GIOS. I may not end up taking GIOS in the future, but that's fine with me. 
+
+## Database System Implementation
+
+DSI is a relatively new class that first launched in [Spring 2025](https://www.reddit.com/r/OMSCS/comments/1g9ka4o/feedback_on_a_new_omscs_course_on_building/). Essentially, the crux of the class is this: build a database that can parse SQL queries and execute them in C++ by the end of the semester.
+
+I can tell that, in general, the professor and the TAs are still working on general class logistics and assessment, which led to small annoyances when it came to when assignments, exercise sheets (which are basically proctored quizzes), and exams were released. With that aside, this was a very useful course and for me personally, I benefited in two ways: 
+
+* I finally learned C++ - and moreover, modern C++ ([RAII](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization), more specifically); and
+* I got a decent idea of how database internals work and have found this already useful for me professionally when I look at SQL database errors.
+
+The programming assignments, though they make you think a lot, aren't bad. I would say the exercise sheets and the exams are the most challenging (they are proctored), especially given the fact that throughout the semester, you have to be on top of the readings that are provided, which aside from the textbook, consist of papers both of fundamental database history, as well as more current-day developments. 
+
+Though I will probably not continue down the computing-systems route, I am glad to have taken this course, as it's filled a knowledge gap for me that has annoyed me for some time. 
+
+## What's next?
+
+I will be returning to my roots, in a way - and focusing on finishing up this degree hopefully by Spring of 2027. I will be taking [Artificial Intelligence (CS 6601)](https://omscs.gatech.edu/cs-6601-artificial-intelligence) and [Bayesian Statistics (ISYE 6420)](https://omscs.gatech.edu/isye-6420-bayesian-statistics) next semester. I am particularly looking forward to the Bayesian course, as I never got to take a Bayes course during my first master's degree, and I'm looking forward to learning PyMC. 
