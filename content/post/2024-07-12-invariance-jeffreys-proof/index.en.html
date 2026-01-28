@@ -9,7 +9,6 @@ tags:
 lastmod: '2024-07-12T14:48:05-05:00'
 ---
 
-<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
 
 
 <p><em>Views and opinions expressed are solely my own.</em></p>
@@ -20,7 +19,7 @@ f_{\Theta \mid \mathbf{X}}(\theta \mid \mathbf{x}) \propto f_{\mathbf{X} \mid \T
 \end{equation}\]</span>
 where <span class="math inline">\(f_{\mathbf{X} \mid \Theta}\)</span> is the likelihood function, <span class="math inline">\(\pi_{\Theta}\)</span> is the prior of <span class="math inline">\(\Theta\)</span>, and <span class="math inline">\(f_{\Theta \mid \mathbf{X}}\)</span> is the posterior distribution of <span class="math inline">\(\Theta\)</span>.</p>
 <p>A <strong>non-informative prior</strong> is one in which <span class="math inline">\(\pi_\Theta(\theta) \propto c \in \mathbb{R}_{&gt; 0}\)</span> whenever <span class="math inline">\(\pi_\Theta(\theta) \neq 0\)</span>. Suppose <span class="math inline">\(\pi_\Theta\)</span> is a valid mass/density function. In the case of a finite countable set, this would mean <span class="math inline">\(\pi_\Theta\)</span> is the mass function of a discrete uniform distribution. In the case of a bounded interval, we have the density function of a continuous uniform distribution. If we assume that <span class="math inline">\(\pi_\Theta\)</span> need not be a density, we would have that either <span class="math inline">\(\sum_{\theta}\pi_\Theta(\theta) = \infty\)</span> or <span class="math inline">\(\int_{\theta}\pi_\Theta(\theta) = \infty\)</span>, in which case we call <span class="math inline">\(\pi_\Theta\)</span> an <strong>improper prior</strong>.</p>
-<p>Suppose <span class="math inline">\(\gamma = h(\theta)\)</span> for some injective function <span class="math inline">\(h\)</span>. As an example, suppose we impose an improper prior on <span class="math inline">\(\Theta\)</span> for <span class="math inline">\(\theta &gt; 0\)</span>, and that <span class="math inline">\(h = \log\)</span>. We have that <span class="math inline">\(\theta = e^{\gamma}\)</span> and
+<p>Suppose <span class="math inline">\(\gamma = h(\theta)\)</span> for some injective function <span class="math inline">\(h\)</span>. As an example, suppose we impose a non-informative prior on <span class="math inline">\(\Theta\)</span> for <span class="math inline">\(\theta &gt; 0\)</span>, and that <span class="math inline">\(h = \log\)</span>. We have that <span class="math inline">\(\theta = e^{\gamma}\)</span> and
 <span class="math display">\[\begin{equation}
 \pi_\Gamma(\gamma) = \pi_\Theta(\theta) \cdot \left|\dfrac{\mathrm{d}\theta}{\mathrm{d}\gamma}\right| \propto c \cdot |e^{\gamma}| \propto e^{\gamma} \text{.}
 \end{equation}\]</span>

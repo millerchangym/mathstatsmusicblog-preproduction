@@ -21,7 +21,7 @@ where $f_{\mathbf{X} \mid \Theta}$ is the likelihood function, $\pi_{\Theta}$ is
 
 A **non-informative prior** is one in which $\pi_\Theta(\theta) \propto c \in \mathbb{R}_{> 0}$ whenever $\pi_\Theta(\theta) \neq 0$. Suppose $\pi_\Theta$ is a valid mass/density function. In the case of a finite countable set, this would mean $\pi_\Theta$ is the mass function of a discrete uniform distribution. In the case of a bounded interval, we have the density function of a continuous uniform distribution. If we assume that $\pi_\Theta$ need not be a density, we would have that either $\sum_{\theta}\pi_\Theta(\theta) = \infty$ or $\int_{\theta}\pi_\Theta(\theta) = \infty$, in which case we call $\pi_\Theta$ an **improper prior**.
 
-Suppose $\gamma = h(\theta)$ for some injective function $h$. As an example, suppose we impose an improper prior on $\Theta$ for $\theta > 0$, and that $h = \log$. We have that $\theta = e^{\gamma}$ and
+Suppose $\gamma = h(\theta)$ for some injective function $h$. As an example, suppose we impose a non-informative prior on $\Theta$ for $\theta > 0$, and that $h = \log$. We have that $\theta = e^{\gamma}$ and
 \begin{equation}
 \pi_\Gamma(\gamma) = \pi_\Theta(\theta) \cdot \left|\dfrac{\mathrm{d}\theta}{\mathrm{d}\gamma}\right| \propto c \cdot |e^{\gamma}| \propto e^{\gamma} \text{.}
 \end{equation}
