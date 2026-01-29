@@ -46,7 +46,7 @@ is twice differentiable under the integral sign.
 
 Then the Fisher information of $\tau$ is given by
 \begin{equation}
-I(\tau) = -\mathbb{E}_{\mathbf{X} \mid \tau}\left[\dfrac{\mathrm{d}^2}{\mathrm{d}\tau^2}\log f_{\mathbf{X} \mid T}(\mathbf{X} \mid \tau)\right]\text{.}
+I(\tau) = -\mathbb{E}_{\mathbf{X} \mid T}\left[\dfrac{\mathrm{d}^2}{\mathrm{d}\tau^2}\log f_{\mathbf{X} \mid T}(\mathbf{X} \mid \tau)\right]\text{.}
 \end{equation}
 **Jeffreys' prior** refers to the case in which $g(\theta) = \sqrt{I(\theta)}$. We prove that Jeffreys' prior satisfies the desired conditions.
 
