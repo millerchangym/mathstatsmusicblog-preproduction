@@ -30,7 +30,9 @@ This doesn't make sense intuitively: if we have a non-informative prior for a pa
 &\pi_\Theta(\theta) \propto g(\theta) \\
 &\pi_\Gamma(\gamma) \propto g(\gamma)
 \end{align}
-It turns out there is such a function. Suppose, from Lehmann and Casella Lemma 5.3, we assume the following conditions hold:
+It turns out there is such a function, and for this reason, we say that $g$ is **invariant**. 
+
+Suppose, from Lehmann and Casella Lemma 5.3, we assume the following conditions hold:
 
 * The parameter spaces are open intervals.
 * The sets $\{\theta: \pi_\Theta(\theta) > 0\}$ and $\{\gamma: \pi_\Gamma(\gamma) > 0\}$ are independent of $\theta$ and $\gamma$ respectively.
