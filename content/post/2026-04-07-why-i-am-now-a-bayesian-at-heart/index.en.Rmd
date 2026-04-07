@@ -49,7 +49,7 @@ $$
 \hat{\boldsymbol{\beta}} = (\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{y}\text{.}
 $$
 
-(assuming invertibility of the $\mathbf{X}^{T}\mathbf{X}$ matrix, yadda yadda) are BLUE (best linear unbiased estimators). This means the following: of all unbiased linear estimators, the least-squares estimator of $\boldsymbol{\beta}$ has the one with minimum variance.
+(assuming invertibility of the $\mathbf{X}^{T}\mathbf{X}$ matrix) are BLUE (best linear unbiased estimators). This means the following: of all unbiased linear estimators, the least-squares estimator of $\boldsymbol{\beta}$ has the one with minimum variance.
 
 We need to unpack specifically what this statement is saying. First, what do we mean by an unbiased linear estimator? We mean that the estimator
 
