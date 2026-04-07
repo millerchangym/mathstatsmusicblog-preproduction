@@ -1,0 +1,118 @@
+---
+title: Why I am now a Bayesian at heart
+author: Yeng Miller-Chang
+date: '2026-04-07'
+slug: why-i-am-now-a-bayesian-at-heart
+categories: []
+tags:
+  - bayesian-statistics
+  - statistics
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2026-04-07T18:12:25-05:00'
+featured: false
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: false
+projects: []
+---
+
+# TL;DR my viewpoint
+
+I am in practice a Frequentist, but at heart a Bayesian.
+
+# Regression
+
+To understand why I might take this perspective, let's go through some theory. First, let's assume a standard data-generating process for a regression:
+
+$$
+\begin{equation}
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+\end{equation}
+$$
+
+where $\epsilon_i$ are iid with mean $0$ and variance $\sigma^2$ (not necessarily normal), and the $x_i$ are considered known.
+
+## Frequentist regression
+
+In the Frequentist case, the coefficients $\beta_0, \beta_1$ are assumed to be some constants (though unknown) in that they equal some particular constant value with probability $1$.
+
+Great, but there's a problem: you can't actually find such constants. Then what most people teach is you just least-squares your way into finding $\hat{\beta}_0, \hat{\beta}_1$. But why use least-squares as the criterion? Oftentimes people will say something vague about how it's easily differentiable, leads to a closed-form solution, and things like that, but there's actually a reason for why least-squares is preferred.
+
+## The Gauss-Markov Theorem
+
+The Gauss-Markov Theorem says the following: under the conditions on the $\epsilon_i$ given above, the least-squares coefficients
+
+$$
+\hat{\boldsymbol{\beta}} = (\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{y}\text{.}
+$$
+
+(assuming invertibility of the $\mathbf{X}^{T}\mathbf{X}$ matrix, yadda yadda) are BLUE (best linear unbiased estimators). This means the following: of all unbiased linear estimators, the least-squares estimator of $\boldsymbol{\beta}$ has the one with minimum variance.
+
+We need to unpack specifically what this statement is saying. First, what do we mean by an unbiased linear estimator? We mean that the estimator
+
+$$
+\tilde{\beta}_j = \sum_{i=1}^{n}c_{ij}y_{j}
+$$
+
+satisfies
+
+$$
+\mathbb{E}\left[\tilde{\beta}_j\right] = \mathbb{E}\left[\sum_{i=1}^{n}c_{ij}y_{j}\right] = \beta_j
+$$
+
+for some constants $c_{ij}$ which may depend on the design matrix $\mathbf{X}$. The expectation equality above is simply stated as "$\tilde{\beta}_j$ is unbiased."
+
+The criterion most people use for coming up with good estimators is minimization of the mean-squared error (MSE), given by, in this case,
+
+$$
+\mathbb{E}\left[\left(\sum_{i=1}^{n}\lambda_j(\tilde{\beta}_j - \beta_j)\right)^2\right]
+$$
+
+for any vector of constants $\boldsymbol{\lambda}$. We recall from mathematical statistics the decomposition
+
+$$
+\mathrm{MSE} = \mathrm{bias}^2 + \mathrm{variance}
+$$
+
+so if the bias is zero (i.e., $\tilde{\beta}_j$ is unbiased), then we would just have the variance of the estimator as the MSE.
+
+## Criticisms on unbiasedness
+
+Statistics courses at the graduate level spend an inordinate amount of time focusing on unbiasedness and minimizing variance. E.T. Jaynes, in his *Probability Theory* text, has a much more pointed criticism:
+
+> Why do orthodoxians put such exaggerated emphasis on bias? We suspect that the main reason is simply that they are caught in a psychosemantic trap of their own making. When we call the quantity $(\langle\beta\rangle-\alpha)$ the 'bias', that makes it sound like something awfully reprehensible, which we must get rid of at all costs. If it had been called instead the 'component of error orthogonal to the variance', as suggested by the Pythagorean form of (17.2), it would have been clear that these two contributions to the error are on an equal footing; it is folly to decrease one at the expense of increasing the other. This is just the price one pays for choosing a technical terminology that carries an emotional load, implying value judgments; orthodoxy falls constantly into this tactical error.
+
+Let's go back to what we are optimizing to begin with: it is MSE. MSE is always nonnegative, and it's the sum of two non-negative values. If we set one of those to zero (the squared bias) and minimize the other one (variance), it doesn't necessarily mean that MSE overall will be minimized.
+
+And that's where the statistical world was shaken.
+
+## James-Stein Estimation
+
+James and Stein showed in 1956 (<https://en.wikipedia.org/wiki/James%E2%80%93Stein_estimator>) that it is possible to (1) violate the Gauss-Markov theorem, and (2) generate a biased estimator that would have lower MSE than a least-squares estimator. I don't claim to know that much about this topic but suggest reading the Wikipedia link above.
+
+So, what's the point of least-squares estimation if it doesn't guarantee MSE optimality?
+
+Frankly, in my view, there is none other than for computational convenience. Much of statistics, in my viewpoint, was developed during a time when computation was much more difficult to get one's hands on than it is today.
+
+## The Bayesian Perspective
+
+We've seen this already in our course material: alongside the data generation process $(1)$ assumed, we assume priors for $\beta_0, \beta_1$ and then can perform inference on the posteriors $\beta_0 \mid \mathbf{X}$, $\beta_1 \mid \mathbf{X}$.
+
+## Comparing the final results of Frequentist vs. Bayesian Regression
+
+So you have two ways you can perform a regression: both assume the data-generating process of $(1)$.
+
+The Bayesian methodology says: let's throw priors on for $\beta_0, \beta_1$ and then perform inference using $\beta_0 \mid \mathbf{X}$, $\beta_1 \mid \mathbf{X}$.
+
+The Frequentist methodology says: let's apply Gauss-Markov. Out of the class of unbiased linear estimators (why would one restrict themselves to just this class of estimators? It makes no sense), we will choose the least-squares estimators of the coefficients $\hat{\beta}_0$ and $\hat{\beta}_1$. Then, we will perform inference on $\hat{\beta}_0$ and $\hat{\beta}_1$.
+
+It is now obvious why the Frequentist methodology is mathematically inferior: you're not performing inference on the actual coefficients you assume are in the data-generating process, but rather least-squares estimators of the coefficients! And this is all because of the Gauss-Markov theorem, which itself relies on a very limited criterion of what estimators are permissible. Why would I apply more assumptions to perform inference on the objects that are not of interest? I would rather be working with the actual coefficients, rather than least-squares estimators of the coefficients.
+
+# Conclusion
+
+The above explains why I'm at heart a Bayesian. The reason why in practice I am a Frequentist is because talking about priors to most researchers I've worked with in the past makes data analysis feel "subjective." (Little do they know, however, that many of the tests that they want to execute are typically Central Limit Theorem-style arguments that require the sample size $n \to \infty$, which is impossible to do in any realistic situation, but that is a topic for a different time.)
+
+Statistics, I'll also say, has had a relatively difficult time embracing computationally-intensive methods such as simulation. This, by the way, is very different from what I gather is the culture of, say, physics. There's a reason I believe Hamiltonian Monte Carlo, which is what NUTS is based on, which is what PyMC is based on, came from physics as opposed to statistics.
