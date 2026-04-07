@@ -99,7 +99,7 @@ Frankly, in my view, there is none other than for computational convenience. Muc
 
 ## The Bayesian Perspective
 
-We've seen this already in our course material: alongside the data generation process $(1)$ assumed, we assume priors for $\beta_0, \beta_1$ and then can perform inference on the posteriors $\beta_0 \mid \mathbf{X}$, $\beta_1 \mid \mathbf{X}$.
+Alongside the data generation process $(1)$ assumed, we assume priors for $\beta_0, \beta_1$ and then can perform inference using the posteriors $\beta_0 \mid \mathbf{X}$, $\beta_1 \mid \mathbf{X}$.
 
 ## Comparing the final results of Frequentist vs. Bayesian Regression
 
