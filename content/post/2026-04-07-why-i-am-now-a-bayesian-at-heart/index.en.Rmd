@@ -93,7 +93,7 @@ And that's where the statistical world was shaken.
 
 James and Stein showed in 1956 (<https://en.wikipedia.org/wiki/James%E2%80%93Stein_estimator>) that it is possible to (1) violate the Gauss-Markov theorem, and (2) generate a biased estimator that would have lower MSE than a least-squares estimator. I don't claim to know that much about this topic but suggest reading the Wikipedia link above.
 
-So, what's the point of least-squares estimation if it doesn't guarantee MSE optimality?
+## So, what's the point of least-squares estimation if it doesn't guarantee MSE optimality?
 
 Frankly, in my view, there is none other than for computational convenience. Much of statistics, in my viewpoint, was developed during a time when computation was much more difficult to get one's hands on than it is today.
 
