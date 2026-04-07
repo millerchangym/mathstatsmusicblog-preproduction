@@ -1,0 +1,306 @@
+---
+title: Hamiltonian Monte Carlo
+author: Yeng Miller-Chang
+date: '2026-04-07'
+slug: hamiltonian-monte-carlo
+categories: []
+tags:
+  - bayesian-statistics
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2026-04-07T18:01:23-05:00'
+featured: false
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: false
+projects: []
+---
+
+## Hamilton's Equations
+
+Suppose $\mathbf{q} = \mathbf{q}(t) \in \mathbb{R}^d$ is a position vector of a particle at time $t \geq 0$. We recall that
+
+\begin{align}
+\mathbf{v} &= \dfrac{\mathrm{d}\mathbf{q}}{\mathrm{d}t} \\
+\mathbf{a} &= \dfrac{\mathrm{d}^2\mathbf{q}}{\mathrm{d}t^2}
+\end{align}
+
+are the velocity and acceleration vectors respectively, where derivatives are taken componentwise. Oftentimes one will use dots to denote derivatives; i.e., $\mathbf{v} = \dot{\mathbf{q}}$ and $\mathbf{a} = \dot{\mathbf{v}} = \ddot{\mathbf{q}}$.
+
+Newton's Second Law [[2], sec. 1.4, p. 13] defines the **net force** acting on a particle as
+
+$$
+\mathbf{F} = m\mathbf{a}
+$$
+
+where $m$ is the mass of the particle. From this, it follows that
+
+$$
+\mathbf{F} = m\dot{\mathbf{v}} = m\ddot{\mathbf{q}}.
+$$
+
+The **kinetic energy** of the particle is defined as
+
+$$
+\dfrac{1}{2}m\|\mathbf{v}\|^2
+$$
+
+where $\|\mathbf{v}\|$ denotes the magnitude of $\mathbf{v}$ and $m$ is the mass of the particle. We can "tune" the mass across dimensions, using a general mass matrix [1, p. 115, eq. (5.5)]:
+
+$$
+K(\mathbf{v}) = \dfrac{1}{2}\mathbf{v}^{T}\mathbf{M}\mathbf{v}
+$$
+
+where $\mathbf{M}$ is symmetric and positive-definite. We analogously write
+
+$$
+\mathbf{F} = \mathbf{M}\mathbf{a} = \mathbf{M}\dot{\mathbf{v}}.
+$$
+
+If we can write the net force as [[2], p. 117, sec. 4.3]
+
+$$
+\mathbf{F} = -\nabla U(\mathbf{q})
+$$
+
+then we call $U$ the **potential energy** of the particle.
+
+The **momentum** of the particle is defined as [[2], sec. 1.4, eq. (1.18)]
+
+$$
+\mathbf{p} = m\mathbf{v}
+$$
+
+assuming the particle has mass $m$, which analogously can be generalized to
+
+$$
+\mathbf{p} = \mathbf{M}\mathbf{v}.
+$$
+
+From this, it follows that since $\mathbf{M}$ is positive definite, it is invertible, so
+
+$$
+\mathbf{v} = \mathbf{M}^{-1}\mathbf{p}
+$$
+
+and we define the **Hamiltonian** $H$ by [[1], p. 115, eq. (5.4)]
+
+$$
+H(\mathbf{q}, \mathbf{v}) = K(\mathbf{v}) + U(\mathbf{q})
+$$
+
+which in terms of momentum is
+
+$$
+H(\mathbf{q}, \mathbf{p}) = K(\mathbf{p}) + U(\mathbf{q}) + \dfrac{1}{2}(\mathbf{M}^{-1}\mathbf{p})^{T}\mathbf{M}(\mathbf{M}^{-1}\mathbf{p}) + U(\mathbf{q}) = \dfrac{1}{2}\mathbf{p}^{T}\mathbf{M}^{-1}\mathbf{p} + U(\mathbf{q}).
+$$
+
+From the above Hamiltonian, we also have **Hamilton's equations**, the first of which is the following: assuming $\mathbf{p} = (p_1, \ldots, p_d)^{T}$ and $\mathbf{M}^{-1} = \begin{bmatrix}m_{ij}\end{bmatrix}_{i, j \in \{1,\ldots, d\}}$, for each $k = 1, \ldots, d$, we have
+
+\begin{align}
+\dfrac{\partial H}{\partial p_k}
+&= \dfrac{\partial}{\partial p_k}\left(\dfrac{1}{2}\mathbf{p}^{T}\mathbf{M}^{-1}\mathbf{p} \right) \\
+&= \dfrac{\partial}{\partial p_k}\left[\dfrac{1}{2}\begin{bmatrix}
+\sum_i p_i m_{i1} & \cdots & \sum_i p_i m_{in}
+\end{bmatrix}\mathbf{p}\right] \\
+&= \dfrac{\partial}{\partial p_k}\left[\dfrac{1}{2}\sum_j\sum_i p_i p_j m_{ij}\right] \\
+&= \dfrac{1}{2}\cdot \dfrac{\partial}{\partial p_k}\left[\sum_{i=j} p_i p_j m_{ij} + \sum_{i \neq j} p_i p_j m_{ij}\right] \\
+&= \dfrac{1}{2}\cdot \dfrac{\partial}{\partial p_k}\left[\sum_{i=j} p_i^2 m_{ii} + \sum_{i \neq j} p_i p_j m_{ij}\right] \\
+&= \dfrac{1}{2}\left[2p_k m_{kk} + \sum_{i \neq k} p_i m_{ik} + \sum_{j \neq k} p_j m_{kj}\right] \text{ because } p_k \text{ can be either } p_i, p_j \\
+&= \dfrac{1}{2}\left[2p_k m_{kk} + 2\sum_{j \neq k} p_j m_{kj}\right] \text{ by symmetry of } \mathbf{M}^{-1} \text{ (so } m_{ij} = m_{ji}\text{)} \\
+&= \dfrac{1}{2}\cdot 2 \cdot \left(\sum_{j=1}^{n} p_j m_{kj}\right)
+\end{align}
+
+which is the $k$th component of $\mathbf{M}^{-1}\mathbf{p}$, hence we have from stacking components that
+
+$$
+\dfrac{\partial H}{\partial \mathbf{p}} = \mathbf{M}^{-1}\mathbf{p} = \mathbf{v} = \dot{\mathbf{q}},
+$$
+
+and the second is, since $\dot{\mathbf{p}} = \mathbf{M}\dot{\mathbf{v}}$,
+
+$$
+\dfrac{\partial H}{\partial \mathbf{q}} = \nabla U(\mathbf{q}) = -\mathbf{F} = -\mathbf{M}\dot{\mathbf{v}} = -\dot{\mathbf{p}}
+\implies
+\dot{\mathbf{p}} = -\dfrac{\partial H}{\partial \mathbf{q}} = -\nabla U(\mathbf{q}).
+$$
+
+## The Boltzmann Distribution
+
+We follow the setup of section 3.2 (pp. 41--43) of [3] and section 5.3 (p. 122) of [1]. Fix a time $t \geq 0$. Consider an ensemble of $N$ systems sharing a total energy $E$. Let $n_i$ denote the number of systems that at time $t$ have energy value $E_i$. Then we have that
+
+\begin{align}
+\sum_i n_i &= N \\
+\sum_i n_i E_i &= E.
+\end{align}
+
+The number of ways to distribute energy among the $N$ systems is
+
+$$
+W(n_1, n_2, \ldots) = W(\{n_i\}) = \dfrac{N!}{n_1!n_2!\cdots }.
+$$
+
+We aim to find the set of values $\{n_i\}$ that maximizes the probability
+
+$$
+\mathbb{P}(\{n_i\}) = \dfrac{W(\{n_i\})}{\sum_{\{n_i\}} W(\{n_i\})}
+$$
+
+subject to the above conditions. As shown in [3] (pp. 41--43), we have (in the limit as $N \to \infty$) when maximizing $W(\{n_i\})$ that
+
+$$
+n_i^{*} \propto \exp\left(- \dfrac{E_i}{kT} \right)
+$$
+
+as an optimal solution for each $i$, where $T$ is the temperature of the system and $k$ is the Boltzmann constant (which exists to help with appropriate unit conversion). This is known as the **Boltzmann distribution**. Because $\mathbb{P}(\{n_i\})$ is proportional to $W(\{n_i\})$, maximizing $W(\{n_i\})$ is the same as maximizing $\mathbb{P}(\{n_i\})$.
+
+Assuming $T$ is measured in appropriate units, we may set $k = 1$. Thus, when using the Boltzmann distribution with an energy function $E$, we have
+
+$$
+p(x) \propto \exp\left(-\dfrac{E(x)}{T}\right)
+$$
+
+where $p$ is a probability mass or density function and $T$ is the temperature of the system.
+
+Generally, for Bayesian statistics, it is assumed $T = 1$, and we can substitute the Hamiltonian to obtain
+
+$$
+p(\mathbf{q}, \mathbf{p}) \propto \exp\left(-H(\mathbf{q}, \mathbf{p}) \right) = \exp(-U(\mathbf{q}))\exp(-K(\mathbf{p})).
+$$
+
+This implies that $\mathbf{q}$ and $\mathbf{p}$ are independent. The vector $\mathbf{q}$, seeing that it is used for position, will be used for representing the model parameters of interest for the posterior distribution, and we will use $\mathbf{p}$ to allow Hamiltonian dynamics to operate.
+
+With this in mind, we will set
+
+$$
+\exp(-U(\mathbf{q})) = \mathcal{L} (\mathbf{q} \mid \mathbf{x})\pi(\mathbf{q})
+\implies
+U(\mathbf{q}) = -\log\left(\mathcal{L} (\mathbf{q} \mid \mathbf{x})\pi(\mathbf{q})\right)
+$$
+
+where $\mathbf{x}$ is the given data, $\mathcal{L}$ is the likelihood function, and $\pi$ is the prior placed on $\mathbf{q}$. With
+
+$$
+K(\mathbf{p}) = \dfrac{1}{2}\mathbf{p}^{T}\mathbf{M}^{-1}\mathbf{p}
+$$
+
+it is clear that $\mathbf{p}$ has a multivariate normal distribution with zero-vector mean and covariance matrix $\mathbf{M}$.
+
+## The Leapfrog Method
+
+This section is primarily based on [1], sections 5.2.3.1--5.2.3.3 (pp. 119--121). The previous section is suitable for initialization: we can grab $\mathbf{p}$ from a multivariate normal distribution, and we can initialize some value for $\mathbf{q}$. We now need to address how to update these values.
+
+We now assume that $\mathbf{M}$ is a diagonal matrix, with entries $m_1, \ldots, m_d$.
+
+We note that Hamilton's equations are
+
+\begin{align}
+\dot{\mathbf{q}} &= \dfrac{\partial H}{\partial \mathbf{p}} = \mathbf{M}^{-1}\mathbf{p} \\
+\dot{\mathbf{p}} &= -\dfrac{\partial H}{\partial \mathbf{q}} = -\nabla U(\mathbf{q}).
+\end{align}
+
+We recall the definition of the derivative. Letting $q_i(t)$ denote the $i$th component of $\mathbf{q}$ and $p_i(t)$ denote the $i$th component of $\mathbf{p}$ both at time $t \geq 0$, we have for $i = 1, 2, \ldots, d$:
+
+\begin{align}
+\lim_{\epsilon \to 0}\dfrac{q_i(t+\epsilon)-q_i(t)}{\epsilon} &= \dfrac{\mathrm{d}q_i}{\mathrm{d}t}(t) = \dfrac{p_i(t)}{m_i} \\
+\lim_{\epsilon \to 0}\dfrac{p_i(t+\epsilon)-p_i(t)}{\epsilon} &= \dfrac{\mathrm{d}p_i}{\mathrm{d}t}(t) = -\dfrac{\partial U}{\partial q_i}(\mathbf{q}(t)).
+\end{align}
+
+**Euler's method** refers to using the definition of the derivative as an approximation based on the prior two equations; i.e., given the values at time $t$, we have
+
+\begin{align}
+q_i(t+\epsilon) &= q_i(t) + \epsilon \cdot \dfrac{p_i(t)}{m_i} \\
+p_i(t+\epsilon) &= p_i(t) - \epsilon \cdot \dfrac{\partial U}{\partial q_i}(\mathbf{q}(t)).
+\end{align}
+
+The set of equations is often ordered and modified as follows to provide improvements:
+
+\begin{align}
+p_i(t+\epsilon) &= p_i(t) - \epsilon \cdot \dfrac{\partial U}{\partial q_i}(\mathbf{q}(t)) \\
+q_i(t+\epsilon) &= q_i(t) + \epsilon \cdot \dfrac{p_i(t + \epsilon)}{m_i}.
+\end{align}
+
+And lastly, the step size is halved for $p_i$ to yield the **leapfrog method**:
+
+\begin{align}
+p_i\left(t+\dfrac{\epsilon}{2}\right) &= p_i(t) - \dfrac{\epsilon}{2} \cdot \dfrac{\partial U}{\partial q_i}(\mathbf{q}(t)) \\
+q_i(t+\epsilon) &= q_i(t) + \epsilon \cdot \dfrac{p_i\left(t + \dfrac{\epsilon}{2}\right)}{m_i} \\
+p_i\left(t+\epsilon\right) &= p_i\left(t+\dfrac{\epsilon}{2}\right) - \dfrac{\epsilon}{2} \cdot \dfrac{\partial U}{\partial q_i}(\mathbf{q}(t + \epsilon)).
+\end{align}
+
+Generalizing this to vector form, we have
+
+\begin{align}
+\mathbf{p}\left(t+\dfrac{\epsilon}{2}\right) &= \mathbf{p}(t) - \dfrac{\epsilon}{2} \cdot \nabla U(\mathbf{q}(t)) \\
+\mathbf{q}(t+\epsilon) &= \mathbf{q}(t) + \epsilon \cdot \mathbf{M}^{-1}\mathbf{p}\left(t + \dfrac{\epsilon}{2}\right) \\
+\mathbf{p}\left(t+\epsilon\right) &= \mathbf{p}\left(t+\dfrac{\epsilon}{2}\right) - \dfrac{\epsilon}{2} \cdot \nabla U(\mathbf{q}(t+\epsilon)).
+\end{align}
+
+\newpage
+
+## Algorithm
+
+Based on the R code provided in Figure 5.2 (p. 125) of [1], we can now outline the Hamiltonian Monte Carlo algorithm. A Metropolis update is performed at the end with acceptance probability
+
+$$
+\min(1, \exp(-H(\mathbf{q}_{\mathrm{new}}, \mathbf{p}_{\mathrm{new}}) + H(\mathbf{q}_{\mathrm{old}}, \mathbf{p}_{\mathrm{old}}))).
+$$
+
+### Hamiltonian Monte Carlo (single iteration)
+
+1. Initialize $\mathbf{q}_0 \in \mathbb{R}^d$.
+2. Initialize $L > 0$ as an integer (number of full steps for the trajectory).
+3. Define functions
+   $$
+   U(\mathbf{q}) = -\log\left(\mathcal{L} (\mathbf{q} \mid \mathbf{x})\pi(\mathbf{q})\right)
+   $$
+   and $\nabla U(\mathbf{q})$.
+4. Draw $\mathbf{p}_0 \sim N_d(\mathbf{0}, \mathbf{M})$.
+5. Set step size $\epsilon > 0$ small.
+6. Set $\mathbf{p} \leftarrow \mathbf{p}_0$ and $\mathbf{q} \leftarrow \mathbf{q}_0$.
+7. Set
+   $$
+   \mathbf{p} \leftarrow \mathbf{p} - \dfrac{\epsilon}{2} \cdot \nabla U(\mathbf{q}).
+   $$
+8. For $i = 1$ to $L$:
+   - Set
+     $$
+     \mathbf{q} \leftarrow \mathbf{q} + \epsilon \mathbf{M}^{-1}\mathbf{p}.
+     $$
+   - If $i \neq L$, set
+     $$
+     \mathbf{p} \leftarrow \mathbf{p} - \epsilon \cdot \nabla U(\mathbf{q}).
+     $$
+9. Set
+   $$
+   \mathbf{p} \leftarrow \mathbf{p} - \dfrac{\epsilon}{2} \cdot \nabla U(\mathbf{q}).
+   $$
+10. Set
+    $$
+    \mathbf{p} \leftarrow -\mathbf{p}
+    $$
+    (for a symmetric proposal).
+11. Draw $X \sim \mathrm{Unif}(0,1)$.
+12. If
+    $$
+    X < \exp\left(
+    \dfrac{1}{2}\mathbf{p}_0^{T}\mathbf{M}^{-1}\mathbf{p}_0 + U(\mathbf{q}_0)
+    - \dfrac{1}{2}\mathbf{p}^{T}\mathbf{M}^{-1}\mathbf{p} - U(\mathbf{q})
+    \right),
+    $$
+    return $\mathbf{q}$.
+13. Otherwise, return $\mathbf{q}_0$.
+
+## Bibliography
+
+[1] J. R. Taylor, Classical Mechanics, 1st. Sausalito, CA: University Science Books, 2005,
+isbn: 978-1891389221.
+
+[2] R. M. Neal, “Mcmc using hamiltonian dynamics”, in Handbook of Markov Chain Monte
+Carlo, S. Brooks, A. Gelman, G. Jones, and X.-L. Meng, Eds., Boca Raton, FL: Chap-
+man and Hall/CRC, 2011, pp. 113–162.
+
+[3] R. K. Pathria and P. D. Beale, Statistical Mechanics, 3rd. Amsterdam; Boston: Else-
+vier/Academic Press, 2011, isbn: 978-0-12-382188-1.

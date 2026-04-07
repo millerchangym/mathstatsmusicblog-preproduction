@@ -1,0 +1,246 @@
+---
+title: Hamiltonian Monte Carlo
+author: Yeng Miller-Chang
+date: '2026-04-07'
+slug: hamiltonian-monte-carlo
+categories: []
+tags:
+  - bayesian-statistics
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2026-04-07T18:01:23-05:00'
+featured: false
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: false
+projects: []
+---
+
+
+
+<div id="hamiltons-equations" class="section level2">
+<h2>Hamilton’s Equations</h2>
+<p>Suppose <span class="math inline">\(\mathbf{q} = \mathbf{q}(t) \in \mathbb{R}^d\)</span> is a position vector of a particle at time <span class="math inline">\(t \geq 0\)</span>. We recall that</p>
+<p><span class="math display">\[\begin{align}
+\mathbf{v} &amp;= \dfrac{\mathrm{d}\mathbf{q}}{\mathrm{d}t} \\
+\mathbf{a} &amp;= \dfrac{\mathrm{d}^2\mathbf{q}}{\mathrm{d}t^2}
+\end{align}\]</span></p>
+<p>are the velocity and acceleration vectors respectively, where derivatives are taken componentwise. Oftentimes one will use dots to denote derivatives; i.e., <span class="math inline">\(\mathbf{v} = \dot{\mathbf{q}}\)</span> and <span class="math inline">\(\mathbf{a} = \dot{\mathbf{v}} = \ddot{\mathbf{q}}\)</span>.</p>
+<p>Newton’s Second Law [[2], sec. 1.4, p. 13] defines the <strong>net force</strong> acting on a particle as</p>
+<p><span class="math display">\[
+\mathbf{F} = m\mathbf{a}
+\]</span></p>
+<p>where <span class="math inline">\(m\)</span> is the mass of the particle. From this, it follows that</p>
+<p><span class="math display">\[
+\mathbf{F} = m\dot{\mathbf{v}} = m\ddot{\mathbf{q}}.
+\]</span></p>
+<p>The <strong>kinetic energy</strong> of the particle is defined as</p>
+<p><span class="math display">\[
+\dfrac{1}{2}m\|\mathbf{v}\|^2
+\]</span></p>
+<p>where <span class="math inline">\(\|\mathbf{v}\|\)</span> denotes the magnitude of <span class="math inline">\(\mathbf{v}\)</span> and <span class="math inline">\(m\)</span> is the mass of the particle. We can “tune” the mass across dimensions, using a general mass matrix [1, p. 115, eq. (5.5)]:</p>
+<p><span class="math display">\[
+K(\mathbf{v}) = \dfrac{1}{2}\mathbf{v}^{T}\mathbf{M}\mathbf{v}
+\]</span></p>
+<p>where <span class="math inline">\(\mathbf{M}\)</span> is symmetric and positive-definite. We analogously write</p>
+<p><span class="math display">\[
+\mathbf{F} = \mathbf{M}\mathbf{a} = \mathbf{M}\dot{\mathbf{v}}.
+\]</span></p>
+<p>If we can write the net force as [[2], p. 117, sec. 4.3]</p>
+<p><span class="math display">\[
+\mathbf{F} = -\nabla U(\mathbf{q})
+\]</span></p>
+<p>then we call <span class="math inline">\(U\)</span> the <strong>potential energy</strong> of the particle.</p>
+<p>The <strong>momentum</strong> of the particle is defined as [[2], sec. 1.4, eq. (1.18)]</p>
+<p><span class="math display">\[
+\mathbf{p} = m\mathbf{v}
+\]</span></p>
+<p>assuming the particle has mass <span class="math inline">\(m\)</span>, which analogously can be generalized to</p>
+<p><span class="math display">\[
+\mathbf{p} = \mathbf{M}\mathbf{v}.
+\]</span></p>
+<p>From this, it follows that since <span class="math inline">\(\mathbf{M}\)</span> is positive definite, it is invertible, so</p>
+<p><span class="math display">\[
+\mathbf{v} = \mathbf{M}^{-1}\mathbf{p}
+\]</span></p>
+<p>and we define the <strong>Hamiltonian</strong> <span class="math inline">\(H\)</span> by [[1], p. 115, eq. (5.4)]</p>
+<p><span class="math display">\[
+H(\mathbf{q}, \mathbf{v}) = K(\mathbf{v}) + U(\mathbf{q})
+\]</span></p>
+<p>which in terms of momentum is</p>
+<p><span class="math display">\[
+H(\mathbf{q}, \mathbf{p}) = K(\mathbf{p}) + U(\mathbf{q}) + \dfrac{1}{2}(\mathbf{M}^{-1}\mathbf{p})^{T}\mathbf{M}(\mathbf{M}^{-1}\mathbf{p}) + U(\mathbf{q}) = \dfrac{1}{2}\mathbf{p}^{T}\mathbf{M}^{-1}\mathbf{p} + U(\mathbf{q}).
+\]</span></p>
+<p>From the above Hamiltonian, we also have <strong>Hamilton’s equations</strong>, the first of which is the following: assuming <span class="math inline">\(\mathbf{p} = (p_1, \ldots, p_d)^{T}\)</span> and <span class="math inline">\(\mathbf{M}^{-1} = \begin{bmatrix}m_{ij}\end{bmatrix}_{i, j \in \{1,\ldots, d\}}\)</span>, for each <span class="math inline">\(k = 1, \ldots, d\)</span>, we have</p>
+<p><span class="math display">\[\begin{align}
+\dfrac{\partial H}{\partial p_k}
+&amp;= \dfrac{\partial}{\partial p_k}\left(\dfrac{1}{2}\mathbf{p}^{T}\mathbf{M}^{-1}\mathbf{p} \right) \\
+&amp;= \dfrac{\partial}{\partial p_k}\left[\dfrac{1}{2}\begin{bmatrix}
+\sum_i p_i m_{i1} &amp; \cdots &amp; \sum_i p_i m_{in}
+\end{bmatrix}\mathbf{p}\right] \\
+&amp;= \dfrac{\partial}{\partial p_k}\left[\dfrac{1}{2}\sum_j\sum_i p_i p_j m_{ij}\right] \\
+&amp;= \dfrac{1}{2}\cdot \dfrac{\partial}{\partial p_k}\left[\sum_{i=j} p_i p_j m_{ij} + \sum_{i \neq j} p_i p_j m_{ij}\right] \\
+&amp;= \dfrac{1}{2}\cdot \dfrac{\partial}{\partial p_k}\left[\sum_{i=j} p_i^2 m_{ii} + \sum_{i \neq j} p_i p_j m_{ij}\right] \\
+&amp;= \dfrac{1}{2}\left[2p_k m_{kk} + \sum_{i \neq k} p_i m_{ik} + \sum_{j \neq k} p_j m_{kj}\right] \text{ because } p_k \text{ can be either } p_i, p_j \\
+&amp;= \dfrac{1}{2}\left[2p_k m_{kk} + 2\sum_{j \neq k} p_j m_{kj}\right] \text{ by symmetry of } \mathbf{M}^{-1} \text{ (so } m_{ij} = m_{ji}\text{)} \\
+&amp;= \dfrac{1}{2}\cdot 2 \cdot \left(\sum_{j=1}^{n} p_j m_{kj}\right)
+\end{align}\]</span></p>
+<p>which is the <span class="math inline">\(k\)</span>th component of <span class="math inline">\(\mathbf{M}^{-1}\mathbf{p}\)</span>, hence we have from stacking components that</p>
+<p><span class="math display">\[
+\dfrac{\partial H}{\partial \mathbf{p}} = \mathbf{M}^{-1}\mathbf{p} = \mathbf{v} = \dot{\mathbf{q}},
+\]</span></p>
+<p>and the second is, since <span class="math inline">\(\dot{\mathbf{p}} = \mathbf{M}\dot{\mathbf{v}}\)</span>,</p>
+<p><span class="math display">\[
+\dfrac{\partial H}{\partial \mathbf{q}} = \nabla U(\mathbf{q}) = -\mathbf{F} = -\mathbf{M}\dot{\mathbf{v}} = -\dot{\mathbf{p}}
+\implies
+\dot{\mathbf{p}} = -\dfrac{\partial H}{\partial \mathbf{q}} = -\nabla U(\mathbf{q}).
+\]</span></p>
+</div>
+<div id="the-boltzmann-distribution" class="section level2">
+<h2>The Boltzmann Distribution</h2>
+<p>We follow the setup of section 3.2 (pp. 41–43) of [3] and section 5.3 (p. 122) of [1]. Fix a time <span class="math inline">\(t \geq 0\)</span>. Consider an ensemble of <span class="math inline">\(N\)</span> systems sharing a total energy <span class="math inline">\(E\)</span>. Let <span class="math inline">\(n_i\)</span> denote the number of systems that at time <span class="math inline">\(t\)</span> have energy value <span class="math inline">\(E_i\)</span>. Then we have that</p>
+<p><span class="math display">\[\begin{align}
+\sum_i n_i &amp;= N \\
+\sum_i n_i E_i &amp;= E.
+\end{align}\]</span></p>
+<p>The number of ways to distribute energy among the <span class="math inline">\(N\)</span> systems is</p>
+<p><span class="math display">\[
+W(n_1, n_2, \ldots) = W(\{n_i\}) = \dfrac{N!}{n_1!n_2!\cdots }.
+\]</span></p>
+<p>We aim to find the set of values <span class="math inline">\(\{n_i\}\)</span> that maximizes the probability</p>
+<p><span class="math display">\[
+\mathbb{P}(\{n_i\}) = \dfrac{W(\{n_i\})}{\sum_{\{n_i\}} W(\{n_i\})}
+\]</span></p>
+<p>subject to the above conditions. As shown in [3] (pp. 41–43), we have (in the limit as <span class="math inline">\(N \to \infty\)</span>) when maximizing <span class="math inline">\(W(\{n_i\})\)</span> that</p>
+<p><span class="math display">\[
+n_i^{*} \propto \exp\left(- \dfrac{E_i}{kT} \right)
+\]</span></p>
+<p>as an optimal solution for each <span class="math inline">\(i\)</span>, where <span class="math inline">\(T\)</span> is the temperature of the system and <span class="math inline">\(k\)</span> is the Boltzmann constant (which exists to help with appropriate unit conversion). This is known as the <strong>Boltzmann distribution</strong>. Because <span class="math inline">\(\mathbb{P}(\{n_i\})\)</span> is proportional to <span class="math inline">\(W(\{n_i\})\)</span>, maximizing <span class="math inline">\(W(\{n_i\})\)</span> is the same as maximizing <span class="math inline">\(\mathbb{P}(\{n_i\})\)</span>.</p>
+<p>Assuming <span class="math inline">\(T\)</span> is measured in appropriate units, we may set <span class="math inline">\(k = 1\)</span>. Thus, when using the Boltzmann distribution with an energy function <span class="math inline">\(E\)</span>, we have</p>
+<p><span class="math display">\[
+p(x) \propto \exp\left(-\dfrac{E(x)}{T}\right)
+\]</span></p>
+<p>where <span class="math inline">\(p\)</span> is a probability mass or density function and <span class="math inline">\(T\)</span> is the temperature of the system.</p>
+<p>Generally, for Bayesian statistics, it is assumed <span class="math inline">\(T = 1\)</span>, and we can substitute the Hamiltonian to obtain</p>
+<p><span class="math display">\[
+p(\mathbf{q}, \mathbf{p}) \propto \exp\left(-H(\mathbf{q}, \mathbf{p}) \right) = \exp(-U(\mathbf{q}))\exp(-K(\mathbf{p})).
+\]</span></p>
+<p>This implies that <span class="math inline">\(\mathbf{q}\)</span> and <span class="math inline">\(\mathbf{p}\)</span> are independent. The vector <span class="math inline">\(\mathbf{q}\)</span>, seeing that it is used for position, will be used for representing the model parameters of interest for the posterior distribution, and we will use <span class="math inline">\(\mathbf{p}\)</span> to allow Hamiltonian dynamics to operate.</p>
+<p>With this in mind, we will set</p>
+<p><span class="math display">\[
+\exp(-U(\mathbf{q})) = \mathcal{L} (\mathbf{q} \mid \mathbf{x})\pi(\mathbf{q})
+\implies
+U(\mathbf{q}) = -\log\left(\mathcal{L} (\mathbf{q} \mid \mathbf{x})\pi(\mathbf{q})\right)
+\]</span></p>
+<p>where <span class="math inline">\(\mathbf{x}\)</span> is the given data, <span class="math inline">\(\mathcal{L}\)</span> is the likelihood function, and <span class="math inline">\(\pi\)</span> is the prior placed on <span class="math inline">\(\mathbf{q}\)</span>. With</p>
+<p><span class="math display">\[
+K(\mathbf{p}) = \dfrac{1}{2}\mathbf{p}^{T}\mathbf{M}^{-1}\mathbf{p}
+\]</span></p>
+<p>it is clear that <span class="math inline">\(\mathbf{p}\)</span> has a multivariate normal distribution with zero-vector mean and covariance matrix <span class="math inline">\(\mathbf{M}\)</span>.</p>
+</div>
+<div id="the-leapfrog-method" class="section level2">
+<h2>The Leapfrog Method</h2>
+<p>This section is primarily based on [1], sections 5.2.3.1–5.2.3.3 (pp. 119–121). The previous section is suitable for initialization: we can grab <span class="math inline">\(\mathbf{p}\)</span> from a multivariate normal distribution, and we can initialize some value for <span class="math inline">\(\mathbf{q}\)</span>. We now need to address how to update these values.</p>
+<p>We now assume that <span class="math inline">\(\mathbf{M}\)</span> is a diagonal matrix, with entries <span class="math inline">\(m_1, \ldots, m_d\)</span>.</p>
+<p>We note that Hamilton’s equations are</p>
+<p><span class="math display">\[\begin{align}
+\dot{\mathbf{q}} &amp;= \dfrac{\partial H}{\partial \mathbf{p}} = \mathbf{M}^{-1}\mathbf{p} \\
+\dot{\mathbf{p}} &amp;= -\dfrac{\partial H}{\partial \mathbf{q}} = -\nabla U(\mathbf{q}).
+\end{align}\]</span></p>
+<p>We recall the definition of the derivative. Letting <span class="math inline">\(q_i(t)\)</span> denote the <span class="math inline">\(i\)</span>th component of <span class="math inline">\(\mathbf{q}\)</span> and <span class="math inline">\(p_i(t)\)</span> denote the <span class="math inline">\(i\)</span>th component of <span class="math inline">\(\mathbf{p}\)</span> both at time <span class="math inline">\(t \geq 0\)</span>, we have for <span class="math inline">\(i = 1, 2, \ldots, d\)</span>:</p>
+<p><span class="math display">\[\begin{align}
+\lim_{\epsilon \to 0}\dfrac{q_i(t+\epsilon)-q_i(t)}{\epsilon} &amp;= \dfrac{\mathrm{d}q_i}{\mathrm{d}t}(t) = \dfrac{p_i(t)}{m_i} \\
+\lim_{\epsilon \to 0}\dfrac{p_i(t+\epsilon)-p_i(t)}{\epsilon} &amp;= \dfrac{\mathrm{d}p_i}{\mathrm{d}t}(t) = -\dfrac{\partial U}{\partial q_i}(\mathbf{q}(t)).
+\end{align}\]</span></p>
+<p><strong>Euler’s method</strong> refers to using the definition of the derivative as an approximation based on the prior two equations; i.e., given the values at time <span class="math inline">\(t\)</span>, we have</p>
+<p><span class="math display">\[\begin{align}
+q_i(t+\epsilon) &amp;= q_i(t) + \epsilon \cdot \dfrac{p_i(t)}{m_i} \\
+p_i(t+\epsilon) &amp;= p_i(t) - \epsilon \cdot \dfrac{\partial U}{\partial q_i}(\mathbf{q}(t)).
+\end{align}\]</span></p>
+<p>The set of equations is often ordered and modified as follows to provide improvements:</p>
+<p><span class="math display">\[\begin{align}
+p_i(t+\epsilon) &amp;= p_i(t) - \epsilon \cdot \dfrac{\partial U}{\partial q_i}(\mathbf{q}(t)) \\
+q_i(t+\epsilon) &amp;= q_i(t) + \epsilon \cdot \dfrac{p_i(t + \epsilon)}{m_i}.
+\end{align}\]</span></p>
+<p>And lastly, the step size is halved for <span class="math inline">\(p_i\)</span> to yield the <strong>leapfrog method</strong>:</p>
+<p><span class="math display">\[\begin{align}
+p_i\left(t+\dfrac{\epsilon}{2}\right) &amp;= p_i(t) - \dfrac{\epsilon}{2} \cdot \dfrac{\partial U}{\partial q_i}(\mathbf{q}(t)) \\
+q_i(t+\epsilon) &amp;= q_i(t) + \epsilon \cdot \dfrac{p_i\left(t + \dfrac{\epsilon}{2}\right)}{m_i} \\
+p_i\left(t+\epsilon\right) &amp;= p_i\left(t+\dfrac{\epsilon}{2}\right) - \dfrac{\epsilon}{2} \cdot \dfrac{\partial U}{\partial q_i}(\mathbf{q}(t + \epsilon)).
+\end{align}\]</span></p>
+<p>Generalizing this to vector form, we have</p>
+<p><span class="math display">\[\begin{align}
+\mathbf{p}\left(t+\dfrac{\epsilon}{2}\right) &amp;= \mathbf{p}(t) - \dfrac{\epsilon}{2} \cdot \nabla U(\mathbf{q}(t)) \\
+\mathbf{q}(t+\epsilon) &amp;= \mathbf{q}(t) + \epsilon \cdot \mathbf{M}^{-1}\mathbf{p}\left(t + \dfrac{\epsilon}{2}\right) \\
+\mathbf{p}\left(t+\epsilon\right) &amp;= \mathbf{p}\left(t+\dfrac{\epsilon}{2}\right) - \dfrac{\epsilon}{2} \cdot \nabla U(\mathbf{q}(t+\epsilon)).
+\end{align}\]</span></p>
+<div style="page-break-after: always;"></div>
+</div>
+<div id="algorithm" class="section level2">
+<h2>Algorithm</h2>
+<p>Based on the R code provided in Figure 5.2 (p. 125) of [1], we can now outline the Hamiltonian Monte Carlo algorithm. A Metropolis update is performed at the end with acceptance probability</p>
+<p><span class="math display">\[
+\min(1, \exp(-H(\mathbf{q}_{\mathrm{new}}, \mathbf{p}_{\mathrm{new}}) + H(\mathbf{q}_{\mathrm{old}}, \mathbf{p}_{\mathrm{old}}))).
+\]</span></p>
+<div id="hamiltonian-monte-carlo-single-iteration" class="section level3">
+<h3>Hamiltonian Monte Carlo (single iteration)</h3>
+<ol style="list-style-type: decimal">
+<li>Initialize <span class="math inline">\(\mathbf{q}_0 \in \mathbb{R}^d\)</span>.</li>
+<li>Initialize <span class="math inline">\(L &gt; 0\)</span> as an integer (number of full steps for the trajectory).</li>
+<li>Define functions
+<span class="math display">\[
+U(\mathbf{q}) = -\log\left(\mathcal{L} (\mathbf{q} \mid \mathbf{x})\pi(\mathbf{q})\right)
+\]</span>
+and <span class="math inline">\(\nabla U(\mathbf{q})\)</span>.</li>
+<li>Draw <span class="math inline">\(\mathbf{p}_0 \sim N_d(\mathbf{0}, \mathbf{M})\)</span>.</li>
+<li>Set step size <span class="math inline">\(\epsilon &gt; 0\)</span> small.</li>
+<li>Set <span class="math inline">\(\mathbf{p} \leftarrow \mathbf{p}_0\)</span> and <span class="math inline">\(\mathbf{q} \leftarrow \mathbf{q}_0\)</span>.</li>
+<li>Set
+<span class="math display">\[
+\mathbf{p} \leftarrow \mathbf{p} - \dfrac{\epsilon}{2} \cdot \nabla U(\mathbf{q}).
+\]</span></li>
+<li>For <span class="math inline">\(i = 1\)</span> to <span class="math inline">\(L\)</span>:
+<ul>
+<li>Set
+<span class="math display">\[
+\mathbf{q} \leftarrow \mathbf{q} + \epsilon \mathbf{M}^{-1}\mathbf{p}.
+\]</span></li>
+<li>If <span class="math inline">\(i \neq L\)</span>, set
+<span class="math display">\[
+\mathbf{p} \leftarrow \mathbf{p} - \epsilon \cdot \nabla U(\mathbf{q}).
+\]</span></li>
+</ul></li>
+<li>Set
+<span class="math display">\[
+\mathbf{p} \leftarrow \mathbf{p} - \dfrac{\epsilon}{2} \cdot \nabla U(\mathbf{q}).
+\]</span></li>
+<li>Set
+<span class="math display">\[
+\mathbf{p} \leftarrow -\mathbf{p}
+\]</span>
+(for a symmetric proposal).</li>
+<li>Draw <span class="math inline">\(X \sim \mathrm{Unif}(0,1)\)</span>.</li>
+<li>If
+<span class="math display">\[
+X &lt; \exp\left(
+\dfrac{1}{2}\mathbf{p}_0^{T}\mathbf{M}^{-1}\mathbf{p}_0 + U(\mathbf{q}_0)
+- \dfrac{1}{2}\mathbf{p}^{T}\mathbf{M}^{-1}\mathbf{p} - U(\mathbf{q})
+\right),
+\]</span>
+return <span class="math inline">\(\mathbf{q}\)</span>.</li>
+<li>Otherwise, return <span class="math inline">\(\mathbf{q}_0\)</span>.</li>
+</ol>
+</div>
+</div>
+<div id="bibliography" class="section level2">
+<h2>Bibliography</h2>
+<p>[1] J. R. Taylor, Classical Mechanics, 1st. Sausalito, CA: University Science Books, 2005,
+isbn: 978-1891389221.</p>
+<p>[2] R. M. Neal, “Mcmc using hamiltonian dynamics”, in Handbook of Markov Chain Monte
+Carlo, S. Brooks, A. Gelman, G. Jones, and X.-L. Meng, Eds., Boca Raton, FL: Chap-
+man and Hall/CRC, 2011, pp. 113–162.</p>
+<p>[3] R. K. Pathria and P. D. Beale, Statistical Mechanics, 3rd. Amsterdam; Boston: Else-
+vier/Academic Press, 2011, isbn: 978-0-12-382188-1.</p>
+</div>
